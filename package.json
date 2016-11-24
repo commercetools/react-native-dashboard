@@ -1,24 +1,43 @@
 {
-	"name": "MerchantCenterIOSDashboard",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"start": "node node_modules/react-native/local-cli/cli.js start",
-		"test": "jest"
-	},
-	"dependencies": {
-		"flow-bin": "^0.33.0",
-		"react": "~15.4.0-rc.4",
-		"react-native": "0.38.0"
-	},
-	"devDependencies": {
-		"babel-jest": "17.0.2",
-		"babel-preset-react-native": "1.9.0",
-		"jest": "17.0.3",
-		"jest-react-native": "17.0.3",
-		"react-test-renderer": "~15.4.0-rc.4"
-	},
-	"jest": {
-		"preset": "react-native"
-	}
+  "name": "MerchantCenterIOSDashboard",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "lint": "eslint js",
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "react": "15.4.1",
+    "react-native": "0.38.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "7.1.1",
+    "babel-jest": "17.0.2",
+    "babel-preset-react-native": "1.9.0",
+    "eslint": "3.10.2",
+    "eslint-config-airbnb": "13.0.0",
+    "eslint-config-commercetools": "4.0.2",
+    "eslint-plugin-import": "2.2.0",
+    "eslint-plugin-jsx-a11y": "2.2.3",
+    "eslint-plugin-react": "6.7.1",
+    "flow-bin": "0.33.0",
+    "jest": "17.0.3",
+    "jest-react-native": "17.0.3",
+    "react-test-renderer": "15.4.1"
+  },
+  "jest": {
+    "preset": "react-native",
+    "testPathDirs": [
+      "js",
+      "node_modules/react-native"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "commercetools/with-react",
+		"rules": {
+			"react/wrap-multilines": 0,
+			"react/jsx-wrap-multilines": 2
+		}
+  }
 }
