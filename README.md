@@ -3,6 +3,7 @@ Build an iOS Dashboard App in React Native
 
 #### TODO
 - show inactive projects
+- use KeyboardAvoidingView for login screen
 - persist dashboard data as well
 - fading animation for placeholder elements
 - unit tests

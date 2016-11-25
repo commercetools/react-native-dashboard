@@ -41,7 +41,12 @@ const styles = StyleSheet.create({
   },
   logo: {},
   inputView: {
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.5)',
+    marginBottom: 16,
+  },
+  inputViewFocus: {
+    borderBottomWidth: 1,
     borderBottomColor: 'white',
     marginBottom: 16,
   },
@@ -78,6 +83,8 @@ export default class Login extends Component {
       email: '',
       password: '',
       isLoading: false,
+      isEmailFocused: false,
+      isPasswordFocused: false,
     }
 
     // Bind functions
@@ -166,26 +173,49 @@ export default class Login extends Component {
           </View>
         ) : null}
         <Animated.View style={[styles.form, animatedStyle]}>
-          <View style={styles.inputView}>
+          <View
+            style={state.isEmailFocused
+              ? styles.inputViewFocus
+              : styles.inputView
+            }
+          >
             <TextInput
               autoCapitalize="none"
               style={styles.input}
               onChangeText={this.handleEmailChange}
+              onSubmitEditing={this.handleSubmit}
+              onFocus={() => this.setState({ isEmailFocused: true })}
+              onBlur={() => this.setState({ isEmailFocused: false })}
               value={state.email}
+              keyboardType="email-address"
+              returnKeyType="next"
               placeholder="Email"
+              placeholderTextColor="rgba(255,255,255,0.5)"
               color="white"
-              />
+              clearButtonMode="unless-editing"
+            />
           </View>
-          <View style={styles.inputView}>
+          <View
+            style={state.isPasswordFocused
+              ? styles.inputViewFocus
+              : styles.inputView
+            }
+          >
             <TextInput
               autoCapitalize="none"
               style={styles.input}
               onChangeText={this.handlePasswordChange}
+              onSubmitEditing={this.handleSubmit}
+              onFocus={() => this.setState({ isPasswordFocused: true })}
+              onBlur={() => this.setState({ isPasswordFocused: false })}
               value={state.password}
               secureTextEntry={true} // password
+              returnKeyType="go"
               placeholder="Password"
+              placeholderTextColor="rgba(255,255,255,0.5)"
               color="white"
-              />
+              clearButtonMode="unless-editing"
+            />
           </View>
 
           <View style={styles.buttonWrapper}>
