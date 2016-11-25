@@ -57,10 +57,11 @@ export default class Picker extends Component {
       currentProjectSelectedId: props.selectedProjectId,
     }
 
-    this.handleSelection = this.handleSelection.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleDraftSelection = this.handleDraftSelection.bind(this)
   }
 
-  handleSelection () {
+  handleSubmit () {
     this.props.onSelectProject(this.state.currentProjectSelectedId)
     this.props.onCloseModal()
   }
@@ -76,7 +77,7 @@ export default class Picker extends Component {
         <View style={styles.innerContainer}>
           <View style={styles.closeButtonContainer}>
             <TouchableHighlight
-              onPress={this.handleSelection}
+              onPress={this.handleSubmit}
               underlayColor="transparent"
               style={styles.closeButton}
             >
