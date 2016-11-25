@@ -6,6 +6,7 @@ import {
   AsyncStorage,
 } from 'react-native'
 import { defaultMemoize } from 'reselect'
+import { getProjectsForUser } from './utils/api'
 import Login from './login'
 import Dashboard from './dashboard'
 import Landing from './landing'
@@ -49,6 +50,7 @@ export default class Application extends Component {
     this.state = initialState
 
     // Bind functions
+    this.refetchProjects = this.refetchProjects.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLoginError = this.handleLoginError.bind(this)
     this.handleSelectProject = this.handleSelectProject.bind(this)
@@ -74,10 +76,16 @@ export default class Application extends Component {
           ...acc,
           [key]: JSON.parse(value),
         }), {})
+
         this.setState({
           ...cachedState,
           canStart: true, // <-- this will tell the app that it can render
         })
+
+        // If the user is already logged in, refetch
+        // the projects to get fresh data
+        if (cachedState.token)
+          this.refetchProjects()
       },
     )
   }
@@ -92,6 +100,23 @@ export default class Application extends Component {
       ['activeProjectIds', JSON.stringify(this.state.activeProjectIds)],
       ['inactiveProjectIds', JSON.stringify(this.state.inactiveProjectIds)],
     ])
+  }
+
+  refetchProjects () {
+    getProjectsForUser({
+      token: this.state.token,
+      userId: this.state.userId,
+    })
+    .then(
+      (projectsResponse) => {
+        this.handleLogin({
+          token: this.state.token,
+          userId: this.state.userId,
+          projects: projectsResponse,
+        })
+      },
+      error => this.handleLoginError(error),
+    )
   }
 
   handleLogin (data) {
@@ -132,7 +157,6 @@ export default class Application extends Component {
   render () {
     const { state } = this
 
-    console.log(state)
     if (!state.canStart) return <Landing/>
 
     // Allow to access the application only if there is a token and there is
