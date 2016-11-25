@@ -1,6 +1,6 @@
 /* @flow */
 
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import {
   Button,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   TextInput,
   View,
 } from 'react-native'
+import { login } from './utils/api'
 
 const styles = StyleSheet.create({
   container: {
@@ -30,6 +31,11 @@ const styles = StyleSheet.create({
 })
 
 export default class Login extends Component {
+
+  propTypes = {
+    onLogin: PropTypes.func.isRequired,
+  }
+
   constructor (props) {
     super(props)
 
@@ -53,7 +59,14 @@ export default class Login extends Component {
   }
 
   handleSubmit () {
-    console.log(this.state)
+    login({
+      email: this.state.email,
+      password: this.state.password,
+    })
+    .then(this.props.onLogin)
+    .catch((error) => {
+      console.error('Got an error on login', error)
+    })
   }
 
   render () {
@@ -64,11 +77,13 @@ export default class Login extends Component {
           <Text>{'LOGO'}</Text>
         </View>
         <TextInput
+          autoCapitalize="none"
           style={styles.input}
           onChangeText={this.handleEmailChange}
           value={state.email}
         />
         <TextInput
+          autoCapitalize="none"
           style={styles.input}
           onChangeText={this.handlePasswordChange}
           value={state.password}
