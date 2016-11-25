@@ -103,7 +103,7 @@ DashboardItem.propTypes = {
   firstSideMetricValue: PropTypes.number.isRequired,
   firstSideMetricLabel: PropTypes.string.isRequired,
   secondSideMetricValue: PropTypes.number.isRequired,
-  secondSideMetricLabel: PropTypes.number.isRequired,
+  secondSideMetricLabel: PropTypes.string.isRequired,
 }
 
 export default DashboardItem
