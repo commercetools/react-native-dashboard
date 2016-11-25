@@ -4,9 +4,6 @@ import React, { PropTypes, Component } from 'react'
 import {
   View,
   ListView,
-  Button,
-  Picker,
-  Modal,
   StyleSheet,
   RefreshControl,
 } from 'react-native'
@@ -19,11 +16,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     flex: 1,
     backgroundColor: colors.green,
-  },
-  modal: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 })
 
@@ -54,11 +46,9 @@ export default class Dashboard extends Component {
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
     })).isRequired,
-    activeProjectId: PropTypes.string.isRequired,
-    activeProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    inactiveProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    onSelectProject: PropTypes.func.isRequired,
+    selectedProjectId: PropTypes.string.isRequired,
   }
+
   constructor (props) {
     super(props)
 
@@ -89,19 +79,20 @@ export default class Dashboard extends Component {
     }
 
     // Bind functions
-    this.handleSelectProject = this.handleSelectProject.bind(this)
-    this.toggleProjectSwitcherModal = this.toggleProjectSwitcherModal.bind(this)
     this.handleManualRefresh = this.handleManualRefresh.bind(this)
   }
+
   componentDidMount () {
     this.fetchProjectStatistics()
   }
+
   componentDidUpdate (prevProps) {
-    if (prevProps.activeProjectId !== this.props.activeProjectId)
+    if (prevProps.selectedProjectId !== this.props.selectedProjectId)
       this.fetchProjectStatistics()
   }
+
   fetchProjectStatistics () {
-    const project = this.props.projects[this.props.activeProjectId]
+    const project = this.props.projects[this.props.selectedProjectId]
     this.setState({ isLoading: true })
 
     // Get the data
@@ -125,51 +116,15 @@ export default class Dashboard extends Component {
       },
     )
   }
-  handleSelectProject (projectId) {
-    this.props.onSelectProject(projectId)
-    this.toggleProjectSwitcherModal()
-  }
-  toggleProjectSwitcherModal () {
-    this.setState(prevState => ({
-      projectSwitcherModalVisible: !prevState.projectSwitcherModalVisible,
-    }))
-  }
+
   handleManualRefresh () {
     this.fetchProjectStatistics()
   }
+
   render () {
-    const { props, state } = this
+    const { state } = this
     return (
       <View style={styles.container}>
-        <Button
-          title={props.projects[props.activeProjectId].name}
-          color="white"
-          onPress={this.toggleProjectSwitcherModal}
-        />
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={state.projectSwitcherModalVisible}
-          style={styles.modal}
-        >
-          <Picker
-            selectedValue={props.activeProjectId}
-            onValueChange={this.handleSelectProject}
-          >
-            {props.activeProjectIds.map((projectId) => {
-              const project = props.projects[projectId]
-              // TODO: show inactive projects
-              return (
-                <Picker.Item
-                  key={project.id}
-                  label={project.name}
-                  value={project.id}
-                />
-              )
-            })}
-          </Picker>
-        </Modal>
-
         <ListView
           dataSource={state.dataSource}
           renderRow={(rowData) => {

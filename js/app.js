@@ -5,19 +5,22 @@ import {
   AppRegistry,
   AsyncStorage,
   Animated,
+  View,
+  StyleSheet,
 } from 'react-native'
 import { defaultMemoize } from 'reselect'
 import { getProjectsForUser } from './utils/api'
+import Landing from './landing'
+import TopBar from './top-bar'
 import Login from './login'
 import Dashboard from './dashboard'
-import Landing from './landing'
 
 const initialState = {
   canStart: false,
   token: null,
   userId: null,
-  projects: [],
-  activeProjectId: null,
+  projects: {}, // normalized
+  selectedProjectId: null,
   activeProjectIds: [],
   inactiveProjectIds: [],
   errorMessage: null,
@@ -44,6 +47,12 @@ const selectActiveAndInactiveProjectIds = defaultMemoize(
   }, [[/* active */], [/* inactive */]]),
 )
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+})
+
 export default class Application extends Component {
   constructor (props) {
     super(props)
@@ -65,7 +74,7 @@ export default class Application extends Component {
         'token',
         'userId',
         'projects',
-        'activeProjectId',
+        'selectedProjectId',
         'activeProjectIds',
         'inactiveProjectIds',
       ],
@@ -74,10 +83,14 @@ export default class Application extends Component {
           console.warn('Error while reading state from storage', error)
           return
         }
-        const cachedState = stores.reduce((acc, [ key, value ]) => ({
-          ...acc,
-          [key]: JSON.parse(value),
-        }), {})
+        const cachedState = stores.reduce((acc, [ key, value ]) => {
+          const parsedValue = JSON.parse(value)
+          return {
+            ...acc,
+            ...initialState,
+            ...(parsedValue ? { [key]: parsedValue } : {}),
+          }
+        }, {})
         const startAnimation = cachedState.token
           ? [
             Animated.spring(this.animatedValue, {
@@ -126,7 +139,7 @@ export default class Application extends Component {
       ['token', JSON.stringify(this.state.token)],
       ['userId', JSON.stringify(this.state.userId)],
       ['projects', JSON.stringify(this.state.projects)],
-      ['activeProjectId', JSON.stringify(this.state.activeProjectId)],
+      ['selectedProjectId', JSON.stringify(this.state.selectedProjectId)],
       ['activeProjectIds', JSON.stringify(this.state.activeProjectIds)],
       ['inactiveProjectIds', JSON.stringify(this.state.inactiveProjectIds)],
     ])
@@ -172,7 +185,7 @@ export default class Application extends Component {
         }),
         {},
       ),
-      activeProjectId: activeProjects[0],
+      selectedProjectId: activeProjects[0],
       activeProjectIds: activeProjects,
       inactiveProjectIds: inactiveProjects,
       errorMessage: sortedProjectsByName.length > 0
@@ -189,7 +202,7 @@ export default class Application extends Component {
   }
 
   handleSelectProject (projectId) {
-    this.setState({ activeProjectId: projectId })
+    this.setState({ selectedProjectId: projectId })
   }
 
   render () {
@@ -203,24 +216,33 @@ export default class Application extends Component {
 
     // Allow to access the application only if there is a token and there is
     // an active project (e.g. user has access to no projects)
-    return state.token && state.activeProjectId
-      ? (
-        <Dashboard
-          token={state.token}
+    return (
+      <View style={styles.container}>
+        <TopBar
           projects={state.projects}
-          activeProjectId={state.activeProjectId}
+          selectedProjectId={state.selectedProjectId}
           activeProjectIds={state.activeProjectIds}
           inactiveProjectIds={state.inactiveProjectIds}
           onSelectProject={this.handleSelectProject}
         />
-      )
-      : (
-        <Login
-          onLogin={this.handleLogin}
-          onLoginError={this.handleLoginError}
-          errorMessage={state.errorMessage}
-        />
-      )
+        {state.token && state.selectedProjectId
+          ? (
+            <Dashboard
+              token={state.token}
+              projects={state.projects}
+              selectedProjectId={state.selectedProjectId}
+            />
+          )
+          : (
+            <Login
+              onLogin={this.handleLogin}
+              onLoginError={this.handleLoginError}
+              errorMessage={state.errorMessage}
+            />
+          )
+        }
+      </View>
+    )
   }
 }
 

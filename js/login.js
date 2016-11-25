@@ -27,6 +27,11 @@ const styles = StyleSheet.create({
     paddingRight: 32,
     flexDirection: 'column',
     alignItems: 'stretch',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
   },
   'logo-container': {
     marginTop: 24,
