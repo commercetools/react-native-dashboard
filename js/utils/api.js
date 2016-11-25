@@ -40,10 +40,8 @@ export function getProjectsForUser (options) {
 // - number of active + ordered carts
 // - tot number of customers
 export function statistics (options) {
-  const { projectKey } = options
-
-  const ordersUrl = `${apiHost}/${projectKey}/orders`
-  const cartsUrl = `${apiHost}/${projectKey}/carts`
+  const ordersUrl = `${apiHost}/${options.projectKey}/orders`
+  const cartsUrl = `${apiHost}/${options.projectKey}/carts`
 
   const requestOptions = {
     headers: {
@@ -54,6 +52,12 @@ export function statistics (options) {
   }
 
   return Promise.all([
+    // Fetch "total" orders
+    fetch(
+      `${ordersUrl}?${getStatisticsQueryForPredicate()}`,
+      requestOptions,
+    ).then(processResponse),
+
     // Fetch "open" orders
     fetch(
       `${ordersUrl}?${getStatisticsQueryForPredicate('orderState = "Open"')}`,
@@ -64,6 +68,12 @@ export function statistics (options) {
     fetch(
       // eslint-disable-next-line max-len
       `${ordersUrl}?${getStatisticsQueryForPredicate('orderState = "Complete"')}`,
+      requestOptions,
+    ).then(processResponse),
+
+    // Fetch "total" carts
+    fetch(
+      `${cartsUrl}?${getStatisticsQueryForPredicate()}`,
       requestOptions,
     ).then(processResponse),
 
@@ -81,16 +91,20 @@ export function statistics (options) {
   ])
   .then(
     ([
+      totalOrdersResponse,
       openOrdersResponse,
       completeOrdersResponse,
+      totalCartsResponse,
       activeCartsResponse,
       orderedCartsResponse,
     ]) => ({
       orders: {
+        total: totalOrdersResponse.total,
         open: openOrdersResponse.total,
         complete: completeOrdersResponse.total,
       },
       carts: {
+        total: totalCartsResponse.total,
         active: activeCartsResponse.total,
         ordered: orderedCartsResponse.total,
       },
@@ -111,10 +125,12 @@ function getTodayISOString () {
 }
 
 function getStatisticsQueryForPredicate (predicate) {
-  const queryPredicate = encodeURIComponent(
-    `createdAt > ${getTodayISOString()} and ${predicate}`,
-  )
-  return `limit=0&where="${queryPredicate}"`
+  const todayPredicate = `createdAt > "${getTodayISOString()}"`
+  const queryPredicate = predicate
+    ? encodeURIComponent(`${todayPredicate} and ${predicate}`)
+    : encodeURIComponent(todayPredicate)
+
+  return `limit=0&where=${queryPredicate}`
 }
 
 function processResponse (response) {

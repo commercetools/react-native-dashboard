@@ -28,7 +28,7 @@ export default class Application extends Component {
 
     this.setState({
       token: data.token,
-      userId: data.user,
+      userId: data.userId,
       projects: projects.reduce(
         (acc, project) => ({
           ...acc,
@@ -48,12 +48,26 @@ export default class Application extends Component {
   }
 
   render () {
-    const { state } = this
+    // const { state } = this
+    // FIXME: persist state
+    const state = {
+      token: 'GwMWmbBjRvs94avfeuO3NUd34sFIdmpgV+2VpPEkKME=',
+      activeProjectId: '0b7449c4-2298-4959-80d3-989dcb234983',
+      projects: {
+        '0b7449c4-2298-4959-80d3-989dcb234983': {
+          id: '0b7449c4-2298-4959-80d3-989dcb234983',
+          key: 'test-with-big-data-44',
+          name: 'Test with big data',
+        },
+      },
+    }
+
     // Allow to access the application only if there is a token and there is
     // an active project (e.g. user has access to no projects)
     return state.token && state.activeProjectId
       ? (
         <Dashboard
+          token={state.token}
           projects={state.projects}
           activeProjectId={state.activeProjectId}
         />

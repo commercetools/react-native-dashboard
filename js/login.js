@@ -88,24 +88,25 @@ export default class Login extends Component {
       email: state.email,
       password: state.password,
     })
-    .then(loginResponse =>
-      getProjectsForUser({
-        token: loginResponse.token,
-        userId: loginResponse.user,
-      })
-      .then((projectsResponse) => {
-        this.setState({ isLoading: false })
-        props.onLogin({
+    .then(
+      loginResponse =>
+        getProjectsForUser({
           token: loginResponse.token,
           userId: loginResponse.user,
-          projects: projectsResponse,
         })
-      }),
+        .then((projectsResponse) => {
+          props.onLogin({
+            token: loginResponse.token,
+            userId: loginResponse.user,
+            projects: projectsResponse,
+          })
+        }),
+      (error) => {
+        // this.setState({ isLoading: false })
+        console.log('Ups', error)
+        props.onLoginError(error)
+      },
     )
-    .catch((...args) => {
-      this.setState({ isLoading: false })
-      props.onLoginError(...args)
-    })
   }
 
   render () {
