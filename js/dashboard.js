@@ -18,23 +18,30 @@ const styles = StyleSheet.create({
   },
 })
 
-const getPercentage = (a, b) => Math.round(a / b) * 100 || 0
+const getPercentage = (fraction, total) => {
+  if (!fraction || !total)
+    return 0
+  const percentage = (fraction / total) * 100
+  if (Math.round(percentage) !== percentage)
+    return percentage.toFixed(2)
+  return percentage
+}
 const dashboardItemMapping = {
   orders: {
     label: 'Orders',
     firstMetricLabel: 'Open',
     secondMetricLabel: 'Complete',
     total: data => data.total,
-    firstMetric: data => getPercentage(data.open / data.total),
-    secondMetric: data => getPercentage(data.complete / data.total),
+    firstMetric: data => getPercentage(data.open, data.total),
+    secondMetric: data => getPercentage(data.complete, data.total),
   },
   carts: {
     label: 'Carts',
     firstMetricLabel: 'Active',
     secondMetricLabel: 'Ordered',
     total: data => data.total,
-    firstMetric: data => getPercentage(data.active / data.total),
-    secondMetric: data => getPercentage(data.ordered / data.total),
+    firstMetric: data => getPercentage(data.active, data.total),
+    secondMetric: data => getPercentage(data.ordered, data.total),
   },
 }
 

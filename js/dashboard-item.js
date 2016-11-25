@@ -100,10 +100,16 @@ const DashboardItem = ({
 DashboardItem.propTypes = {
   title: PropTypes.string.isRequired,
   total: PropTypes.number.isRequired,
-  firstSideMetricValue: PropTypes.number.isRequired,
   firstSideMetricLabel: PropTypes.string.isRequired,
-  secondSideMetricValue: PropTypes.number.isRequired,
+  firstSideMetricValue: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
   secondSideMetricLabel: PropTypes.string.isRequired,
+  secondSideMetricValue: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.string,
+  ]).isRequired,
 }
 
 export default DashboardItem
