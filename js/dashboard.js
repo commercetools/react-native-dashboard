@@ -26,6 +26,8 @@ const styles = StyleSheet.create({
   },
 })
 
+const getPercentage = (a, b) => Math.round(a / b) * 100 || 0
+
 export default class Dashboard extends Component {
   static propTypes = {
     token: PropTypes.string.isRequired,
@@ -101,14 +103,14 @@ export default class Dashboard extends Component {
   }
   render () {
     const { props, state } = this
-    const openOrders = Math.round(state.orders.open / state.orders.total) * 100
-    const completedOrders = Math.round(
+    const openOrders = getPercentage(state.orders.open / state.orders.total)
+    const completedOrders = getPercentage(
       state.orders.complete / state.orders.total,
-    ) * 100
-    const activeCarts = Math.round(state.carts.active / state.carts.total) * 100
-    const orderedCarts = Math.round(
+    )
+    const activeCarts = getPercentage(state.carts.active / state.carts.total)
+    const orderedCarts = getPercentage(
       state.carts.ordered / state.carts.total,
-    ) * 100
+    )
     return (
       <View style={styles.container}>
         <Button
