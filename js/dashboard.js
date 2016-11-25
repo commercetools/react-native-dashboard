@@ -7,12 +7,18 @@ import {
   Picker,
   Modal,
   StyleSheet,
-  Text,
+  ActivityIndicator,
 } from 'react-native'
+import DashboardItem from './dashboard-item'
 import { statistics } from './utils/api'
 import * as colors from './colors'
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: 20,
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+  },
   modal: {
     flex: 1,
     alignItems: 'center',
@@ -28,6 +34,7 @@ export default class Dashboard extends Component {
       name: PropTypes.string.isRequired,
     })).isRequired,
     activeProjectId: PropTypes.string.isRequired,
+    onSelectProject: PropTypes.func.isRequired,
   }
   constructor (props) {
     super(props)
@@ -35,15 +42,15 @@ export default class Dashboard extends Component {
     this.state = {
       projectSwitcherModalVisible: false,
       isLoading: true,
-      order: {
+      orders: {
         total: 0,
         open: 0,
         complete: 0,
       },
       carts: {
         total: 0,
-        open: 0,
-        complete: 0,
+        active: 0,
+        ordered: 0,
       },
     }
 
@@ -52,10 +59,17 @@ export default class Dashboard extends Component {
     this.toggleProjectSwitcherModal = this.toggleProjectSwitcherModal.bind(this)
   }
   componentDidMount () {
+    this.fetchProjectStatistics()
+  }
+  componentDidUpdate (prevProps) {
+    if (prevProps.activeProjectId !== this.props.activeProjectId)
+      this.fetchProjectStatistics()
+  }
+  fetchProjectStatistics () {
     const project = this.props.projects[this.props.activeProjectId]
-
+    this.setState({ isLoading: true })
     statistics({
-      projectKey: project.key,
+      projectKey: 'coeur-production',
       token: this.props.token,
     })
     .then(
@@ -68,12 +82,12 @@ export default class Dashboard extends Component {
       },
       (error) => {
         // TODO: error handling
-        console.error(error)
+        // console.error(error)
       },
     )
   }
-  handleSelectProject () {
-    // TODO
+  handleSelectProject (projectId) {
+    this.props.onSelectProject(projectId)
     this.toggleProjectSwitcherModal()
   }
   toggleProjectSwitcherModal () {
@@ -83,8 +97,16 @@ export default class Dashboard extends Component {
   }
   render () {
     const { props, state } = this
+    const openOrders = Math.round(state.orders.open / state.orders.total) * 100
+    const completedOrders = Math.round(
+      state.orders.complete / state.orders.total,
+    ) * 100
+    const activeCarts = Math.round(state.carts.active / state.carts.total) * 100
+    const orderedCarts = Math.round(
+      state.carts.ordered / state.carts.total,
+    ) * 100
     return (
-      <View>
+      <View style={styles.container}>
         <Button
           title={props.projects[props.activeProjectId].name}
           color={colors.green}
@@ -108,10 +130,28 @@ export default class Dashboard extends Component {
             ))}
           </Picker>
         </Modal>
-
-        <View>
-          <Text>{JSON.stringify(this.state)}</Text>
-        </View>
+        {state.isLoading ? (
+          <ActivityIndicator animating={true}/>
+        ) : (
+          <View>
+            <DashboardItem
+              title="Orders"
+              total={state.orders.total}
+              firstSideMetricValue={openOrders}
+              firstSideMetricLabel={'Open'}
+              secondSideMetricValue={completedOrders}
+              secondSideMetricLabel={'Complete'}
+            />
+            <DashboardItem
+              title="Carts"
+              total={state.carts.total}
+              firstSideMetricValue={activeCarts}
+              firstSideMetricLabel={'Active'}
+              secondSideMetricValue={orderedCarts}
+              secondSideMetricLabel={'Ordered'}
+            />
+          </View>
+        )}
       </View>
     )
   }

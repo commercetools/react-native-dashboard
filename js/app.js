@@ -26,6 +26,7 @@ export default class Application extends Component {
     // Bind functions
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLoginError = this.handleLoginError.bind(this)
+    this.handleSelectProject = this.handleSelectProject.bind(this)
   }
 
   componentWillMount () {
@@ -90,6 +91,10 @@ export default class Application extends Component {
     })
   }
 
+  handleSelectProject (projectId) {
+    this.setState({ activeProjectId: projectId })
+  }
+
   render () {
     const { state } = this
 
@@ -104,6 +109,7 @@ export default class Application extends Component {
           token={state.token}
           projects={state.projects}
           activeProjectId={state.activeProjectId}
+          onSelectProject={this.handleSelectProject}
         />
       )
       : (
