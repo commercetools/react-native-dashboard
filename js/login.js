@@ -83,12 +83,12 @@ export default class Login extends Component {
     .then(loginResponse =>
       getProjectsForUser({
         token: loginResponse.token,
-        userId: loginResponse.userId,
+        userId: loginResponse.user,
       })
       .then((projectsResponse) => {
         props.onLogin({
           token: loginResponse.token,
-          userId: loginResponse.userId,
+          userId: loginResponse.user,
           projects: projectsResponse,
         })
       }),
