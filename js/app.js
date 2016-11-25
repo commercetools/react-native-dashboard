@@ -64,6 +64,7 @@ export default class Application extends Component {
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLoginError = this.handleLoginError.bind(this)
     this.handleSelectProject = this.handleSelectProject.bind(this)
+    this.handleLogout = this.handleLogout.bind(this)
   }
 
   componentWillMount () {
@@ -87,10 +88,9 @@ export default class Application extends Component {
           const parsedValue = JSON.parse(value)
           return {
             ...acc,
-            ...initialState,
             ...(parsedValue ? { [key]: parsedValue } : {}),
           }
-        }, {})
+        }, initialState)
         const startAnimation = cachedState.token
           ? [
             Animated.spring(this.animatedValue, {
@@ -205,6 +205,10 @@ export default class Application extends Component {
     this.setState({ selectedProjectId: projectId })
   }
 
+  handleLogout () {
+    this.setState({ ...initialState, canStart: true })
+  }
+
   render () {
     const { state } = this
 
@@ -224,6 +228,7 @@ export default class Application extends Component {
           activeProjectIds={state.activeProjectIds}
           inactiveProjectIds={state.inactiveProjectIds}
           onSelectProject={this.handleSelectProject}
+          onLogout={this.handleLogout}
         />
         {state.token && state.selectedProjectId
           ? (

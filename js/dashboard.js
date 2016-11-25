@@ -13,7 +13,6 @@ import * as colors from './colors'
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
     flex: 1,
     backgroundColor: colors.green,
   },

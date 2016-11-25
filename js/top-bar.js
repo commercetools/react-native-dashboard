@@ -4,14 +4,24 @@ import React, { PropTypes, Component } from 'react'
 import {
   View,
   StyleSheet,
-  Text,
   Picker,
+  Image,
 } from 'react-native'
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import logo from '../assets/logo.png'
 import * as colors from './colors'
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.white,
+    backgroundColor: colors.darkBlue,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingLeft: 8,
+  },
+  logo: {
+    width: 20,
+    height: 24,
   },
   modal: {
     flex: 1,
@@ -30,13 +40,14 @@ export default class TopBar extends Component {
     activeProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     inactiveProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     onSelectProject: PropTypes.func.isRequired,
+    onLogout: PropTypes.func.isRequired,
   }
 
   render () {
     const { props } = this
     return (
       <View style={styles.container}>
-        <Text>{'logo'}</Text>
+        <Image source={logo} style={styles.logo}/>
 
         <Picker
           selectedValue={props.selectedProjectId}
@@ -55,7 +66,12 @@ export default class TopBar extends Component {
           })}
         </Picker>
 
-        <Text>{'logout'}</Text>
+        <Icon.Button
+          name="logout"
+          onPress={props.onLogout}
+          backgroundColor="transparent"
+          style={{ margin: 0, padding: 0 }}
+        />
       </View>
     )
   }
