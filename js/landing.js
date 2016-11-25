@@ -1,6 +1,6 @@
 /* @flow */
 
-import React from 'react'
+import React, { PropTypes } from 'react'
 import {
   View,
   Image,
@@ -26,5 +26,8 @@ const Landing = ({ animatedStyle }) => (
     </Animated.View>
   </View>
 )
+Landing.propTypes = {
+  animatedStyle: PropTypes.object.isRequired,
+}
 
 export default Landing
