@@ -13,7 +13,7 @@ export default class Application extends Component {
       token: null,
       userId: null,
       projects: [],
-      activeProject: null,
+      activeProjectId: null,
       errorMessage: null,
     }
 
@@ -29,8 +29,14 @@ export default class Application extends Component {
     this.setState({
       token: data.token,
       userId: data.user,
-      projects,
-      activeProject: hasProjects ? projects[0] : null,
+      projects: projects.reduce(
+        (acc, project) => ({
+          ...acc,
+          [project.id]: project,
+        }),
+        {},
+      ),
+      activeProjectId: hasProjects ? projects[0].id : null,
       errorMessage: hasProjects ? null : 'User has no projects',
     })
   }
@@ -45,10 +51,11 @@ export default class Application extends Component {
     const { state } = this
     // Allow to access the application only if there is a token and there is
     // an active project (e.g. user has access to no projects)
-    return state.token && state.activeProject
+    return state.token && state.activeProjectId
       ? (
         <Dashboard
           projects={state.projects}
+          activeProjectId={state.activeProjectId}
         />
       )
       : (
