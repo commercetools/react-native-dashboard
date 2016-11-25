@@ -8,7 +8,7 @@ import {
   Animated,
 } from 'react-native'
 import logo from '../assets/logo.png'
-import * as colors from './colors'
+import * as colors from './utils/colors'
 
 const styles = StyleSheet.create({
   container: {

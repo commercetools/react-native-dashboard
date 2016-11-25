@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import DashboardItem from './dashboard-item'
 import { statistics } from './utils/api'
-import * as colors from './colors'
+import * as colors from './utils/colors'
 
 const styles = StyleSheet.create({
   container: {

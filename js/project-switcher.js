@@ -8,7 +8,7 @@ import {
   TouchableHighlight,
   Picker,
 } from 'react-native'
-import * as colors from './colors'
+import * as colors from './utils/colors'
 
 const styles = StyleSheet.create({
   container: {

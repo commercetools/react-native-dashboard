@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { defaultMemoize } from 'reselect'
 import { getProjectsForUser } from './utils/api'
-import * as colors from './colors'
+import * as colors from './utils/colors'
 import Landing from './landing'
 import TopBar from './top-bar'
 import Login from './login'

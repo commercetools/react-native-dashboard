@@ -15,7 +15,7 @@ import {
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import logo from '../assets/logo.png'
 import ProjectSwitcher from './project-switcher'
-import * as colors from './colors'
+import * as colors from './utils/colors'
 
 const statusBarHeight = Platform.OS === 'ios'
   ? 20
