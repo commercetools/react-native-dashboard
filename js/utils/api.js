@@ -35,31 +35,87 @@ export function getProjectsForUser (options) {
   ).then(processResponse)
 }
 
-// Fetch some meta information to show in the dashboard:
-// - tot number of orders
+// Fetch some meta information to show in the dashboard (all related to today):
+// - number of open + complete orders
+// - number of active + ordered carts
 // - tot number of customers
-// - tot number of carts
-// - tot number of products
-// - tot number of categories
 export function statistics (options) {
-  // return fetch(
-  //   loginUrl,
-  //   {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       email: options.email,
-  //       password: options.password,
-  //     }),
-  //   },
-  // ).then(processResponse)
+  const { projectKey } = options
+
+  const ordersUrl = `${apiHost}/${projectKey}/orders`
+  const cartsUrl = `${apiHost}/${projectKey}/carts`
+
+  const requestOptions = {
+    headers: {
+      Accept: 'application/json',
+      Authorization: options.token,
+      'Content-Type': 'application/json',
+    },
+  }
+
+  return Promise.all([
+    // Fetch "open" orders
+    fetch(
+      `${ordersUrl}?${getStatisticsQueryForPredicate('orderState = "Open"')}`,
+      requestOptions,
+    ).then(processResponse),
+
+    // Fetch "complete" orders
+    fetch(
+      // eslint-disable-next-line max-len
+      `${ordersUrl}?${getStatisticsQueryForPredicate('orderState = "Complete"')}`,
+      requestOptions,
+    ).then(processResponse),
+
+    // Fetch "active" carts
+    fetch(
+      `${cartsUrl}?${getStatisticsQueryForPredicate('cartState = "Active"')}`,
+      requestOptions,
+    ).then(processResponse),
+
+    // Fetch "active" carts
+    fetch(
+      `${cartsUrl}?${getStatisticsQueryForPredicate('cartState = "Ordered"')}`,
+      requestOptions,
+    ).then(processResponse),
+  ])
+  .then(
+    ([
+      openOrdersResponse,
+      completeOrdersResponse,
+      activeCartsResponse,
+      orderedCartsResponse,
+    ]) => ({
+      orders: {
+        open: openOrdersResponse.total,
+        complete: completeOrdersResponse.total,
+      },
+      carts: {
+        active: activeCartsResponse.total,
+        ordered: orderedCartsResponse.total,
+      },
+    }),
+  )
 }
 
 
 // Private methods
+
+function getTodayISOString () {
+  const date = new Date()
+  const year = date.getFullYear()
+  const month = date.getMonth() + 1 // month starts with index `0`
+  const day = date.getUTCDate()
+
+  return `${year}-${month}-${day}`
+}
+
+function getStatisticsQueryForPredicate (predicate) {
+  const queryPredicate = encodeURIComponent(
+    `createdAt > ${getTodayISOString()} and ${predicate}`,
+  )
+  return `limit=0&where="${queryPredicate}"`
+}
 
 function processResponse (response) {
   let isOk = response.ok
