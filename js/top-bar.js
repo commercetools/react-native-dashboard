@@ -4,11 +4,14 @@ import React, { PropTypes, Component } from 'react'
 import {
   View,
   StyleSheet,
-  Picker,
   Image,
+  Text,
+  TouchableHighlight,
+  Modal,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import logo from '../assets/logo.png'
+import Picker from './picker'
 import * as colors from './colors'
 
 const styles = StyleSheet.create({
@@ -43,28 +46,46 @@ export default class TopBar extends Component {
     onLogout: PropTypes.func.isRequired,
   }
 
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      isModalOpen: false,
+    }
+
+    this.openModal = this.openModal.bind(this)
+    this.closeModal = this.closeModal.bind(this)
+  }
+
+  openModal () {
+    this.setState({ isModalOpen: true })
+  }
+
+  closeModal () {
+    this.setState({ isModalOpen: false })
+  }
+
   render () {
-    const { props } = this
+    const { props, state } = this
     return (
       <View style={styles.container}>
         <Image source={logo} style={styles.logo}/>
 
-        <Picker
-          selectedValue={props.selectedProjectId}
-          onValueChange={this.onSelectProject}
+        <TouchableHighlight onPress={this.openModal}>
+          <Text>{'button'}</Text>
+        </TouchableHighlight>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={state.isModalOpen}
+          onRequestClose={this.closeModal}
         >
-          {props.activeProjectIds.map((projectId) => {
-            const project = props.projects[projectId]
-            // TODO: show inactive projects
-            return (
-              <Picker.Item
-                key={project.id}
-                label={project.name}
-                value={project.id}
-              />
-            )
-          })}
-        </Picker>
+          <Picker
+            {...props}
+            onCloseModal={this.closeModal}
+          />
+        </Modal>
 
         <Icon.Button
           name="logout"
