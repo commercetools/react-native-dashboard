@@ -126,7 +126,8 @@ export default class Dashboard extends Component {
         >
           <Picker
             selectedValue={props.activeProjectId}
-            onValueChange={this.handleSelectProject}>
+            onValueChange={this.handleSelectProject}
+          >
             {props.activeProjectIds.map((projectId) => {
               const project = props.projects[projectId]
               // TODO: show inactive projects

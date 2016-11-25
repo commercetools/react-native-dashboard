@@ -120,16 +120,22 @@ export default class Application extends Component {
   }
 
   handleLogin (data) {
-    const projects = data.projects
+    const sortedProjectsByName = data.projects.sort((left, right) => {
+      const a = left.name.toLowerCase()
+      const b = right.name.toLowerCase()
+      if (a < b) return -1
+      if (a > b) return 1
+      return 0
+    })
     const [
       activeProjects,
       inactiveProjects,
-    ] = selectActiveAndInactiveProjectIds(projects)
+    ] = selectActiveAndInactiveProjectIds(sortedProjectsByName)
 
     const newState = {
       token: data.token,
       userId: data.userId,
-      projects: projects.reduce(
+      projects: sortedProjectsByName.reduce(
         (acc, project) => ({
           ...acc,
           [project.id]: project,
@@ -139,7 +145,9 @@ export default class Application extends Component {
       activeProjectId: activeProjects[0],
       activeProjectIds: activeProjects,
       inactiveProjectIds: inactiveProjects,
-      errorMessage: projects.length > 0 ? null : 'User has no projects',
+      errorMessage: sortedProjectsByName.length > 0
+        ? null
+        : 'User has no projects',
     }
     this.setState(newState)
   }
