@@ -7,6 +7,7 @@ import {
 } from 'react-native'
 import Login from './login'
 import Dashboard from './dashboard'
+import Landing from './landing'
 
 const initialState = {
   canStart: false,
@@ -99,7 +100,7 @@ export default class Application extends Component {
     const { state } = this
 
     console.log(state)
-    if (!state.canStart) return null
+    if (!state.canStart) return <Landing/>
 
     // Allow to access the application only if there is a token and there is
     // an active project (e.g. user has access to no projects)
