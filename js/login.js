@@ -48,6 +48,15 @@ const styles = StyleSheet.create({
   error: {
     color: colors.red,
   },
+  buttonWrapper: {
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  button: {
+    backgroundColor: colors.green,
+    width: 5,
+    height: 5,
+  },
 })
 
 export default class Login extends Component {
@@ -75,6 +84,7 @@ export default class Login extends Component {
 
   componentWillMount () {
     this.animatedValue = new Animated.Value(0)
+    this.animatedButtonScale = new Animated.Value(1)
   }
 
   componentDidMount () {
@@ -111,10 +121,18 @@ export default class Login extends Component {
           userId: loginResponse.user,
         })
         .then((projectsResponse) => {
-          props.onLogin({
-            token: loginResponse.token,
-            userId: loginResponse.user,
-            projects: projectsResponse,
+          Animated.timing(
+            this.animatedButtonScale,
+            {
+              toValue: 400,
+              timing: 100,
+            },
+          ).start(() => {
+            props.onLogin({
+              token: loginResponse.token,
+              userId: loginResponse.user,
+              projects: projectsResponse,
+            })
           })
         }),
       (error) => {
@@ -129,6 +147,9 @@ export default class Login extends Component {
     const animatedStyle = {
       opacity: this.animatedValue,
     }
+    const animatedButtonStyles = {
+      transform: [{ scale: this.animatedButtonScale }],
+    }
     return (
       <View style={styles.container}>
         <View style={styles['logo-container']}>
@@ -140,7 +161,7 @@ export default class Login extends Component {
             <Text style={styles.error}>{props.errorMessage}</Text>
           </View>
         ) : null}
-        <Animated.View style={animatedStyle}>
+        <Animated.View style={[styles.form, animatedStyle]}>
           <View style={styles.inputView}>
             <TextInput
               autoCapitalize="none"
@@ -163,12 +184,15 @@ export default class Login extends Component {
               />
           </View>
 
-          <Button
-            title="Login"
-            color="white"
-            onPress={this.handleSubmit}
-            disabled={state.isLoading}
+          <View style={styles.buttonWrapper}>
+            <Button
+              title="Login"
+              color="white"
+              onPress={this.handleSubmit}
+              disabled={state.isLoading}
             />
+            <Animated.View style={[styles.button, animatedButtonStyles]} />
+          </View>
         </Animated.View>
       </View>
     )

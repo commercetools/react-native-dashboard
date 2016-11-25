@@ -5,7 +5,6 @@ import {
   AppRegistry,
   AsyncStorage,
   Animated,
-  LayoutAnimation,
 } from 'react-native'
 import { defaultMemoize } from 'reselect'
 import { getProjectsForUser } from './utils/api'
@@ -180,7 +179,6 @@ export default class Application extends Component {
         ? null
         : 'User has no projects',
     }
-    LayoutAnimation.easeInEaseOut()
     this.setState(newState)
   }
 
