@@ -6,7 +6,7 @@ import {
   Text,
   StyleSheet,
   TouchableHighlight,
-  Picker as NativePicker,
+  Picker,
 } from 'react-native'
 import * as colors from './colors'
 
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class Picker extends Component {
+export default class ProjectSwitcher extends Component {
   static propTypes = {
     projects: PropTypes.objectOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -84,7 +84,7 @@ export default class Picker extends Component {
               <Text style={styles.closeButtonText}>{'Choose'}</Text>
             </TouchableHighlight>
           </View>
-          <NativePicker
+          <Picker
             selectedValue={state.currentProjectSelectedId}
             onValueChange={this.handleDraftSelection}
           >
@@ -92,14 +92,14 @@ export default class Picker extends Component {
               const project = props.projects[projectId]
               // TODO: show inactive projects
               return (
-                <NativePicker.Item
+                <Picker.Item
                   key={project.id}
                   label={project.name}
                   value={project.id}
                 />
               )
             })}
-          </NativePicker>
+          </Picker>
         </View>
       </View>
     )
