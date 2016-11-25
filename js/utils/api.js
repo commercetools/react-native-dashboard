@@ -1,5 +1,13 @@
 /* @flow */
 
+import { Platform } from 'react-native'
+import pkg from '../../package.json'
+
+const defaultHeaders = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+  'User-Agent': `${pkg.name}/${pkg.version} ${Platform.OS}/${Platform.Version}`,
+}
 const apiHost = 'https://mc.commercetools.com'
 const loginUrl = `${apiHost}/tokens`
 const projectsByUserUrl = `${apiHost}/projects`
@@ -11,10 +19,7 @@ export function login (options) {
     loginUrl,
     {
       method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: defaultHeaders,
       body: JSON.stringify({
         email: options.email,
         password: options.password,
@@ -29,9 +34,8 @@ export function getProjectsForUser (options) {
     {
       method: 'GET',
       headers: {
-        Accept: 'application/json',
+        ...defaultHeaders,
         Authorization: options.token,
-        'Content-Type': 'application/json',
       },
     },
   ).then(processResponse)
@@ -47,9 +51,8 @@ export function statistics (options) {
 
   const requestOptions = {
     headers: {
-      Accept: 'application/json',
+      ...defaultHeaders,
       Authorization: options.token,
-      'Content-Type': 'application/json',
     },
   }
 
