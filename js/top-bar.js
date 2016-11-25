@@ -8,11 +8,17 @@ import {
   Text,
   TouchableHighlight,
   Modal,
+  Platform,
+  NativeModules,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import logo from '../assets/logo.png'
 import Picker from './picker'
 import * as colors from './colors'
+
+const statusBarHeight = Platform.OS === 'ios'
+  ? 20
+  : NativeModules.StatusBarManager.HEIGHT
 
 const styles = StyleSheet.create({
   container: {
@@ -21,8 +27,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingLeft: 8,
-    height: 50,
-    marginTop: 20,
+    paddingTop: statusBarHeight,
+    height: 60,
   },
   logo: {
     width: 20,
@@ -70,13 +76,21 @@ export default class TopBar extends Component {
   render () {
     const { props, state } = this
     return (
-      <View style={styles.container}>
-        <Image source={logo} style={styles.logo}/>
+      <View>
+        <View style={styles.container}>
+          <Image source={logo} style={styles.logo}/>
 
-        <TouchableHighlight onPress={this.openModal}>
-          <Text>{'button'}</Text>
-        </TouchableHighlight>
+          <TouchableHighlight onPress={this.openModal}>
+            <Text>{'button'}</Text>
+          </TouchableHighlight>
 
+          <Icon.Button
+            name="logout"
+            onPress={props.onLogout}
+            backgroundColor="transparent"
+            style={{ margin: 0, padding: 0 }}
+          />
+        </View>
         <Modal
           animationType="slide"
           transparent={true}
@@ -88,13 +102,6 @@ export default class TopBar extends Component {
             onCloseModal={this.closeModal}
           />
         </Modal>
-
-        <Icon.Button
-          name="logout"
-          onPress={props.onLogout}
-          backgroundColor="transparent"
-          style={{ margin: 0, padding: 0 }}
-        />
       </View>
     )
   }

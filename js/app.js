@@ -7,9 +7,11 @@ import {
   Animated,
   View,
   StyleSheet,
+  StatusBar,
 } from 'react-native'
 import { defaultMemoize } from 'reselect'
 import { getProjectsForUser } from './utils/api'
+import * as colors from './colors'
 import Landing from './landing'
 import TopBar from './top-bar'
 import Login from './login'
@@ -222,6 +224,13 @@ export default class Application extends Component {
     // an active project (e.g. user has access to no projects)
     return (
       <View style={styles.container}>
+        <StatusBar
+          // iOS
+          barStyle="light-content"
+          // Android
+          backgroundColor={colors.darkBlue}
+          translucent={true}
+        />
         <TopBar
           projects={state.projects}
           selectedProjectId={state.selectedProjectId}
