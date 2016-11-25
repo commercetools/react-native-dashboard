@@ -8,6 +8,7 @@ import {
   View,
   Image,
   Text,
+  ActivityIndicator,
 } from 'react-native'
 import {
   login,
@@ -41,6 +42,10 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
   },
+  errorView: {},
+  error: {
+    color: colors.red,
+  },
 })
 
 export default class Login extends Component {
@@ -57,6 +62,7 @@ export default class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      isLoading: false,
     }
 
     // Bind functions
@@ -76,6 +82,8 @@ export default class Login extends Component {
   handleSubmit () {
     const { props, state } = this
 
+    this.setState({ isLoading: true })
+
     login({
       email: state.email,
       password: state.password,
@@ -86,6 +94,7 @@ export default class Login extends Component {
         userId: loginResponse.user,
       })
       .then((projectsResponse) => {
+        this.setState({ isLoading: false })
         props.onLogin({
           token: loginResponse.token,
           userId: loginResponse.user,
@@ -93,7 +102,10 @@ export default class Login extends Component {
         })
       }),
     )
-    .catch(props.onLoginError)
+    .catch((...args) => {
+      this.setState({ isLoading: false })
+      props.onLoginError(...args)
+    })
   }
 
   render () {
@@ -103,6 +115,12 @@ export default class Login extends Component {
         <View style={styles['logo-container']}>
           <Image source={logo} style={styles.logo} />
         </View>
+        <ActivityIndicator animating={state.isLoading}/>
+        {props.errorMessage ? (
+          <View style={styles.errorView}>
+            <Text style={styles.error}>{props.errorMessage}</Text>
+          </View>
+        ) : null}
         <View style={styles.inputView}>
           <TextInput
             autoCapitalize="none"
@@ -123,16 +141,11 @@ export default class Login extends Component {
           />
         </View>
 
-        {props.errorMessage ? (
-          <View>
-            <Text>{props.errorMessage}</Text>
-          </View>
-        ) : null}
-
         <Button
           title="Login"
           color={colors.green}
           onPress={this.handleSubmit}
+          disabled={state.isLoading}
         />
       </View>
     )
