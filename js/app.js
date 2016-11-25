@@ -1,32 +1,74 @@
 /* @flow */
 
 import React, { Component } from 'react'
-import { AppRegistry } from 'react-native'
+import {
+  AppRegistry,
+  AsyncStorage,
+} from 'react-native'
 import Login from './login'
 import Dashboard from './dashboard'
+
+const initialState = {
+  canStart: false,
+  token: null,
+  userId: null,
+  projects: [],
+  activeProjectId: null,
+  errorMessage: null,
+}
 
 export default class Application extends Component {
   constructor (props) {
     super(props)
 
-    this.state = {
-      token: null,
-      userId: null,
-      projects: [],
-      activeProjectId: null,
-      errorMessage: null,
-    }
+    this.state = initialState
 
     // Bind functions
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLoginError = this.handleLoginError.bind(this)
   }
 
+  componentWillMount () {
+    // Load cached state
+    AsyncStorage.multiGet(
+      [
+        'token',
+        'userId',
+        'projects',
+        'activeProjectId',
+      ],
+      (error, stores) => {
+        if (error) {
+          console.warn('Error while reading state from storage', error)
+          return
+        }
+        const cachedState = stores.reduce((acc, [ key, value ]) => ({
+          ...acc,
+          [key]: JSON.parse(value),
+        }), {})
+        this.setState({
+          ...cachedState,
+          canStart: true,
+        })
+      },
+    )
+  }
+
+  componentDidUpdate () {
+    // Persist state
+    AsyncStorage.multiSet([
+      ['token', JSON.stringify(this.state.token)],
+      ['userId', JSON.stringify(this.state.userId)],
+      ['projects', JSON.stringify(this.state.projects)],
+      ['activeProjectId', JSON.stringify(this.state.activeProjectId)],
+    ])
+  }
+
   handleLogin (data) {
     const projects = data.projects
     const hasProjects = projects.length > 0
 
-    this.setState({
+    const newState = {
       token: data.token,
       userId: data.userId,
       projects: projects.reduce(
@@ -38,7 +80,8 @@ export default class Application extends Component {
       ),
       activeProjectId: hasProjects ? projects[0].id : null,
       errorMessage: hasProjects ? null : 'User has no projects',
-    })
+    }
+    this.setState(newState)
   }
 
   handleLoginError (error) {
@@ -48,19 +91,10 @@ export default class Application extends Component {
   }
 
   render () {
-    // const { state } = this
-    // FIXME: persist state
-    const state = {
-      token: 'GwMWmbBjRvs94avfeuO3NUd34sFIdmpgV+2VpPEkKME=',
-      activeProjectId: '0b7449c4-2298-4959-80d3-989dcb234983',
-      projects: {
-        '0b7449c4-2298-4959-80d3-989dcb234983': {
-          id: '0b7449c4-2298-4959-80d3-989dcb234983',
-          key: 'test-with-big-data-44',
-          name: 'Test with big data',
-        },
-      },
-    }
+    const { state } = this
+
+    console.log(state)
+    if (!state.canStart) return null
 
     // Allow to access the application only if there is a token and there is
     // an active project (e.g. user has access to no projects)
