@@ -8,7 +8,10 @@ import {
   TextInput,
   View,
 } from 'react-native'
-import { login } from './utils/api'
+import {
+  login,
+  getProjectsForUser,
+} from './utils/api'
 
 const styles = StyleSheet.create({
   container: {
@@ -34,6 +37,8 @@ export default class Login extends Component {
 
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
+    onLoginError: PropTypes.func.isRequired,
+    errorMessage: PropTypes.string,
   }
 
   constructor (props) {
@@ -59,23 +64,42 @@ export default class Login extends Component {
   }
 
   handleSubmit () {
+    const { props, state } = this
+
     login({
-      email: this.state.email,
-      password: this.state.password,
+      email: state.email,
+      password: state.password,
     })
-    .then(this.props.onLogin)
-    .catch((error) => {
-      console.error('Got an error on login', error)
-    })
+    .then(loginResponse =>
+      getProjectsForUser({
+        token: loginResponse.token,
+        userId: loginResponse.userId,
+      })
+      .then((projectsResponse) => {
+        props.onLogin({
+          token: loginResponse.token,
+          userId: loginResponse.userId,
+          projects: projectsResponse,
+        })
+      }),
+    )
+    .catch(props.onLoginError)
   }
 
   render () {
-    const { state } = this
+    const { props, state } = this
     return (
       <View style={styles.container}>
         <View style={styles['logo-container']}>
           <Text>{'LOGO'}</Text>
         </View>
+
+        {props.errorMessage ? (
+          <View>
+            <Text>{props.errorMessage}</Text>
+          </View>
+        ) : null}
+
         <TextInput
           autoCapitalize="none"
           style={styles.input}
