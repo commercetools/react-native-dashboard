@@ -102,8 +102,7 @@ export default class Login extends Component {
           })
         }),
       (error) => {
-        // this.setState({ isLoading: false })
-        console.log('Ups', error)
+        this.setState({ isLoading: false })
         props.onLoginError(error)
       },
     )

@@ -4,6 +4,8 @@ const apiHost = 'https://mc.commercetools.com'
 const loginUrl = `${apiHost}/tokens`
 const projectsByUserUrl = `${apiHost}/projects`
 
+// TODO: set 'user-agent'
+
 export function login (options) {
   return fetch(
     loginUrl,

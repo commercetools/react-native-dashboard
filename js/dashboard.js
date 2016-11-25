@@ -34,6 +34,8 @@ export default class Dashboard extends Component {
       name: PropTypes.string.isRequired,
     })).isRequired,
     activeProjectId: PropTypes.string.isRequired,
+    activeProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    inactiveProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     onSelectProject: PropTypes.func.isRequired,
   }
   constructor (props) {
@@ -68,8 +70,10 @@ export default class Dashboard extends Component {
   fetchProjectStatistics () {
     const project = this.props.projects[this.props.activeProjectId]
     this.setState({ isLoading: true })
+
+    // Get the data
     statistics({
-      projectKey: 'coeur-production',
+      projectKey: project.key,
       token: this.props.token,
     })
     .then(
@@ -82,7 +86,7 @@ export default class Dashboard extends Component {
       },
       (error) => {
         // TODO: error handling
-        // console.error(error)
+        console.error(error)
       },
     )
   }
@@ -121,13 +125,17 @@ export default class Dashboard extends Component {
           <Picker
             selectedValue={props.activeProjectId}
             onValueChange={this.handleSelectProject}>
-            {Object.values(props.projects).map(project => (
-              <Picker.Item
-                key={project.id}
-                label={project.name}
-                value={project.id}
-              />
-            ))}
+            {props.activeProjectIds.map((projectId) => {
+              const project = props.projects[projectId]
+              // TODO: show inactive projects
+              return (
+                <Picker.Item
+                  key={project.id}
+                  label={project.name}
+                  value={project.id}
+                />
+              )
+            })}
           </Picker>
         </Modal>
         {state.isLoading ? (

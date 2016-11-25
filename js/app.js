@@ -5,6 +5,7 @@ import {
   AppRegistry,
   AsyncStorage,
 } from 'react-native'
+import { defaultMemoize } from 'reselect'
 import Login from './login'
 import Dashboard from './dashboard'
 import Landing from './landing'
@@ -15,8 +16,31 @@ const initialState = {
   userId: null,
   projects: [],
   activeProjectId: null,
+  activeProjectIds: [],
+  inactiveProjectIds: [],
   errorMessage: null,
 }
+const selectActiveAndInactiveProjectIds = defaultMemoize(
+  projects => projects.reduce((acc, project) => {
+    const now = Date.now()
+    const isActive = (
+      // pick a project without a `trialUntil`
+      !project.trialUntil ||
+      // or pick a project that has not expired yet
+      (now < new Date(project.trialUntil).getTime())
+    )
+    const updatedActiveProjects = isActive
+      ? acc[0].concat(project.id)
+      : acc[0]
+    const updatedInactiveProjects = isActive
+      ? acc[1]
+      : acc[1].concat(project.id)
+    return [
+      updatedActiveProjects,
+      updatedInactiveProjects,
+    ]
+  }, [[/* active */], [/* inactive */]]),
+)
 
 export default class Application extends Component {
   constructor (props) {
@@ -38,6 +62,8 @@ export default class Application extends Component {
         'userId',
         'projects',
         'activeProjectId',
+        'activeProjectIds',
+        'inactiveProjectIds',
       ],
       (error, stores) => {
         if (error) {
@@ -50,7 +76,7 @@ export default class Application extends Component {
         }), {})
         this.setState({
           ...cachedState,
-          canStart: true,
+          canStart: true, // <-- this will tell the app that it can render
         })
       },
     )
@@ -63,12 +89,17 @@ export default class Application extends Component {
       ['userId', JSON.stringify(this.state.userId)],
       ['projects', JSON.stringify(this.state.projects)],
       ['activeProjectId', JSON.stringify(this.state.activeProjectId)],
+      ['activeProjectIds', JSON.stringify(this.state.activeProjectIds)],
+      ['inactiveProjectIds', JSON.stringify(this.state.inactiveProjectIds)],
     ])
   }
 
   handleLogin (data) {
     const projects = data.projects
-    const hasProjects = projects.length > 0
+    const [
+      activeProjects,
+      inactiveProjects,
+    ] = selectActiveAndInactiveProjectIds(projects)
 
     const newState = {
       token: data.token,
@@ -80,8 +111,10 @@ export default class Application extends Component {
         }),
         {},
       ),
-      activeProjectId: hasProjects ? projects[0].id : null,
-      errorMessage: hasProjects ? null : 'User has no projects',
+      activeProjectId: activeProjects[0],
+      activeProjectIds: activeProjects,
+      inactiveProjectIds: inactiveProjects,
+      errorMessage: projects.length > 0 ? null : 'User has no projects',
     }
     this.setState(newState)
   }
@@ -110,6 +143,8 @@ export default class Application extends Component {
           token={state.token}
           projects={state.projects}
           activeProjectId={state.activeProjectId}
+          activeProjectIds={state.activeProjectIds}
+          inactiveProjectIds={state.inactiveProjectIds}
           onSelectProject={this.handleSelectProject}
         />
       )
