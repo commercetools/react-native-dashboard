@@ -10,7 +10,6 @@ import {
   Text,
   ActivityIndicator,
   Animated,
-  Easing,
 } from 'react-native'
 import {
   login,
