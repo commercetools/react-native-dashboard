@@ -9,7 +9,7 @@ import {
 import * as colors from './utils/colors'
 
 const styles = StyleSheet.create({
-  dashboardItem: {
+  container: {
     margin: 8,
     padding: 8,
     backgroundColor: colors.white,
@@ -17,40 +17,44 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     borderRadius: 2,
   },
-  dashboardItemTitle: {
+  title: {
     fontSize: 10,
     color: colors.green,
     fontWeight: '600',
   },
-  dashboardItemContent: {
-    marginBottom: 8,
+  content: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  dashboardItemContentMain: {
+  contentMain: {
     flex: 1.5,
   },
-  dashboardItemContentSide: {
+  contentSide: {
     flex: 1,
     borderLeftWidth: 1,
     borderLeftColor: 'rgba(0, 0, 0, 0.1)',
     paddingLeft: 16,
+    marginLeft: 8,
   },
-  dashboardItemMainMetric: {
+  contentMainMetric: {
     fontSize: 70,
     height: 75,
     color: 'rgba(0, 0, 0, 0.8)',
   },
-  dashboardItemSideMetric: {
+  sideMetric: {
     fontSize: 30,
     color: 'rgba(0, 0, 0, 0.8)',
   },
-  dashboardItemContentSideMetricItem: {
+  contentSideMetric: {
     paddingBottom: 8,
   },
-  dashboardItemSubtext: {
+  subtitle: {
     fontSize: 10,
     color: 'rgba(0, 0, 0, 0.4)',
+  },
+  loadingPlaceholder: {
+    backgroundColor: colors.grey,
+    color: 'transparent',
   },
 })
 
@@ -62,36 +66,38 @@ const DashboardItem = ({
   secondSideMetricValue,
   secondSideMetricLabel,
 }) => (
-  <View style={styles.dashboardItem}>
+  <View style={styles.container}>
     <View>
-      <Text style={styles.dashboardItemTitle}>
+      <Text style={styles.title}>
         {title.toUpperCase()}
       </Text>
     </View>
-    <View style={styles.dashboardItemContent}>
-      <View style={styles.dashboardItemContentMain}>
-        <Text style={styles.dashboardItemMainMetric}>
+    <View style={styles.content}>
+      <View style={styles.contentMain}>
+        <Text style={styles.contentMainMetric}>
           {total}
         </Text>
-        <Text style={styles.dashboardItemSubtext}>
+        <Text style={styles.subtitle}>
           {'Total today'.toUpperCase()}
         </Text>
       </View>
-      <View style={styles.dashboardItemContentSide}>
-        <View style={styles.dashboardItemContentSideMetricItem}>
-          <Text style={styles.dashboardItemSideMetric}>
+      <View style={styles.contentSide}>
+        <View style={styles.contentSideMetric}>
+          <Text style={styles.sideMetric}>
             {`${firstSideMetricValue}%`}
           </Text>
-          <Text style={styles.dashboardItemSubtext}>
+          <Text style={styles.subtitle}>
             {firstSideMetricLabel.toUpperCase()}
           </Text>
         </View>
-        <Text style={styles.dashboardItemSideMetric}>
-          {`${secondSideMetricValue}%`}
-        </Text>
-        <Text style={styles.dashboardItemSubtext}>
-          {secondSideMetricLabel.toUpperCase()}
-        </Text>
+        <View>
+          <Text style={styles.sideMetric}>
+            {`${secondSideMetricValue}%`}
+          </Text>
+          <Text style={styles.subtitle}>
+            {secondSideMetricLabel.toUpperCase()}
+          </Text>
+        </View>
       </View>
     </View>
   </View>

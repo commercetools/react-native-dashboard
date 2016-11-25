@@ -88,9 +88,6 @@ export default class TopBar extends Component {
       name: PropTypes.string.isRequired,
     })).isRequired,
     selectedProjectId: PropTypes.string,
-    activeProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    inactiveProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    onSelectProject: PropTypes.func.isRequired,
     onLogout: PropTypes.func.isRequired,
   }
 

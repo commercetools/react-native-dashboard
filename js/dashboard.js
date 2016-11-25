@@ -8,6 +8,7 @@ import {
   RefreshControl,
 } from 'react-native'
 import DashboardItem from './dashboard-item'
+import DashboardItemPlaceholder from './dashboard-item-placeholder'
 import { statistics } from './utils/api'
 import * as colors from './utils/colors'
 
@@ -64,6 +65,7 @@ export default class Dashboard extends Component {
     this.state = {
       projectSwitcherModalVisible: false,
       isLoading: true,
+      isRefreshing: false,
       dataSource: ds.cloneWithRows([
         {
           type: 'orders',
@@ -89,22 +91,23 @@ export default class Dashboard extends Component {
   }
 
   componentDidMount () {
-    this.fetchProjectStatistics()
+    this.fetchProjectStatistics(this.props)
   }
 
-  componentDidUpdate (prevProps) {
-    if (prevProps.selectedProjectId !== this.props.selectedProjectId)
-      this.fetchProjectStatistics()
+  componentWillReceiveProps (nextProps) {
+    if (this.props.selectedProjectId !== nextProps.selectedProjectId) {
+      this.setState({ isLoading: true })
+      this.fetchProjectStatistics(nextProps)
+    }
   }
 
-  fetchProjectStatistics () {
-    const project = this.props.projects[this.props.selectedProjectId]
-    this.setState({ isLoading: true })
+  fetchProjectStatistics (props) {
+    const project = props.projects[props.selectedProjectId]
 
     // Get the data
     statistics({
       projectKey: project.key,
-      token: this.props.token,
+      token: props.token,
     })
     .then(
       (response) => {
@@ -114,6 +117,7 @@ export default class Dashboard extends Component {
             { type: 'carts', data: response.carts },
           ]),
           isLoading: false,
+          isRefreshing: false,
         })
       },
       (error) => {
@@ -124,7 +128,8 @@ export default class Dashboard extends Component {
   }
 
   handleManualRefresh () {
-    this.fetchProjectStatistics()
+    this.setState({ isRefreshing: true })
+    this.fetchProjectStatistics(this.props)
   }
 
   render () {
@@ -136,20 +141,22 @@ export default class Dashboard extends Component {
           renderRow={(rowData) => {
             const config = dashboardItemMapping[rowData.type]
             const data = rowData.data
-            return (
-              <DashboardItem
-                title={config.label}
-                total={config.total(data)}
-                firstSideMetricValue={config.firstMetric(data)}
-                firstSideMetricLabel={config.firstMetricLabel}
-                secondSideMetricValue={config.secondMetric(data)}
-                secondSideMetricLabel={config.secondMetricLabel}
-              />
-            )
+            return state.isLoading
+              ? (<DashboardItemPlaceholder />)
+              : (
+                <DashboardItem
+                  title={config.label}
+                  total={config.total(data)}
+                  firstSideMetricValue={config.firstMetric(data)}
+                  firstSideMetricLabel={config.firstMetricLabel}
+                  secondSideMetricValue={config.secondMetric(data)}
+                  secondSideMetricLabel={config.secondMetricLabel}
+                />
+              )
           }}
           refreshControl={(
             <RefreshControl
-              refreshing={state.isLoading}
+              refreshing={state.isRefreshing}
               onRefresh={this.handleManualRefresh}
               // iOS
               title="Loading..."
