@@ -4,32 +4,42 @@ import React, { Component, PropTypes } from 'react'
 import {
   Button,
   StyleSheet,
-  Text,
   TextInput,
   View,
+  Image,
+  Text,
 } from 'react-native'
 import {
   login,
   getProjectsForUser,
 } from './utils/api'
+import logo from '../assets/logo.png'
+import * as colors from './colors'
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
     paddingLeft: 32,
     paddingRight: 32,
+    flexDirection: 'column',
+    alignItems: 'stretch',
   },
   'logo-container': {
-    paddingTop: 24,
-    paddingBottom: 24,
+    marginTop: 24,
+    marginBottom: 24,
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  logo: {},
+  inputView: {
+    borderBottomWidth: 2,
+    borderBottomColor: colors.grey,
+    marginBottom: 16,
   },
   input: {
-    backgroundColor: 'red',
     height: 40,
-    marginBottom: 16,
   },
 })
 
@@ -91,7 +101,26 @@ export default class Login extends Component {
     return (
       <View style={styles.container}>
         <View style={styles['logo-container']}>
-          <Text>{'LOGO'}</Text>
+          <Image source={logo} style={styles.logo} />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            autoCapitalize="none"
+            style={styles.input}
+            onChangeText={this.handleEmailChange}
+            value={state.email}
+            placeholder="Email"
+          />
+        </View>
+        <View style={styles.inputView}>
+          <TextInput
+            autoCapitalize="none"
+            style={styles.input}
+            onChangeText={this.handlePasswordChange}
+            value={state.password}
+            secureTextEntry={true} // password
+            placeholder="Password"
+          />
         </View>
 
         {props.errorMessage ? (
@@ -100,22 +129,9 @@ export default class Login extends Component {
           </View>
         ) : null}
 
-        <TextInput
-          autoCapitalize="none"
-          style={styles.input}
-          onChangeText={this.handleEmailChange}
-          value={state.email}
-        />
-        <TextInput
-          autoCapitalize="none"
-          style={styles.input}
-          onChangeText={this.handlePasswordChange}
-          value={state.password}
-          secureTextEntry={true} // password
-        />
         <Button
           title="Login"
-          color="red"
+          color={colors.green}
           onPress={this.handleSubmit}
         />
       </View>
