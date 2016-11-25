@@ -9,6 +9,8 @@ import {
   Image,
   Text,
   ActivityIndicator,
+  Animated,
+  Easing,
 } from 'react-native'
 import {
   login,
@@ -21,7 +23,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: colors.green,
     paddingLeft: 32,
     paddingRight: 32,
     flexDirection: 'column',
@@ -36,7 +38,7 @@ const styles = StyleSheet.create({
   logo: {},
   inputView: {
     borderBottomWidth: 2,
-    borderBottomColor: colors.grey,
+    borderBottomColor: 'white',
     marginBottom: 16,
   },
   input: {
@@ -69,6 +71,20 @@ export default class Login extends Component {
     this.handleEmailChange = this.handleEmailChange.bind(this)
     this.handlePasswordChange = this.handlePasswordChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  componentWillMount () {
+    this.animatedValue = new Animated.Value(0)
+  }
+
+  componentDidMount () {
+    Animated.timing(
+      this.animatedValue,
+      {
+        toValue: 1,
+        duration: 300,
+      },
+    ).start()
   }
 
   handleEmailChange (email) {
@@ -110,43 +126,50 @@ export default class Login extends Component {
 
   render () {
     const { props, state } = this
+    const animatedStyle = {
+      opacity: this.animatedValue,
+    }
     return (
       <View style={styles.container}>
         <View style={styles['logo-container']}>
           <Image source={logo} style={styles.logo} />
         </View>
-        <ActivityIndicator animating={state.isLoading}/>
+        <ActivityIndicator animating={state.isLoading} color="white"/>
         {props.errorMessage ? (
           <View style={styles.errorView}>
             <Text style={styles.error}>{props.errorMessage}</Text>
           </View>
         ) : null}
-        <View style={styles.inputView}>
-          <TextInput
-            autoCapitalize="none"
-            style={styles.input}
-            onChangeText={this.handleEmailChange}
-            value={state.email}
-            placeholder="Email"
-          />
-        </View>
-        <View style={styles.inputView}>
-          <TextInput
-            autoCapitalize="none"
-            style={styles.input}
-            onChangeText={this.handlePasswordChange}
-            value={state.password}
-            secureTextEntry={true} // password
-            placeholder="Password"
-          />
-        </View>
+        <Animated.View style={animatedStyle}>
+          <View style={styles.inputView}>
+            <TextInput
+              autoCapitalize="none"
+              style={styles.input}
+              onChangeText={this.handleEmailChange}
+              value={state.email}
+              placeholder="Email"
+              color="white"
+              />
+          </View>
+          <View style={styles.inputView}>
+            <TextInput
+              autoCapitalize="none"
+              style={styles.input}
+              onChangeText={this.handlePasswordChange}
+              value={state.password}
+              secureTextEntry={true} // password
+              placeholder="Password"
+              color="white"
+              />
+          </View>
 
-        <Button
-          title="Login"
-          color={colors.green}
-          onPress={this.handleSubmit}
-          disabled={state.isLoading}
-        />
+          <Button
+            title="Login"
+            color="white"
+            onPress={this.handleSubmit}
+            disabled={state.isLoading}
+            />
+        </Animated.View>
       </View>
     )
   }

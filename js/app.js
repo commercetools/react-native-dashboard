@@ -4,6 +4,8 @@ import React, { Component } from 'react'
 import {
   AppRegistry,
   AsyncStorage,
+  Animated,
+  LayoutAnimation,
 } from 'react-native'
 import { defaultMemoize } from 'reselect'
 import { getProjectsForUser } from './utils/api'
@@ -57,6 +59,7 @@ export default class Application extends Component {
   }
 
   componentWillMount () {
+    this.animatedValue = new Animated.Value(0)
     // Load cached state
     AsyncStorage.multiGet(
       [
@@ -76,10 +79,38 @@ export default class Application extends Component {
           ...acc,
           [key]: JSON.parse(value),
         }), {})
-
-        this.setState({
-          ...cachedState,
-          canStart: true, // <-- this will tell the app that it can render
+        const startAnimation = cachedState.token
+          ? [
+            Animated.spring(this.animatedValue, {
+              toValue: -400,
+              friction: 10,
+              tension: 50,
+              velocity: 1,
+            }),
+          ]
+          : [
+            Animated.spring(this.animatedValue, {
+              toValue: -86,
+              tension: 50,
+              friction: 10,
+            }),
+          ]
+        Animated.sequence([
+          Animated.timing(this.animatedValue, {
+            toValue: 0,
+            duration: 1000,
+          }),
+          Animated.timing(this.animatedValue, {
+            toValue: 50,
+            duration: 200,
+          }),
+          ...startAnimation,
+        ])
+        .start(() => {
+          this.setState({
+            ...cachedState,
+            canStart: true, // <-- this will tell the app that it can render
+          })
         })
 
         // If the user is already logged in, refetch
@@ -149,6 +180,7 @@ export default class Application extends Component {
         ? null
         : 'User has no projects',
     }
+    LayoutAnimation.easeInEaseOut()
     this.setState(newState)
   }
 
@@ -165,7 +197,11 @@ export default class Application extends Component {
   render () {
     const { state } = this
 
-    if (!state.canStart) return <Landing/>
+    const animatedStyle = { transform: [{ translateY: this.animatedValue }] }
+    if (!state.canStart)
+      return (
+        <Landing animatedStyle={animatedStyle}/>
+      )
 
     // Allow to access the application only if there is a token and there is
     // an active project (e.g. user has access to no projects)

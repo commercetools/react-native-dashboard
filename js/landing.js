@@ -5,20 +5,25 @@ import {
   View,
   Image,
   StyleSheet,
+  Animated,
 } from 'react-native'
 import logo from '../assets/logo.png'
+import * as colors from './colors'
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: colors.green,
   },
 })
 
-const Landing = () => (
+const Landing = ({ animatedStyle }) => (
   <View style={styles.container}>
-    <Image source={logo} />
+    <Animated.View style={animatedStyle}>
+      <Image source={logo} />
+    </Animated.View>
   </View>
 )
 

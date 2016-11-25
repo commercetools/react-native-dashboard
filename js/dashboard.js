@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 20,
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: colors.green,
   },
   modal: {
     flex: 1,
@@ -115,7 +115,7 @@ export default class Dashboard extends Component {
       <View style={styles.container}>
         <Button
           title={props.projects[props.activeProjectId].name}
-          color={colors.green}
+          color="white"
           onPress={this.toggleProjectSwitcherModal}
         />
         <Modal
@@ -142,7 +142,7 @@ export default class Dashboard extends Component {
           </Picker>
         </Modal>
         {state.isLoading ? (
-          <ActivityIndicator animating={true}/>
+          <ActivityIndicator animating={true} color="white"/>
         ) : (
           <View>
             <DashboardItem
