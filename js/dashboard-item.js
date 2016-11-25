@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   dashboardItem: {
     margin: 8,
     padding: 8,
-    backgroundColor: 'white',
+    backgroundColor: colors.white,
     flexDirection: 'column',
     alignItems: 'stretch',
     borderRadius: 2,

@@ -8,7 +8,7 @@ import {
   Picker,
   Modal,
   StyleSheet,
-  ActivityIndicator,
+  RefreshControl,
 } from 'react-native'
 import DashboardItem from './dashboard-item'
 import { statistics } from './utils/api'
@@ -91,6 +91,7 @@ export default class Dashboard extends Component {
     // Bind functions
     this.handleSelectProject = this.handleSelectProject.bind(this)
     this.toggleProjectSwitcherModal = this.toggleProjectSwitcherModal.bind(this)
+    this.handleManualRefresh = this.handleManualRefresh.bind(this)
   }
   componentDidMount () {
     this.fetchProjectStatistics()
@@ -133,6 +134,9 @@ export default class Dashboard extends Component {
       projectSwitcherModalVisible: !prevState.projectSwitcherModalVisible,
     }))
   }
+  handleManualRefresh () {
+    this.fetchProjectStatistics()
+  }
   render () {
     const { props, state } = this
     return (
@@ -165,27 +169,37 @@ export default class Dashboard extends Component {
             })}
           </Picker>
         </Modal>
-        {state.isLoading ? (
-          <ActivityIndicator animating={true} color="white"/>
-        ) : (
-          <ListView
-            dataSource={state.dataSource}
-            renderRow={(rowData) => {
-              const config = dashboardItemMapping[rowData.type]
-              const data = rowData.data
-              return (
-                <DashboardItem
-                  title={config.label}
-                  total={config.total(data)}
-                  firstSideMetricValue={config.firstMetric(data)}
-                  firstSideMetricLabel={config.firstMetricLabel}
-                  secondSideMetricValue={config.secondMetric(data)}
-                  secondSideMetricLabel={config.secondMetricLabel}
-                />
-              )
-            }}
-          />
-        )}
+
+        <ListView
+          dataSource={state.dataSource}
+          renderRow={(rowData) => {
+            const config = dashboardItemMapping[rowData.type]
+            const data = rowData.data
+            return (
+              <DashboardItem
+                title={config.label}
+                total={config.total(data)}
+                firstSideMetricValue={config.firstMetric(data)}
+                firstSideMetricLabel={config.firstMetricLabel}
+                secondSideMetricValue={config.secondMetric(data)}
+                secondSideMetricLabel={config.secondMetricLabel}
+              />
+            )
+          }}
+          refreshControl={(
+            <RefreshControl
+              refreshing={state.isLoading}
+              onRefresh={this.handleManualRefresh}
+              // iOS
+              title="Loading..."
+              tintColor={colors.white}
+              titleColor={colors.white}
+              // Android
+              colors={[colors.white]}
+              progressBackgroundColor={colors.white}
+            />
+          )}
+        />
       </View>
     )
   }
