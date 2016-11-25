@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
 
 export default class Login extends Component {
 
-  propTypes = {
+  static propTypes = {
     onLogin: PropTypes.func.isRequired,
   }
 
