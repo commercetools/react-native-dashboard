@@ -3,6 +3,7 @@
 import React, { PropTypes, Component } from 'react'
 import {
   View,
+  ListView,
   Button,
   Picker,
   Modal,
@@ -27,6 +28,24 @@ const styles = StyleSheet.create({
 })
 
 const getPercentage = (a, b) => Math.round(a / b) * 100 || 0
+const dashboardItemMapping = {
+  orders: {
+    label: 'Orders',
+    firstMetricLabel: 'Open',
+    secondMetricLabel: 'Complete',
+    total: data => data.total,
+    firstMetric: data => getPercentage(data.open / data.total),
+    secondMetric: data => getPercentage(data.complete / data.total),
+  },
+  carts: {
+    label: 'Carts',
+    firstMetricLabel: 'Active',
+    secondMetricLabel: 'Ordered',
+    total: data => data.total,
+    firstMetric: data => getPercentage(data.active / data.total),
+    secondMetric: data => getPercentage(data.ordered / data.total),
+  },
+}
 
 export default class Dashboard extends Component {
   static propTypes = {
@@ -43,19 +62,30 @@ export default class Dashboard extends Component {
   constructor (props) {
     super(props)
 
+    const ds = new ListView.DataSource({
+      rowHasChanged: (r1, r2) => r1 !== r2,
+    })
     this.state = {
       projectSwitcherModalVisible: false,
       isLoading: true,
-      orders: {
-        total: 0,
-        open: 0,
-        complete: 0,
-      },
-      carts: {
-        total: 0,
-        active: 0,
-        ordered: 0,
-      },
+      dataSource: ds.cloneWithRows([
+        {
+          type: 'orders',
+          data: {
+            total: 0,
+            open: 0,
+            complete: 0,
+          },
+        },
+        {
+          type: 'carts',
+          data: {
+            total: 0,
+            active: 0,
+            ordered: 0,
+          },
+        },
+      ]),
     }
 
     // Bind functions
@@ -81,8 +111,10 @@ export default class Dashboard extends Component {
     .then(
       (response) => {
         this.setState({
-          orders: response.orders,
-          carts: response.carts,
+          dataSource: this.state.dataSource.cloneWithRows([
+            { type: 'orders', data: response.orders },
+            { type: 'carts', data: response.carts },
+          ]),
           isLoading: false,
         })
       },
@@ -103,14 +135,6 @@ export default class Dashboard extends Component {
   }
   render () {
     const { props, state } = this
-    const openOrders = getPercentage(state.orders.open / state.orders.total)
-    const completedOrders = getPercentage(
-      state.orders.complete / state.orders.total,
-    )
-    const activeCarts = getPercentage(state.carts.active / state.carts.total)
-    const orderedCarts = getPercentage(
-      state.carts.ordered / state.carts.total,
-    )
     return (
       <View style={styles.container}>
         <Button
@@ -144,24 +168,23 @@ export default class Dashboard extends Component {
         {state.isLoading ? (
           <ActivityIndicator animating={true} color="white"/>
         ) : (
-          <View>
-            <DashboardItem
-              title="Orders"
-              total={state.orders.total}
-              firstSideMetricValue={openOrders}
-              firstSideMetricLabel={'Open'}
-              secondSideMetricValue={completedOrders}
-              secondSideMetricLabel={'Complete'}
-            />
-            <DashboardItem
-              title="Carts"
-              total={state.carts.total}
-              firstSideMetricValue={activeCarts}
-              firstSideMetricLabel={'Active'}
-              secondSideMetricValue={orderedCarts}
-              secondSideMetricLabel={'Ordered'}
-            />
-          </View>
+          <ListView
+            dataSource={state.dataSource}
+            renderRow={(rowData) => {
+              const config = dashboardItemMapping[rowData.type]
+              const data = rowData.data
+              return (
+                <DashboardItem
+                  title={config.label}
+                  total={config.total(data)}
+                  firstSideMetricValue={config.firstMetric(data)}
+                  firstSideMetricLabel={config.firstMetricLabel}
+                  secondSideMetricValue={config.secondMetric(data)}
+                  secondSideMetricLabel={config.secondMetricLabel}
+                />
+              )
+            }}
+          />
         )}
       </View>
     )
