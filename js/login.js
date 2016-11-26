@@ -111,6 +111,7 @@ export default class Login extends Component {
       {
         toValue: 1,
         duration: 300,
+        useNativeDriver: true,
       },
     ).start()
   }
@@ -144,6 +145,7 @@ export default class Login extends Component {
             {
               toValue: 400,
               timing: 100,
+              useNativeDriver: true,
             },
           ).start(() => {
             props.onLogin({

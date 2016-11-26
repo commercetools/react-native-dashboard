@@ -100,6 +100,7 @@ export default class Application extends Component {
               friction: 10,
               tension: 50,
               velocity: 1,
+              useNativeDriver: true,
             }),
           ]
           : [
@@ -107,16 +108,19 @@ export default class Application extends Component {
               toValue: -88,
               tension: 50,
               friction: 10,
+              useNativeDriver: true,
             }),
           ]
         Animated.sequence([
           Animated.timing(this.animatedValue, {
             toValue: 0,
             duration: 1000,
+            useNativeDriver: true,
           }),
           Animated.timing(this.animatedValue, {
             toValue: 50,
             duration: 200,
+            useNativeDriver: true,
           }),
           ...startAnimation,
         ])
