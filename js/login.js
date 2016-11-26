@@ -189,6 +189,7 @@ export default class Login extends Component {
             >
               <TextInput
                 autoCapitalize="none"
+                autoCorrect={false}
                 style={styles.input}
                 onChangeText={this.handleEmailChange}
                 onSubmitEditing={() => this.refs.password.focus()}
@@ -212,6 +213,7 @@ export default class Login extends Component {
               <TextInput
                 ref='password'
                 autoCapitalize="none"
+                autoCorrect={false}
                 style={styles.input}
                 onChangeText={this.handlePasswordChange}
                 onSubmitEditing={this.handleSubmit}
