@@ -16,11 +16,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React Native!"
 
-@interface MerchantCenterIOSDashboardTests : XCTestCase
+@interface CTPDashboardTests : XCTestCase
 
 @end
 
-@implementation MerchantCenterIOSDashboardTests
+@implementation CTPDashboardTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {

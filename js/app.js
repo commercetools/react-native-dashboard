@@ -260,4 +260,4 @@ export default class Application extends Component {
   }
 }
 
-AppRegistry.registerComponent('MerchantCenterIOSDashboard', () => Application)
+AppRegistry.registerComponent('CTPDashboard', () => Application)
