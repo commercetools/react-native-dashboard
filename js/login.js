@@ -16,7 +16,7 @@ import {
   login,
   getProjectsForUser,
 } from './utils/api'
-import logo from '../assets/logo.png'
+import logo from '../assets/logo_2x.png'
 import * as colors from './utils/colors'
 
 const styles = StyleSheet.create({
@@ -43,7 +43,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
-  logo: {},
+  logo: {
+    width: 100,
+    height: 100,
+  },
   inputView: {
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(255,255,255,0.5)',
@@ -172,7 +175,11 @@ export default class Login extends Component {
           style={styles.keyboardAvoidingViewContainer}
         >
           <View style={styles['logo-container']}>
-            <Image source={logo} style={styles.logo} />
+            <Image
+              source={logo}
+              style={styles.logo}
+              resizeMode="contain"
+            />
           </View>
           <ActivityIndicator animating={state.isLoading} color="white"/>
           {props.errorMessage ? (

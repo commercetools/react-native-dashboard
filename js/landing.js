@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Animated,
 } from 'react-native'
-import logo from '../assets/logo.png'
+import logo from '../assets/logo_2x.png'
 import * as colors from './utils/colors'
 
 const styles = StyleSheet.create({
@@ -17,12 +17,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.green,
   },
+  logo: {
+    width: 100,
+    height: 100,
+  },
 })
 
 const Landing = ({ animatedStyle }) => (
   <View style={styles.container}>
     <Animated.View style={animatedStyle}>
-      <Image source={logo} />
+      <Image
+        source={logo}
+        style={styles.logo}
+        resizeMode="contain"
+      />
     </Animated.View>
   </View>
 )
