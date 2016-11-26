@@ -10,6 +10,7 @@ import {
   Text,
   ActivityIndicator,
   Animated,
+  KeyboardAvoidingView,
 } from 'react-native'
 import {
   login,
@@ -21,17 +22,20 @@ import * as colors from './utils/colors'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+  keyboardAvoidingViewContainer: {
+    flex: 1,
     justifyContent: 'center',
     backgroundColor: colors.green,
     paddingLeft: 32,
     paddingRight: 32,
     flexDirection: 'column',
     alignItems: 'stretch',
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
   },
   'logo-container': {
     marginTop: 24,
@@ -55,7 +59,7 @@ const styles = StyleSheet.create({
   },
   errorView: {},
   error: {
-    color: colors.red,
+    color: colors.yellow,
   },
   buttonWrapper: {
     flexDirection: 'column',
@@ -163,71 +167,77 @@ export default class Login extends Component {
     }
     return (
       <View style={styles.container}>
-        <View style={styles['logo-container']}>
-          <Image source={logo} style={styles.logo} />
-        </View>
-        <ActivityIndicator animating={state.isLoading} color="white"/>
-        {props.errorMessage ? (
-          <View style={styles.errorView}>
-            <Text style={styles.error}>{props.errorMessage}</Text>
+        <KeyboardAvoidingView
+          behavior="padding"
+          style={styles.keyboardAvoidingViewContainer}
+        >
+          <View style={styles['logo-container']}>
+            <Image source={logo} style={styles.logo} />
           </View>
-        ) : null}
-        <Animated.View style={[styles.form, animatedStyle]}>
-          <View
-            style={state.isEmailFocused
-              ? styles.inputViewFocus
-              : styles.inputView
-            }
-          >
-            <TextInput
-              autoCapitalize="none"
-              style={styles.input}
-              onChangeText={this.handleEmailChange}
-              onSubmitEditing={this.handleSubmit}
-              onFocus={() => this.setState({ isEmailFocused: true })}
-              onBlur={() => this.setState({ isEmailFocused: false })}
-              value={state.email}
-              keyboardType="email-address"
-              returnKeyType="next"
-              placeholder="Email"
-              placeholderTextColor="rgba(255,255,255,0.5)"
-              color="white"
-              clearButtonMode="unless-editing"
-            />
-          </View>
-          <View
-            style={state.isPasswordFocused
-              ? styles.inputViewFocus
-              : styles.inputView
-            }
-          >
-            <TextInput
-              autoCapitalize="none"
-              style={styles.input}
-              onChangeText={this.handlePasswordChange}
-              onSubmitEditing={this.handleSubmit}
-              onFocus={() => this.setState({ isPasswordFocused: true })}
-              onBlur={() => this.setState({ isPasswordFocused: false })}
-              value={state.password}
-              secureTextEntry={true} // password
-              returnKeyType="go"
-              placeholder="Password"
-              placeholderTextColor="rgba(255,255,255,0.5)"
-              color="white"
-              clearButtonMode="unless-editing"
-            />
-          </View>
+          <ActivityIndicator animating={state.isLoading} color="white"/>
+          {props.errorMessage ? (
+            <View style={styles.errorView}>
+              <Text style={styles.error}>{props.errorMessage}</Text>
+            </View>
+          ) : null}
+          <Animated.View style={[styles.form, animatedStyle]}>
+            <View
+              style={state.isEmailFocused
+                ? styles.inputViewFocus
+                : styles.inputView
+              }
+            >
+              <TextInput
+                autoCapitalize="none"
+                style={styles.input}
+                onChangeText={this.handleEmailChange}
+                onSubmitEditing={() => this.refs.password.focus()}
+                onFocus={() => this.setState({ isEmailFocused: true })}
+                onBlur={() => this.setState({ isEmailFocused: false })}
+                value={state.email}
+                keyboardType="email-address"
+                returnKeyType="next"
+                placeholder="Email"
+                placeholderTextColor="rgba(255,255,255,0.5)"
+                color="white"
+                clearButtonMode="unless-editing"
+              />
+            </View>
+            <View
+              style={state.isPasswordFocused
+                ? styles.inputViewFocus
+                : styles.inputView
+              }
+            >
+              <TextInput
+                ref='password'
+                autoCapitalize="none"
+                style={styles.input}
+                onChangeText={this.handlePasswordChange}
+                onSubmitEditing={this.handleSubmit}
+                onFocus={() => this.setState({ isPasswordFocused: true })}
+                onBlur={() => this.setState({ isPasswordFocused: false })}
+                value={state.password}
+                secureTextEntry={true} // password
+                returnKeyType="go"
+                placeholder="Password"
+                placeholderTextColor="rgba(255,255,255,0.5)"
+                color="white"
+                clearButtonMode="unless-editing"
+              />
+            </View>
 
-          <View style={styles.buttonWrapper}>
-            <Button
-              title="Login"
-              color="white"
-              onPress={this.handleSubmit}
-              disabled={state.isLoading}
-            />
-            <Animated.View style={[styles.button, animatedButtonStyles]} />
-          </View>
-        </Animated.View>
+            <View style={styles.buttonWrapper}>
+              <Button
+                title="Login"
+                color="white"
+                onPress={this.handleSubmit}
+                disabled={state.isLoading}
+              />
+              <Animated.View style={[styles.button, animatedButtonStyles]} />
+            </View>
+          </Animated.View>
+        </KeyboardAvoidingView>
       </View>
     )
   }
