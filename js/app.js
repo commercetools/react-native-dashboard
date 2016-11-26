@@ -104,7 +104,7 @@ export default class Application extends Component {
           ]
           : [
             Animated.spring(this.animatedValue, {
-              toValue: -86,
+              toValue: -88,
               tension: 50,
               friction: 10,
             }),
