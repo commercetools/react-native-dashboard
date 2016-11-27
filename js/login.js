@@ -2,15 +2,15 @@
 
 import React, { Component, PropTypes } from 'react'
 import {
-  Button,
-  StyleSheet,
-  TextInput,
-  View,
-  Image,
-  Text,
   ActivityIndicator,
   Animated,
+  Button,
+  Image,
   KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native'
 import {
   login,
@@ -89,20 +89,28 @@ export default class Login extends Component {
     this.state = {
       email: '',
       password: '',
+      // Used to show a loading spinner while the user is being authenticated.
       isLoading: false,
+      // Used by the `TextInput` to know if the field is focused.
       isEmailFocused: false,
+      // Used by the `TextInput` to know if the field is focused.
       isPasswordFocused: false,
+    }
+
+    // Describe how the animations should look like
+    this.animatedValue = new Animated.Value(0)
+    this.animatedButtonScale = new Animated.Value(1)
+    this.animatedStyle = {
+      opacity: this.animatedValue,
+    }
+    this.animatedButtonStyles = {
+      transform: [{ scale: this.animatedButtonScale }],
     }
 
     // Bind functions
     this.handleEmailChange = this.handleEmailChange.bind(this)
     this.handlePasswordChange = this.handlePasswordChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
-  }
-
-  componentWillMount () {
-    this.animatedValue = new Animated.Value(0)
-    this.animatedButtonScale = new Animated.Value(1)
   }
 
   componentDidMount () {
@@ -140,6 +148,8 @@ export default class Login extends Component {
           userId: loginResponse.user,
         })
         .then((projectsResponse) => {
+          // Show an animation on the login button after the user has been
+          // successfully authenticated and before showing the next screen.
           Animated.timing(
             this.animatedButtonScale,
             {
@@ -148,6 +158,7 @@ export default class Login extends Component {
               useNativeDriver: true,
             },
           ).start(() => {
+            // Notify the Application that the user can be logged in.
             props.onLogin({
               token: loginResponse.token,
               userId: loginResponse.user,
@@ -164,12 +175,7 @@ export default class Login extends Component {
 
   render () {
     const { props, state } = this
-    const animatedStyle = {
-      opacity: this.animatedValue,
-    }
-    const animatedButtonStyles = {
-      transform: [{ scale: this.animatedButtonScale }],
-    }
+
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView
@@ -183,13 +189,20 @@ export default class Login extends Component {
               resizeMode="contain"
             />
           </View>
-          <ActivityIndicator animating={state.isLoading} color="white"/>
+          <ActivityIndicator
+            animating={state.isLoading}
+            color={colors.white}
+          />
+
           {props.errorMessage ? (
             <View style={styles.errorView}>
-              <Text style={styles.error}>{props.errorMessage}</Text>
+              <Text style={styles.error}>
+                {props.errorMessage}
+              </Text>
             </View>
           ) : null}
-          <Animated.View style={[styles.form, animatedStyle]}>
+
+          <Animated.View style={[ styles.form, this.animatedStyle ]}>
             <View
               style={state.isEmailFocused
                 ? styles.inputViewFocus
@@ -197,20 +210,22 @@ export default class Login extends Component {
               }
             >
               <TextInput
+                // Field properties
                 autoCapitalize="none"
                 autoCorrect={false}
-                style={styles.input}
-                onChangeText={this.handleEmailChange}
-                onSubmitEditing={() => this.refs.password.focus()}
-                onFocus={() => this.setState({ isEmailFocused: true })}
-                onBlur={() => this.setState({ isEmailFocused: false })}
-                value={state.email}
+                clearButtonMode="unless-editing"
                 keyboardType="email-address"
                 returnKeyType="next"
+                color={colors.white}
+                style={styles.input}
+                // Field attributes
+                value={state.email}
+                onChangeText={this.handleEmailChange}
+                onSubmitEditing={() => this.refs.password.focus()}
+                onBlur={() => this.setState({ isEmailFocused: false })}
+                onFocus={() => this.setState({ isEmailFocused: true })}
                 placeholder="Email"
-                placeholderTextColor="rgba(255,255,255,0.5)"
-                color="white"
-                clearButtonMode="unless-editing"
+                placeholderTextColor={colors.lightWhite}
               />
             </View>
             <View
@@ -220,32 +235,36 @@ export default class Login extends Component {
               }
             >
               <TextInput
+                // Field properties
                 ref='password'
                 autoCapitalize="none"
                 autoCorrect={false}
+                clearButtonMode="unless-editing"
+                returnKeyType="go"
+                secureTextEntry={true} // password
+                color={colors.white}
                 style={styles.input}
+                // Field attributes
+                value={state.password}
                 onChangeText={this.handlePasswordChange}
                 onSubmitEditing={this.handleSubmit}
-                onFocus={() => this.setState({ isPasswordFocused: true })}
                 onBlur={() => this.setState({ isPasswordFocused: false })}
-                value={state.password}
-                secureTextEntry={true} // password
-                returnKeyType="go"
+                onFocus={() => this.setState({ isPasswordFocused: true })}
                 placeholder="Password"
-                placeholderTextColor="rgba(255,255,255,0.5)"
-                color="white"
-                clearButtonMode="unless-editing"
+                placeholderTextColor={colors.lightWhite}
               />
             </View>
 
             <View style={styles.buttonWrapper}>
               <Button
                 title="Login"
-                color="white"
+                color={colors.white}
                 onPress={this.handleSubmit}
                 disabled={state.isLoading}
               />
-              <Animated.View style={[styles.button, animatedButtonStyles]} />
+              <Animated.View
+                style={[ styles.button, this.animatedButtonStyles ]}
+              />
             </View>
           </Animated.View>
         </KeyboardAvoidingView>

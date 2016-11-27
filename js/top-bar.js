@@ -88,6 +88,7 @@ export default class TopBar extends Component {
       name: PropTypes.string.isRequired,
     })).isRequired,
     selectedProjectId: PropTypes.string,
+    onSelectProject: PropTypes.func.isRequired,
     onLogout: PropTypes.func.isRequired,
   }
 
@@ -110,6 +111,11 @@ export default class TopBar extends Component {
     this.setState({ isModalOpen: false })
   }
 
+  handleProjectSelection (projectId) {
+    this.props.onSelectProject(projectId)
+    this.closeModal()
+  }
+
   render () {
     const { props, state } = this
     const project = props.projects[props.selectedProjectId]
@@ -117,11 +123,18 @@ export default class TopBar extends Component {
     return (
       <View>
         <View style={styles.container}>
-          <Image source={logo} style={[styles.icon, styles.logo]}/>
+          <Image
+            source={logo}
+            style={[ styles.icon, styles.logo ]}
+          />
 
           <TouchableOpacity onPress={this.openModal}>
             <View style={styles.projectSwitcherButtonContainer}>
-              <Text style={styles.projectSwitcherButton} numberOfLines={1}>
+              <Text
+                style={styles.projectSwitcherButton}
+                // Prevent text to wrap if it does not fit.
+                numberOfLines={1}
+              >
                 {project ? project.name : '- - - -'}
               </Text>
               <Icon
@@ -146,8 +159,11 @@ export default class TopBar extends Component {
           onRequestClose={this.closeModal}
         >
           <ProjectSwitcher
-            {...props}
-            onCloseModal={this.closeModal}
+            projects={props.projects}
+            selectedProjectId={props.selectedProjectId}
+            activeProjectIds={props.activeProjectIds}
+            inactiveProjectIds={props.inactiveProjectIds}
+            onSelect={this.handleProjectSelection}
           />
         </Modal>
       </View>

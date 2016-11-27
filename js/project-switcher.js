@@ -2,11 +2,11 @@
 
 import React, { PropTypes, Component } from 'react'
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableHighlight,
   Picker,
+  StyleSheet,
+  Text,
+  TouchableHighlight,
+  View,
 } from 'react-native'
 import * as colors from './utils/colors'
 
@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
 })
 
 export default class ProjectSwitcher extends Component {
+
   static propTypes = {
     projects: PropTypes.objectOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -46,8 +47,7 @@ export default class ProjectSwitcher extends Component {
     selectedProjectId: PropTypes.string,
     activeProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     inactiveProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    onSelectProject: PropTypes.func.isRequired,
-    onCloseModal: PropTypes.func.isRequired,
+    onSelect: PropTypes.func.isRequired,
   }
 
   constructor (props) {
@@ -57,13 +57,13 @@ export default class ProjectSwitcher extends Component {
       currentProjectSelectedId: props.selectedProjectId,
     }
 
+    // Bind functions
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleDraftSelection = this.handleDraftSelection.bind(this)
   }
 
   handleSubmit () {
-    this.props.onSelectProject(this.state.currentProjectSelectedId)
-    this.props.onCloseModal()
+    this.props.onSelect(this.state.currentProjectSelectedId)
   }
 
   handleDraftSelection (id) {

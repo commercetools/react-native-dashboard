@@ -18,7 +18,7 @@ Alternatively, simply open the project in Xcode and run it from there.
 
 
 #### TODOs
-- use better logo for main screen
+- better error login style
 - better project switcher (show inactive projects)
 - persist dashboard data as well
 - fading animation for placeholder elements

@@ -2,12 +2,12 @@
 
 import React, { Component } from 'react'
 import {
+  Animated,
   AppRegistry,
   AsyncStorage,
-  Animated,
-  View,
-  StyleSheet,
   StatusBar,
+  StyleSheet,
+  View,
 } from 'react-native'
 import { defaultMemoize } from 'reselect'
 import { getProjectsForUser } from './utils/api'
@@ -18,22 +18,35 @@ import Login from './login'
 import Dashboard from './dashboard'
 
 const initialState = {
+  // Used to wait for the application to render before loading the
+  // cached state in case a token is already present.
   canStart: false,
+  // The auth token used to authenticate the requests to the MC API.
   token: null,
+  // The ID of the logged in user.
   userId: null,
+  // A map (id -> project) of all projects that the user has access to, used
+  // for the project switcher.
   projects: {}, // normalized
+  // The current selected project ID from the project switcher.
   selectedProjectId: null,
+  // A list of the active project IDs (not expired).
   activeProjectIds: [],
+  // A list of the inactive project IDs (expired).
   inactiveProjectIds: [],
-  errorMessage: null,
+  // The error message shown in the login screen.
+  loginErrorMessage: null,
 }
+
+// Given a list of projects, return a tuple with a list of // active / inactive
+// projects, based on whether the trial period is expired or not.
 const selectActiveAndInactiveProjectIds = defaultMemoize(
   projects => projects.reduce((acc, project) => {
     const now = Date.now()
     const isActive = (
-      // pick a project without a `trialUntil`
+      // Pick a project without a `trialUntil`...
       !project.trialUntil ||
-      // or pick a project that has not expired yet
+      // ...or pick a project that has not expired yet
       (now < new Date(project.trialUntil).getTime())
     )
     const updatedActiveProjects = isActive
@@ -61,6 +74,12 @@ export default class Application extends Component {
 
     this.state = initialState
 
+    // Describe how the animation should look like.
+    this.animatedValue = new Animated.Value(0)
+    this.animatedStyle = {
+      transform: [{ translateY: this.animatedValue }],
+    }
+
     // Bind functions
     this.refetchProjects = this.refetchProjects.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
@@ -70,7 +89,6 @@ export default class Application extends Component {
   }
 
   componentWillMount () {
-    this.animatedValue = new Animated.Value(0)
     // Load cached state
     AsyncStorage.multiGet(
       [
@@ -82,47 +100,69 @@ export default class Application extends Component {
         'inactiveProjectIds',
       ],
       (error, stores) => {
-        if (error) {
-          console.warn('Error while reading state from storage', error)
-          return
-        }
-        const cachedState = stores.reduce((acc, [ key, value ]) => {
-          const parsedValue = JSON.parse(value)
-          return {
-            ...acc,
-            ...(parsedValue ? { [key]: parsedValue } : {}),
-          }
-        }, initialState)
-        const startAnimation = cachedState.token
+        let cachedState
+        if (error)
+          cachedState = initialState
+        else
+          cachedState = stores.reduce((acc, [ key, value ]) => {
+            const parsedValue = JSON.parse(value)
+            return {
+              ...acc,
+              ...(parsedValue ? { [key]: parsedValue } : {}),
+            }
+          }, initialState)
+
+        const endAnimation = cachedState.token
           ? [
-            Animated.spring(this.animatedValue, {
-              toValue: -400,
-              friction: 10,
-              tension: 50,
-              velocity: 1,
-              useNativeDriver: true,
-            }),
+            // If the user is logged in, end the animation outside the screen
+            Animated.spring(
+              this.animatedValue,
+              {
+                toValue: -400,
+                friction: 10,
+                tension: 50,
+                velocity: 1,
+                useNativeDriver: true,
+              },
+            ),
           ]
           : [
-            Animated.spring(this.animatedValue, {
-              toValue: -88,
-              tension: 50,
-              friction: 10,
-              useNativeDriver: true,
-            }),
+            // If the user is not logged in, end the animation more or less
+            // in the center of the screen.
+            Animated.spring(
+              this.animatedValue,
+              {
+                // This position is where the logo will be shown in the
+                // login screen.
+                toValue: -88,
+                friction: 10,
+                tension: 50,
+                useNativeDriver: true,
+              },
+            ),
           ]
+        // Define a sequence of animations before starting the application.
+        // - wait 1sec
+        // - move down
+        // - end the animation (see above)
         Animated.sequence([
-          Animated.timing(this.animatedValue, {
-            toValue: 0,
-            duration: 1000,
-            useNativeDriver: true,
-          }),
-          Animated.timing(this.animatedValue, {
-            toValue: 50,
-            duration: 200,
-            useNativeDriver: true,
-          }),
-          ...startAnimation,
+          Animated.timing(
+            this.animatedValue,
+            {
+              toValue: 0,
+              duration: 1000,
+              useNativeDriver: true,
+            },
+          ),
+          Animated.timing(
+            this.animatedValue,
+            {
+              toValue: 50,
+              duration: 200,
+              useNativeDriver: true,
+            },
+          ),
+          ...endAnimation,
         ])
         .start(() => {
           this.setState({
@@ -194,7 +234,7 @@ export default class Application extends Component {
       selectedProjectId: activeProjects[0],
       activeProjectIds: activeProjects,
       inactiveProjectIds: inactiveProjects,
-      errorMessage: sortedProjectsByName.length > 0
+      loginErrorMessage: sortedProjectsByName.length > 0
         ? null
         : 'User has no projects',
     }
@@ -203,7 +243,7 @@ export default class Application extends Component {
 
   handleLoginError (error) {
     this.setState({
-      errorMessage: error.message,
+      loginErrorMessage: error.message,
     })
   }
 
@@ -218,14 +258,12 @@ export default class Application extends Component {
   render () {
     const { state } = this
 
-    const animatedStyle = { transform: [{ translateY: this.animatedValue }] }
     if (!state.canStart)
+      // While waiting for the application to initialize, show a landing page.
       return (
-        <Landing animatedStyle={animatedStyle}/>
+        <Landing animatedStyle={this.animatedStyle}/>
       )
 
-    // Allow to access the application only if there is a token and there is
-    // an active project (e.g. user has access to no projects)
     return (
       <View style={styles.container}>
         <StatusBar
@@ -235,7 +273,7 @@ export default class Application extends Component {
           backgroundColor={colors.darkBlue}
           translucent={true}
         />
-        <TopBar
+        <TopBar // <-- not visible on login page
           projects={state.projects}
           selectedProjectId={state.selectedProjectId}
           activeProjectIds={state.activeProjectIds}
@@ -243,7 +281,11 @@ export default class Application extends Component {
           onSelectProject={this.handleSelectProject}
           onLogout={this.handleLogout}
         />
-        {state.token && state.selectedProjectId
+        {
+          // Allow to access the application only if the user is logged in
+          // (there is a token) and there is a selected project (it might be
+          // that the user has access to no projects).
+          state.token && state.selectedProjectId
           ? (
             <Dashboard
               token={state.token}
@@ -255,7 +297,7 @@ export default class Application extends Component {
             <Login
               onLogin={this.handleLogin}
               onLoginError={this.handleLoginError}
-              errorMessage={state.errorMessage}
+              errorMessage={state.loginErrorMessage}
             />
           )
         }

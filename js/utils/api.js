@@ -42,8 +42,7 @@ export function getProjectsForUser (options) {
 // Fetch some meta information to show in the dashboard (all related to today):
 // - number of open + complete orders
 // - number of active + ordered carts
-// - tot number of customers
-export function statistics (options) {
+export function getStatisticsForToday (options) {
   const ordersUrl = `${apiHost}/${options.projectKey}/orders`
   const cartsUrl = `${apiHost}/${options.projectKey}/carts`
 

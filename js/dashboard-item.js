@@ -2,9 +2,9 @@
 
 import React, { PropTypes } from 'react'
 import {
-  View,
   StyleSheet,
   Text,
+  View,
 } from 'react-native'
 import * as colors from './utils/colors'
 

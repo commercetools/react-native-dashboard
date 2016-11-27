@@ -2,14 +2,15 @@
 
 import React, { PropTypes, Component } from 'react'
 import {
-  View,
   ListView,
-  StyleSheet,
   RefreshControl,
+  StyleSheet,
+  View,
 } from 'react-native'
+import { defaultMemoize } from 'reselect'
 import DashboardItem from './dashboard-item'
 import DashboardItemPlaceholder from './dashboard-item-placeholder'
-import { statistics } from './utils/api'
+import { getStatisticsForToday } from './utils/api'
 import * as colors from './utils/colors'
 
 const styles = StyleSheet.create({
@@ -19,14 +20,14 @@ const styles = StyleSheet.create({
   },
 })
 
-const getPercentage = (fraction, total) => {
+const getPercentage = defaultMemoize((fraction, total) => {
   if (!fraction || !total)
     return 0
   const percentage = (fraction / total) * 100
   if (Math.round(percentage) !== percentage)
     return percentage.toFixed(2)
   return percentage
-}
+})
 const dashboardItemMapping = {
   orders: {
     label: 'Orders',
@@ -47,6 +48,7 @@ const dashboardItemMapping = {
 }
 
 export default class Dashboard extends Component {
+
   static propTypes = {
     token: PropTypes.string.isRequired,
     projects: PropTypes.objectOf(PropTypes.shape({
@@ -88,6 +90,7 @@ export default class Dashboard extends Component {
 
     // Bind functions
     this.handleManualRefresh = this.handleManualRefresh.bind(this)
+    this.renderItemRow = this.renderItemRow.bind(this)
   }
 
   componentDidMount () {
@@ -105,7 +108,7 @@ export default class Dashboard extends Component {
     const project = props.projects[props.selectedProjectId]
 
     // Get the data
-    statistics({
+    getStatisticsForToday({
       projectKey: project.key,
       token: props.token,
     })
@@ -132,28 +135,32 @@ export default class Dashboard extends Component {
     this.fetchProjectStatistics(this.props)
   }
 
+  renderItemRow (rowData) {
+    const config = dashboardItemMapping[rowData.type]
+    const data = rowData.data
+
+    // Show a placeholder item while data is being loaded.
+    return this.state.isLoading
+      ? (<DashboardItemPlaceholder />)
+      : (
+        <DashboardItem
+          title={config.label}
+          total={config.total(data)}
+          firstSideMetricValue={config.firstMetric(data)}
+          firstSideMetricLabel={config.firstMetricLabel}
+          secondSideMetricValue={config.secondMetric(data)}
+          secondSideMetricLabel={config.secondMetricLabel}
+        />
+      )
+  }
+
   render () {
     const { state } = this
     return (
       <View style={styles.container}>
         <ListView
           dataSource={state.dataSource}
-          renderRow={(rowData) => {
-            const config = dashboardItemMapping[rowData.type]
-            const data = rowData.data
-            return state.isLoading
-              ? (<DashboardItemPlaceholder />)
-              : (
-                <DashboardItem
-                  title={config.label}
-                  total={config.total(data)}
-                  firstSideMetricValue={config.firstMetric(data)}
-                  firstSideMetricLabel={config.firstMetricLabel}
-                  secondSideMetricValue={config.secondMetric(data)}
-                  secondSideMetricLabel={config.secondMetricLabel}
-                />
-              )
-          }}
+          renderRow={this.renderItemRow}
           refreshControl={(
             <RefreshControl
               refreshing={state.isRefreshing}

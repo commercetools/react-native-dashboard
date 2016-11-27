@@ -2,10 +2,10 @@
 
 import React, { PropTypes } from 'react'
 import {
-  View,
+  Animated,
   Image,
   StyleSheet,
-  Animated,
+  View,
 } from 'react-native'
 import logo from '../assets/logo_2x.png'
 import * as colors from './utils/colors'
