@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   },
   inputView: {
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.5)',
+    borderBottomColor: colors.lightWhite,
     marginBottom: 16,
   },
   inputViewFocus: {
@@ -60,9 +60,12 @@ const styles = StyleSheet.create({
   input: {
     height: 40,
   },
-  errorView: {},
+  errorView: {
+    backgroundColor: colors.lightWhite,
+    padding: 8,
+  },
   error: {
-    color: colors.yellow,
+    color: colors.red,
   },
   buttonWrapper: {
     flexDirection: 'column',

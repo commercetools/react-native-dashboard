@@ -18,11 +18,11 @@ Alternatively, simply open the project in Xcode and run it from there.
 
 
 #### TODOs
-- better error login style
 - better project switcher (show inactive projects)
 - persist dashboard data as well
 - fading animation for placeholder elements
 - unit tests
+- flow types
 - menu for managing user account?
 - fetch meta data from other days as well?
 - fetch other data (customers, products, ...)?
