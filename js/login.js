@@ -14,6 +14,7 @@ import {
 } from 'react-native'
 import {
   login,
+  getUser,
   getProjectsForUser,
 } from './utils/api'
 import logo from '../assets/logo_2x.png'
@@ -145,12 +146,16 @@ export default class Login extends Component {
       password: state.password,
     })
     .then(
-      loginResponse =>
-        getProjectsForUser({
+      (loginResponse) => {
+        const requestOptions = {
           token: loginResponse.token,
           userId: loginResponse.user,
-        })
-        .then((projectsResponse) => {
+        }
+        Promise.all([
+          getUser(requestOptions),
+          getProjectsForUser(requestOptions),
+        ])
+        .then(([userResponse, projectsResponse]) => {
           // Show an animation on the login button after the user has been
           // successfully authenticated and before showing the next screen.
           Animated.timing(
@@ -165,10 +170,12 @@ export default class Login extends Component {
             props.onLogin({
               token: loginResponse.token,
               userId: loginResponse.user,
+              user: userResponse,
               projects: projectsResponse,
             })
           })
-        }),
+        })
+      },
       (error) => {
         this.setState({ isLoading: false })
         props.onLoginError(error)
