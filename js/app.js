@@ -9,13 +9,16 @@ import {
   StyleSheet,
   View,
 } from 'react-native'
+import TabNavigator from 'react-native-tab-navigator'
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { defaultMemoize } from 'reselect'
-import { getProjectsForUser } from './utils/api'
+import { getUser, getProjectsForUser } from './utils/api'
 import * as colors from './utils/colors'
 import Landing from './landing'
 import TopBar from './top-bar'
 import Login from './login'
 import Dashboard from './dashboard'
+import Account from './account'
 
 const initialState = {
   // Used to wait for the application to render before loading the
@@ -25,6 +28,7 @@ const initialState = {
   token: null,
   // The ID of the logged in user.
   userId: null,
+  user: null,
   // A map (id -> project) of all projects that the user has access to, used
   // for the project switcher.
   projects: {}, // normalized
@@ -36,6 +40,7 @@ const initialState = {
   inactiveProjectIds: [],
   // The error message shown in the login screen.
   loginErrorMessage: null,
+  selectedTab: 'dashboard',
 }
 
 // Given a list of projects, return a tuple with a list of // active / inactive
@@ -165,16 +170,19 @@ export default class Application extends Component {
           ...endAnimation,
         ])
         .start(() => {
-          this.setState({
-            ...cachedState,
-            canStart: true, // <-- this will tell the app that it can render
-          })
+          this.setState(
+            {
+              ...cachedState,
+              canStart: true, // <-- this will tell the app that it can render
+            },
+            () => {
+              // If the user is already logged in, refetch
+              // the projects to get fresh data
+              if (cachedState.token)
+                this.refetchProjects()
+            },
+          )
         })
-
-        // If the user is already logged in, refetch
-        // the projects to get fresh data
-        if (cachedState.token)
-          this.refetchProjects()
       },
     )
   }
@@ -192,19 +200,30 @@ export default class Application extends Component {
   }
 
   refetchProjects () {
-    getProjectsForUser({
+    const requestOptions = {
       token: this.state.token,
       userId: this.state.userId,
-    })
+    }
+    Promise.all([
+      getUser(requestOptions),
+      getProjectsForUser(requestOptions),
+    ])
     .then(
-      (projectsResponse) => {
+      ([userResponse, projectsResponse]) => {
         this.handleLogin({
           token: this.state.token,
           userId: this.state.userId,
+          user: userResponse,
           projects: projectsResponse,
         })
       },
-      error => this.handleLoginError(error),
+      (error) => {
+        if (this.state.token)
+          // TODO: error handling
+          console.error(error)
+        else
+          this.handleLoginError(error)
+      },
     )
   }
 
@@ -224,6 +243,7 @@ export default class Application extends Component {
     const newState = {
       token: data.token,
       userId: data.userId,
+      user: data.user,
       projects: sortedProjectsByName.reduce(
         (acc, project) => ({
           ...acc,
@@ -287,11 +307,54 @@ export default class Application extends Component {
           // that the user has access to no projects).
           state.token && state.selectedProjectId
           ? (
-            <Dashboard
-              token={state.token}
-              projects={state.projects}
-              selectedProjectId={state.selectedProjectId}
-            />
+            <TabNavigator
+              tabBarStyle={{ backgroundColor: colors.darkBlue }}
+            >
+              <TabNavigator.Item
+                renderIcon={() => (
+                  <Icon
+                    name="chart"
+                    color={colors.lightWhite}
+                    size={20}
+                  />
+                )}
+                renderSelectedIcon={() => (
+                  <Icon
+                    name="chart"
+                    color={colors.green}
+                    size={20}
+                  />
+                )}
+                selected={state.selectedTab === 'dashboard'}
+                onPress={() => this.setState({ selectedTab: 'dashboard' })}
+              >
+                <Dashboard
+                  token={state.token}
+                  projects={state.projects}
+                  selectedProjectId={state.selectedProjectId}
+                />
+              </TabNavigator.Item>
+              <TabNavigator.Item
+                renderIcon={() => (
+                  <Icon
+                    name="user"
+                    color={colors.lightWhite}
+                    size={20}
+                  />
+                )}
+                renderSelectedIcon={() => (
+                  <Icon
+                    name="user"
+                    color={colors.green}
+                    size={20}
+                  />
+                )}
+                selected={state.selectedTab === 'account'}
+                onPress={() => this.setState({ selectedTab: 'account' })}
+              >
+                <Account user={state.user} />
+              </TabNavigator.Item>
+            </TabNavigator>
           )
           : (
             <Login

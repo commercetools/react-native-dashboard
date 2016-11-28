@@ -10,6 +10,7 @@ const defaultHeaders = {
 }
 const apiHost = 'https://mc.commercetools.com'
 const loginUrl = `${apiHost}/tokens`
+const userUrl = `${apiHost}/users`
 const projectsByUserUrl = `${apiHost}/projects`
 
 export function login (options) {
@@ -22,6 +23,19 @@ export function login (options) {
         email: options.email,
         password: options.password,
       }),
+    },
+  ).then(processResponse)
+}
+
+export function getUser (options) {
+  return fetch(
+    `${userUrl}/${options.userId}`,
+    {
+      method: 'GET',
+      headers: {
+        ...defaultHeaders,
+        Authorization: options.token,
+      },
     },
   ).then(processResponse)
 }
