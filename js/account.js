@@ -14,16 +14,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    backgroundColor: colors.green,
+    backgroundColor: colors.white,
   },
   infoContainer: {
     flexGrow: 0,
     flexDirection: 'column',
     backgroundColor: colors.white,
     padding: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.grey,
   },
   propertiesContainer: {
     flexGrow: 1,
+    padding: 16,
   },
   imageContainer: {
     flexDirection: 'row',
@@ -39,31 +42,18 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     borderRadius: 50,
-  },
-  box: {
-    flex: 1,
-    margin: 8,
-    padding: 8,
-    backgroundColor: colors.white,
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    borderRadius: 2,
+    borderWidth: 1,
+    borderColor: colors.white,
   },
   property: {
+    paddingBottom: 8,
   },
   propertyLabel: {
-    color: colors.grey,
-    fontWeight: 'bold',
+    color: colors.darkGrey,
+    fontSize: 12,
   },
   propertyValue: {
     color: colors.darkBlue,
-  },
-  divider: {
-    height: 1,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.grey,
-    marginTop: 8,
-    marginBottom: 8,
   },
 })
 
@@ -82,21 +72,21 @@ const Account = ({ user }) => (
         </Text>
       </View>
       <View style={styles.propertiesContainer}>
-        <View style={styles.box}>
-          <View style={styles.property}>
-            <Text style={styles.propertyLabel}>{'Email'}</Text>
-            <Text style={styles.propertyValue}>{user.email}</Text>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.property}>
-            <Text style={styles.propertyLabel}>{'Language'}</Text>
-            <Text style={styles.propertyValue}>{user.language}</Text>
-          </View>
-          <View style={styles.divider} />
-          <View style={styles.property}>
-            <Text style={styles.propertyLabel}>{'Number format'}</Text>
-            <Text style={styles.propertyValue}>{user.numberFormat}</Text>
-          </View>
+        <View style={styles.property}>
+          <Text style={styles.propertyLabel}>{'Email'}</Text>
+          <Text style={styles.propertyValue}>{user.email}</Text>
+        </View>
+        <View style={styles.property}>
+          <Text style={styles.propertyLabel}>{'Language'}</Text>
+          <Text style={styles.propertyValue}>{user.language}</Text>
+        </View>
+        <View style={styles.property}>
+          <Text style={styles.propertyLabel}>{'Number format'}</Text>
+          <Text style={styles.propertyValue}>{user.numberFormat}</Text>
+        </View>
+        <View style={styles.property}>
+          <Text style={styles.propertyLabel}>{'Time zone'}</Text>
+          <Text style={styles.propertyValue}>{user.timeZone || '-'}</Text>
         </View>
       </View>
     </View>

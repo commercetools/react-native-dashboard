@@ -23,7 +23,6 @@ Alternatively, simply open the project in Xcode and run it from there.
 - fading animation for placeholder elements
 - unit tests
 - flow types
-- menu for managing user account?
 - fetch meta data from other days as well?
 - fetch other data (customers, products, ...)?
 - better error notifications
