@@ -99,8 +99,10 @@ export default class TopBar extends Component {
       isModalOpen: false,
     }
 
+    // Bind functions
     this.openModal = this.openModal.bind(this)
     this.closeModal = this.closeModal.bind(this)
+    this.handleProjectSelection = this.handleProjectSelection.bind(this)
   }
 
   openModal () {

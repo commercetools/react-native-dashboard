@@ -42,8 +42,6 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     borderRadius: 50,
-    borderWidth: 1,
-    borderColor: colors.white,
   },
   property: {
     paddingBottom: 8,
@@ -63,7 +61,7 @@ const Account = ({ user }) => (
       <View style={styles.infoContainer}>
         <View style={styles.imageContainer}>
           <Image
-            source={{ uri: getGravatarUrl(user.email) }}
+            source={{ uri: getGravatarUrl(user.email, 200) }}
             style={styles.avatar}
           />
         </View>
@@ -104,6 +102,6 @@ Account.propTypes = {
 
 export default Account
 
-function getGravatarUrl (email) {
-  return `https://www.gravatar.com/avatar/${md5(email)}?s=200&d=mm`
+function getGravatarUrl (email, size) {
+  return `https://www.gravatar.com/avatar/${md5(email)}?s=${size}&d=mm`
 }
