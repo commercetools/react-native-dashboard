@@ -251,7 +251,7 @@ export default class Application extends Component {
         }),
         {},
       ),
-      selectedProjectId: activeProjects[0],
+      selectedProjectId: this.state.selectedProjectId || activeProjects[0],
       activeProjectIds: activeProjects,
       inactiveProjectIds: inactiveProjects,
       loginErrorMessage: sortedProjectsByName.length > 0
