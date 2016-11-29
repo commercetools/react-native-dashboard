@@ -2,6 +2,8 @@
 Build an iOS / Android Dashboard App in React Native.
 
 <img src="home.png" alt="Home screen" width="300">
+<img src="dashboard.png" alt="Home screen" width="300">
+<img src="account.png" alt="Home screen" width="300">
 
 ### Installation
 Ensure you have the [necessary tools and dependencies](https://facebook.github.io/react-native/docs/getting-started.html) to develop an application.
