@@ -53,101 +53,53 @@ export function getProjectsForUser (options) {
   ).then(processResponse)
 }
 
-// Fetch some meta information to show in the dashboard (all related to today):
-// - number of open + complete orders
-// - number of active + ordered carts
-export function getStatisticsForToday (options) {
-  const ordersUrl = `${apiHost}/${options.projectKey}/orders`
-  const cartsUrl = `${apiHost}/${options.projectKey}/carts`
-
-  const requestOptions = {
-    headers: {
-      ...defaultHeaders,
-      Authorization: options.token,
+export function getStatisticsForThisWeek (options) {
+  return fetch(
+    `${apiHost}/mobile/${options.projectKey}/graphql`,
+    {
+      method: 'POST',
+      headers: {
+        ...defaultHeaders,
+        Authorization: options.token,
+      },
+      body: JSON.stringify({
+        /* eslint-disable max-len */
+        query: `
+          query DashboardStatistics {
+            statistics {
+              lastWeekOrders: lastDaysStats(statType: ORDERS, numberOfDaysFromToday: 7) {
+                total
+                range {
+                  dateFrom
+                  dateTo
+                }
+                ... on OrderStat {
+                  open
+                  complete
+                }
+              }
+              lastWeekCarts: lastDaysStats(statType: CARTS, numberOfDaysFromToday: 7) {
+                total
+                range {
+                  dateFrom
+                  dateTo
+                }
+                ... on CartStat {
+                  ordered
+                  active
+                }
+              }
+            }
+          }
+        `,
+        /* eslint-enable max-len */
+      }),
     },
-  }
-
-  return Promise.all([
-    // Fetch "total" orders
-    fetch(
-      `${ordersUrl}?${getStatisticsQueryForPredicate()}`,
-      requestOptions,
-    ).then(processResponse),
-
-    // Fetch "open" orders
-    fetch(
-      `${ordersUrl}?${getStatisticsQueryForPredicate('orderState = "Open"')}`,
-      requestOptions,
-    ).then(processResponse),
-
-    // Fetch "complete" orders
-    fetch(
-      // eslint-disable-next-line max-len
-      `${ordersUrl}?${getStatisticsQueryForPredicate('orderState = "Complete"')}`,
-      requestOptions,
-    ).then(processResponse),
-
-    // Fetch "total" carts
-    fetch(
-      `${cartsUrl}?${getStatisticsQueryForPredicate()}`,
-      requestOptions,
-    ).then(processResponse),
-
-    // Fetch "active" carts
-    fetch(
-      `${cartsUrl}?${getStatisticsQueryForPredicate('cartState = "Active"')}`,
-      requestOptions,
-    ).then(processResponse),
-
-    // Fetch "active" carts
-    fetch(
-      `${cartsUrl}?${getStatisticsQueryForPredicate('cartState = "Ordered"')}`,
-      requestOptions,
-    ).then(processResponse),
-  ])
-  .then(
-    ([
-      totalOrdersResponse,
-      openOrdersResponse,
-      completeOrdersResponse,
-      totalCartsResponse,
-      activeCartsResponse,
-      orderedCartsResponse,
-    ]) => ({
-      orders: {
-        total: totalOrdersResponse.total,
-        open: openOrdersResponse.total,
-        complete: completeOrdersResponse.total,
-      },
-      carts: {
-        total: totalCartsResponse.total,
-        active: activeCartsResponse.total,
-        ordered: orderedCartsResponse.total,
-      },
-    }),
-  )
+  ).then(processResponse)
 }
 
 
 // Private methods
-
-function getTodayISOString () {
-  const date = new Date()
-  const year = date.getFullYear()
-  const month = date.getMonth() + 1 // month starts with index `0`
-  const day = date.getUTCDate()
-
-  return `${year}-${month}-${day}`
-}
-
-function getStatisticsQueryForPredicate (predicate) {
-  const todayPredicate = `createdAt > "${getTodayISOString()}"`
-  const queryPredicate = predicate
-    ? encodeURIComponent(`${todayPredicate} and ${predicate}`)
-    : encodeURIComponent(todayPredicate)
-
-  return `limit=0&where=${queryPredicate}`
-}
 
 function processResponse (response) {
   let isOk = response.ok
@@ -161,7 +113,10 @@ function processResponse (response) {
 
     // loggers.app.info(response.headers.raw())
 
-    const error = new Error(parsed ? parsed.message : text)
+    let errorMessage = 'Uh-oh, got an error'
+    if (parsed && parsed.message)
+      errorMessage = parsed.message
+    const error = new Error(errorMessage)
 
     if (parsed) error.body = parsed
 

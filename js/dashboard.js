@@ -10,7 +10,7 @@ import {
 import { defaultMemoize } from 'reselect'
 import DashboardItem from './dashboard-item'
 import DashboardItemPlaceholder from './dashboard-item-placeholder'
-import { getStatisticsForToday } from './utils/api'
+import { getStatisticsForThisWeek } from './utils/api'
 import * as colors from './utils/colors'
 
 const styles = StyleSheet.create({
@@ -33,17 +33,63 @@ const dashboardItemMapping = {
     label: 'Orders',
     firstMetricLabel: 'Open',
     secondMetricLabel: 'Complete',
-    total: data => data.total,
-    firstMetric: data => getPercentage(data.open, data.total),
-    secondMetric: data => getPercentage(data.complete, data.total),
+    total: data => data.reduce(
+      (acc, stat) => acc + stat.total,
+      0,
+    ),
+    firstMetric: (data) => {
+      const total = data.reduce(
+        (acc, stat) => acc + stat.total,
+        0,
+      )
+      const open = data.reduce(
+        (acc, stat) => acc + stat.open,
+        0,
+      )
+      return getPercentage(open, total)
+    },
+    secondMetric: (data) => {
+      const total = data.reduce(
+        (acc, stat) => acc + stat.total,
+        0,
+      )
+      const complete = data.reduce(
+        (acc, stat) => acc + stat.complete,
+        0,
+      )
+      return getPercentage(complete, total)
+    },
   },
   carts: {
     label: 'Carts',
     firstMetricLabel: 'Active',
     secondMetricLabel: 'Ordered',
-    total: data => data.total,
-    firstMetric: data => getPercentage(data.active, data.total),
-    secondMetric: data => getPercentage(data.ordered, data.total),
+    total: data => data.reduce(
+      (acc, stat) => acc + stat.total,
+      0,
+    ),
+    firstMetric: (data) => {
+      const total = data.reduce(
+        (acc, stat) => acc + stat.total,
+        0,
+      )
+      const active = data.reduce(
+        (acc, stat) => acc + stat.active,
+        0,
+      )
+      return getPercentage(active, total)
+    },
+    secondMetric: (data) => {
+      const total = data.reduce(
+        (acc, stat) => acc + stat.total,
+        0,
+      )
+      const ordered = data.reduce(
+        (acc, stat) => acc + stat.ordered,
+        0,
+      )
+      return getPercentage(ordered, total)
+    },
   },
 }
 
@@ -71,19 +117,11 @@ export default class Dashboard extends Component {
       dataSource: ds.cloneWithRows([
         {
           type: 'orders',
-          data: {
-            total: 0,
-            open: 0,
-            complete: 0,
-          },
+          data: [],
         },
         {
           type: 'carts',
-          data: {
-            total: 0,
-            active: 0,
-            ordered: 0,
-          },
+          data: [],
         },
       ]),
     }
@@ -108,7 +146,7 @@ export default class Dashboard extends Component {
     const project = props.projects[props.selectedProjectId]
 
     // Get the data
-    getStatisticsForToday({
+    getStatisticsForThisWeek({
       projectKey: project.key,
       token: props.token,
     })
@@ -116,8 +154,8 @@ export default class Dashboard extends Component {
       (response) => {
         this.setState({
           dataSource: this.state.dataSource.cloneWithRows([
-            { type: 'orders', data: response.orders },
-            { type: 'carts', data: response.carts },
+            { type: 'orders', data: response.data.statistics.lastWeekOrders },
+            { type: 'carts', data: response.data.statistics.lastWeekCarts },
           ]),
           isLoading: false,
           isRefreshing: false,
@@ -125,7 +163,7 @@ export default class Dashboard extends Component {
       },
       (error) => {
         // TODO: error handling
-        console.error(error)
+        console.error(error.body || error)
       },
     )
   }
@@ -143,6 +181,10 @@ export default class Dashboard extends Component {
     return this.state.isLoading
       ? (<DashboardItemPlaceholder />)
       : (
+        // TODO: enhance the item to include more statistic information
+        // - average of week
+        // - today
+        // - trend of today based on week average
         <DashboardItem
           title={config.label}
           total={config.total(data)}
