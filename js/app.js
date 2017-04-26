@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import TabNavigator from 'react-native-tab-navigator'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import { IntlProvider } from 'react-intl'
 import { defaultMemoize } from 'reselect'
 import { getUser, getProjectsForUser } from './utils/api'
 import * as colors from './utils/colors'
@@ -369,4 +370,10 @@ export default class Application extends Component {
   }
 }
 
-AppRegistry.registerComponent('CTPDashboard', () => Application)
+const ApplicationProvider = (props) => (
+  <IntlProvider key="intl" locale={'en'} messages={{ /* TODO */ }}>
+    <Application {...props} />
+  </IntlProvider>
+)
+
+AppRegistry.registerComponent('CTPDashboard', () => ApplicationProvider)
