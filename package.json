@@ -9,11 +9,11 @@
   },
   "dependencies": {
     "blueimp-md5": "2.7.0",
-    "react": "16.0.0-alpha.6",
     "prop-types": "15.5.8",
+    "react": "16.0.0-alpha.6",
     "react-intl": "2.2.3",
     "react-native": "0.43.4",
-    "react-native-tab-navigator": "0.3.3",
+    "react-native-tab-view": "0.0.61",
     "react-native-vector-icons": "4.0.1",
     "reselect": "3.0.0"
   },
