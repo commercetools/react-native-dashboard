@@ -13,6 +13,8 @@ import TabNavigator from 'react-native-tab-navigator'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 import { IntlProvider } from 'react-intl'
 import { defaultMemoize } from 'reselect'
+import ApolloClient, { createNetworkInterface } from 'apollo-client'
+import { ApolloProvider } from 'react-apollo'
 import { getUser, getProjectsForUser } from './utils/api'
 import * as colors from './utils/colors'
 import Landing from './landing'
@@ -20,6 +22,30 @@ import TopBar from './top-bar'
 import Login from './login'
 import Dashboard from './dashboard'
 import Account from './account'
+
+// Apollo client setup
+const networkInterface = createNetworkInterface({
+  uri: 'https://mc.commercetools.com/graphql',
+})
+// Use a middleware to update the request headers with the correct params.
+networkInterface.use([{
+  /* eslint-disable no-param-reassign */
+  applyMiddleware (req, next) {
+    console.log(req)
+    if (!req.options.headers)
+      req.options.headers = {}
+    req.options.headers['Accept'] = 'application/json'
+    AsyncStorage.multiGet(['token'], (err, state) => {
+      req.options.headers['Authorization'] = JSON.parse(state[0][1])
+      req.options.headers['X-Project-Key'] = req.request.variables['projectKey']
+      req.options.headers['X-Graphql-Target'] = req.request.variables['target']
+      console.log(req.options)
+      next()
+    })
+  },
+  /* eslint-enable no-param-reassign */
+}])
+const client = new ApolloClient({ networkInterface })
 
 const initialState = {
   // Used to wait for the application to render before loading the
@@ -74,7 +100,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class Application extends Component {
+class Application extends Component {
   constructor (props) {
     super(props)
 
@@ -370,10 +396,14 @@ export default class Application extends Component {
   }
 }
 
-const ApplicationProvider = (props) => (
+const AppWithApollo = (props) => (
   <IntlProvider key="intl" locale={'en'} messages={{ /* TODO */ }}>
-    <Application {...props} />
+    <ApolloProvider client={client}>
+      <Application {...props} />
+    </ApolloProvider>
   </IntlProvider>
 )
 
-AppRegistry.registerComponent('CTPDashboard', () => ApplicationProvider)
+export default AppWithApollo
+
+AppRegistry.registerComponent('CTPDashboard', () => AppWithApollo)

@@ -10,6 +10,9 @@ import {
 } from 'react-native'
 import { defaultMemoize } from 'reselect'
 import DashboardItem from './dashboard-item'
+import TotalSalesCard from './total-sales-card'
+import AovCard from './aov-card'
+import TopFiveProducts from './top-five-products-card'
 import DashboardItemPlaceholder from './dashboard-item-placeholder'
 import { getStatisticsForThisWeek } from './utils/api'
 import * as colors from './utils/colors'
@@ -116,14 +119,9 @@ export default class Dashboard extends Component {
       isLoading: true,
       isRefreshing: false,
       dataSource: ds.cloneWithRows([
-        {
-          type: 'orders',
-          data: [],
-        },
-        {
-          type: 'carts',
-          data: [],
-        },
+        { component: TotalSalesCard },
+        { component: AovCard },
+        { component: TopFiveProducts },
       ]),
     }
 
@@ -147,26 +145,26 @@ export default class Dashboard extends Component {
     const project = props.projects[props.selectedProjectId]
 
     // Get the data
-    getStatisticsForThisWeek({
-      projectKey: project.key,
-      token: props.token,
-    })
-    .then(
-      (response) => {
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows([
-            { type: 'orders', data: response.data.statistics.lastWeekOrders },
-            { type: 'carts', data: response.data.statistics.lastWeekCarts },
-          ]),
-          isLoading: false,
-          isRefreshing: false,
-        })
-      },
-      (error) => {
-        // TODO: error handling
-        console.error(error.body || error)
-      },
-    )
+    // getStatisticsForThisWeek({
+    //   projectKey: project.key,
+    //   token: props.token,
+    // })
+    // .then(
+    //   (response) => {
+    //     this.setState({
+    //       dataSource: this.state.dataSource.cloneWithRows([
+    //         { type: 'orders', data: response.data.statistics.lastWeekOrders },
+    //         { type: 'carts', data: response.data.statistics.lastWeekCarts },
+    //       ]),
+    //       isLoading: false,
+    //       isRefreshing: false,
+    //     })
+    //   },
+    //   (error) => {
+    //     // TODO: error handling
+    //     console.error(error.body || error)
+    //   },
+    // )
   }
 
   handleManualRefresh () {
@@ -175,26 +173,14 @@ export default class Dashboard extends Component {
   }
 
   renderItemRow (rowData) {
-    const config = dashboardItemMapping[rowData.type]
-    const data = rowData.data
+    const Component = rowData.component
 
     // Show a placeholder item while data is being loaded.
-    return this.state.isLoading
-      ? (<DashboardItemPlaceholder />)
-      : (
-        // TODO: enhance the item to include more statistic information
-        // - average of week
-        // - today
-        // - trend of today based on week average
-        <DashboardItem
-          title={config.label}
-          total={config.total(data)}
-          firstSideMetricValue={config.firstMetric(data)}
-          firstSideMetricLabel={config.firstMetricLabel}
-          secondSideMetricValue={config.secondMetric(data)}
-          secondSideMetricLabel={config.secondMetricLabel}
-        />
-      )
+    return (
+      <Component
+        projectKey={this.props.projects[this.props.selectedProjectId].key}
+      />
+    )
   }
 
   render () {
