@@ -1,3 +1,4 @@
+jest.mock('AsyncStorage')
 import 'react-native'
 // Note: test renderer must be required after react-native.
 // eslint-disable-next-line import/no-extraneous-dependencies

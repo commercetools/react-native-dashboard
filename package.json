@@ -33,7 +33,7 @@
   },
   "jest": {
     "preset": "react-native",
-    "testPathDirs": [
+    "roots": [
       "js",
       "node_modules/react-native"
     ]
