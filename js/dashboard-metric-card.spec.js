@@ -8,9 +8,9 @@ import DashboardMetricCard from './dashboard-metric-card'
 const createTestProps = props => ({
   title: 'The title',
   iconName: 'chart',
-  todayValueRenderer: (<Text>{'€ 123'}</Text>),
-  weekValueRenderer: (<Text>{'€ 123'}</Text>),
-  monthValueRenderer: (<Text>{'€ 123'}</Text>),
+  todayValue: (<Text>{'€ 123'}</Text>),
+  weekValue: (<Text>{'€ 123'}</Text>),
+  monthValue: (<Text>{'€ 123'}</Text>),
   ...props,
 })
 

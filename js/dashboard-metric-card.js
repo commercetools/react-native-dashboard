@@ -61,15 +61,15 @@ const DashboardMetricCard = props => (
     <View style={styles.content}>
       <View style={styles.row}>
         <View><Text>{'Today'}</Text></View>
-        <View>{props.todayValueRenderer}</View>
+        <View>{props.todayValue}</View>
       </View>
       <View style={styles.row}>
         <View><Text>{'This week'}</Text></View>
-        <View>{props.weekValueRenderer}</View>
+        <View>{props.weekValue}</View>
       </View>
       <View style={styles.row}>
         <View><Text>{'This month'}</Text></View>
-        <View>{props.monthValueRenderer}</View>
+        <View>{props.monthValue}</View>
       </View>
     </View>
   </View>
@@ -79,9 +79,9 @@ DashboardMetricCard.displayName = 'DashboardMetricCard'
 DashboardMetricCard.propTypes = {
   title: PropTypes.string.isRequired,
   iconName: PropTypes.string.isRequired,
-  todayValueRenderer: PropTypes.element.isRequired,
-  weekValueRenderer: PropTypes.element.isRequired,
-  monthValueRenderer: PropTypes.element.isRequired,
+  todayValue: PropTypes.element.isRequired,
+  weekValue: PropTypes.element.isRequired,
+  monthValue: PropTypes.element.isRequired,
 }
 
 export default DashboardMetricCard
