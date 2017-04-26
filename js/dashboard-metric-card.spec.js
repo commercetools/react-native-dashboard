@@ -3,27 +3,46 @@ import { Text } from 'react-native'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import renderer from 'react-test-renderer'
 import React from 'react'
-import DashboardMetricCard from './dashboard-metric-card'
+import { DashboardMetricCard } from './dashboard-metric-card'
 
 const createTestProps = props => ({
   title: 'The title',
   iconName: 'chart',
-  todayValue: (<Text>{'€ 123'}</Text>),
-  weekValue: (<Text>{'€ 123'}</Text>),
-  monthValue: (<Text>{'€ 123'}</Text>),
+  todayValue: 10,
+  weekValue: 20,
+  monthValue: 30,
+  yesterdayValue: 5,
+  lastWeekValue: 10,
+  lastMonthValue: 15,
+  showTrend: true,
+  intl: {
+    formatNumber: amount => String(amount),
+  },
   ...props,
 })
 
 describe('rendering', () => {
-  let props
-  let jsonTree
+  let wrapper
   beforeEach(() => {
-    props = createTestProps()
-    jsonTree = renderer.create(
+    const props = createTestProps()
+    wrapper = renderer.create(
       <DashboardMetricCard {...props} />,
     ).toJSON()
   })
-  it('should render title', () => {
-    expect(jsonTree).toMatchSnapshot()
+  describe('with trend', () => {
+    it('should render values with calculated trend', () => {
+      expect(wrapper).toMatchSnapshot()
+    })
+  })
+  describe('without trend', () => {
+    beforeEach(() => {
+      const props = createTestProps({ showTrend: false })
+      wrapper = renderer.create(
+        <DashboardMetricCard {...props} />,
+      ).toJSON()
+    })
+    it('should render only values', () => {
+      expect(wrapper).toMatchSnapshot()
+    })
   })
 })
