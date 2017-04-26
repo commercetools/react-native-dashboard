@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 /* @flow */
 
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react';
 import {
   ActivityIndicator,
   Animated,

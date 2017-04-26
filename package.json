@@ -8,27 +8,28 @@
     "test": "jest"
   },
   "dependencies": {
-    "blueimp-md5": "2.6.0",
-    "react": "15.4.1",
-    "react-native": "0.38.0",
+    "blueimp-md5": "2.7.0",
+    "react": "16.0.0-alpha.6",
+    "prop-types": "15.5.8",
+    "react-native": "0.43.4",
     "react-native-tab-navigator": "0.3.3",
-    "react-native-vector-icons": "3.0.0",
-    "reselect": "2.5.4"
+    "react-native-vector-icons": "4.0.1",
+    "reselect": "3.0.0"
   },
   "devDependencies": {
-    "babel-eslint": "7.1.1",
-    "babel-jest": "17.0.2",
-    "babel-preset-react-native": "1.9.0",
-    "eslint": "3.10.2",
-    "eslint-config-airbnb": "13.0.0",
-    "eslint-config-commercetools": "4.0.2",
+    "babel-eslint": "7.2.3",
+    "babel-jest": "19.0.0",
+    "babel-preset-react-native": "1.9.1",
+    "eslint": "3.19.0",
+    "eslint-config-airbnb": "14.1.0",
+    "eslint-config-commercetools": "6.0.0",
     "eslint-plugin-import": "2.2.0",
-    "eslint-plugin-jsx-a11y": "2.2.3",
-    "eslint-plugin-react": "6.7.1",
-    "flow-bin": "0.33.0",
-    "jest": "17.0.3",
-    "jest-react-native": "17.0.3",
-    "react-test-renderer": "15.4.1"
+    "eslint-plugin-jsx-a11y": "4.0.0",
+    "eslint-plugin-react": "6.10.3",
+    "flow-bin": "0.44.2",
+    "jest": "19.0.2",
+    "jest-react-native": "18.0.0",
+    "react-test-renderer": "15.5.4"
   },
   "jest": {
     "preset": "react-native",

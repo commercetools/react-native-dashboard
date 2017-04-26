@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 /* @flow */
 
-import React, { PropTypes, Component } from 'react'
+import React, { Component } from 'react';
 import {
   ListView,
   RefreshControl,
