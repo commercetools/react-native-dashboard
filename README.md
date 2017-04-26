@@ -1,9 +1,9 @@
 ### Tech Day project
 Build an iOS / Android Dashboard App in React Native.
 
-<img src="screenshot_login.png" alt="Home screen" width="280">
-<img src="screenshot_dashboard.png" alt="Home screen" width="280">
-<img src="screenshot_account.png" alt="Home screen" width="280">
+| Login | Home | Account |
+| --- | --- | --- |
+| <img src="screenshot_login.png" alt="Home screen" width="250"> | <img src="screenshot_dashboard.png" alt="Home screen" width="250"> |<img src="screenshot_account.png" alt="Home screen" width="250"> |
 
 ### Installation
 Ensure you have the [necessary tools and dependencies](https://facebook.github.io/react-native/docs/getting-started.html) to develop an application.
