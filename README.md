@@ -18,14 +18,23 @@ $ react-native run-ios # this will start the native packager and spawn the iOS s
 
 Alternatively, simply open the project in Xcode and run it from there.
 
+### Upgrading
+
+See https://facebook.github.io/react-native/docs/upgrading.html
+
+```bash
+$ react-native upgrade # useful in case of breaking changes
+```
 
 #### TODOs
+- loading placeholder cards
 - better project switcher (show inactive projects)
-- persist dashboard data as well
-- fading animation for placeholder elements
+- currency selector
 - unit tests
+- persist dashboard data as well
 - flow types
-- fetch meta data from other days as well?
-- fetch other data (customers, products, ...)?
+- fading animation for placeholder elements
+- svg animated logo
 - better error notifications
 - small example of push notification when new orders come in
+- translations (e.g. german)
