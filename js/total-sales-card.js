@@ -1,25 +1,25 @@
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import moment from 'moment'
+import DashboardMetricCard from './dashboard-metric-card'
 
 class TotalSalesCard extends Component {
   render () {
     const { orders } = this.props.data
-    return (
-      <View />
-      // <DashboardMetricCard
-      //   title="AOV"
-      //   iconName="chart"
-      //   todayValue={orders.today}
-      //   weekValue={orders.week}
-      //   monthValue={orders.month}
-      //   yesterdayValue={orders.yesterday}
-      //   lastWeekValue={orders.lastWeek}
-      //   lastMonthValue={orders.lastMonth}
-      //   showTrend={true}
-      // />
+    return this.props.data.loading ? <Text>Loading...</Text> : (
+      <DashboardMetricCard
+        title="Total Sales"
+        iconName="chart"
+        todayValue={orders.today.ordersValue}
+        weekValue={orders.week.ordersValue}
+        monthValue={orders.month.ordersValue}
+        yesterdayValue={orders.yesterday.ordersValue}
+        lastWeekValue={orders.lastWeek.ordersValue}
+        lastMonthValue={orders.lastMonth.ordersValue}
+        showTrend={true}
+      />
     )
   }
 }

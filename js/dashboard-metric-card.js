@@ -54,6 +54,15 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  grow: {
+    flex: 1,
+  },
+  money: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 })
 
@@ -71,9 +80,9 @@ export const DashboardMetricCard = props => (
     </View>
     <View style={styles.content}>
       <View style={styles.row}>
-        <View><Text>{'Today'}</Text></View>
+        <View style={styles.grow}><Text>{'Today'}</Text></View>
         <View style={styles.values}>
-          <View>
+          <View style={styles.money}>
             <Text>{renderMoney(props.intl, props.todayValue, 'EUR')}</Text>
           </View>
           {props.showTrend
@@ -83,9 +92,9 @@ export const DashboardMetricCard = props => (
         </View>
       </View>
       <View style={styles.row}>
-        <View><Text>{'This week'}</Text></View>
+        <View style={styles.grow}><Text>{'This week'}</Text></View>
         <View style={styles.values}>
-          <View>
+          <View style={styles.money}>
             <Text>{renderMoney(props.intl, props.weekValue, 'EUR')}</Text>
           </View>
           {props.showTrend
@@ -95,9 +104,9 @@ export const DashboardMetricCard = props => (
         </View>
       </View>
       <View style={styles.row}>
-        <View><Text>{'This month'}</Text></View>
+        <View style={styles.grow}><Text>{'This month'}</Text></View>
         <View style={styles.values}>
-          <View>
+          <View style={styles.money}>
             <Text>{renderMoney(props.intl, props.monthValue, 'EUR')}</Text>
           </View>
           {props.showTrend
@@ -143,7 +152,7 @@ function renderMoney (intl, value, currencyCode) {
 function renderTrend (intl, prevValue, nextValue) {
   if (prevValue === 0)
     return (
-      <Text>{'N/A'}</Text>
+      <View style={styles.trend}><Text>{'N/A'}</Text></View>
     )
 
   const indicatorNumber = calculateIndicatorNumber(prevValue, nextValue)
@@ -169,9 +178,9 @@ function renderTrend (intl, prevValue, nextValue) {
       <Icon
         name={valueIcon}
         color={colors[valueColor]}
-        size={20}
+        size={10}
       />
-      <Text>{`${indicatorNumber}%`}</Text>
+      <Text style={{ color: colors[valueColor] }}>{`${indicatorNumber}%`}</Text>
     </View>
   )
 }

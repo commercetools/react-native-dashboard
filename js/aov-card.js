@@ -1,27 +1,31 @@
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import moment from 'moment'
+import DashboardMetricCard from './dashboard-metric-card'
 
-const calcAvg = (statistic) => statistic.orderValue / statistic.numberOfOrders
+const calcAvg = (statistic) =>
+  statistic.numberOfOrders === 0
+    ? 0
+    : statistic.ordersValue / statistic.numberOfOrders
 
 class AovCard extends Component {
   render () {
     const { orders } = this.props.data
-    return (
-      <View />
-      // <DashboardMetricCard
-      //   title="AOV"
-      //   iconName="chart"
-      //   todayValue={calcAvg(orders.today)}
-      //   weekValue={calcAvg(orders.week)}
-      //   monthValue={calcAvg(orders.month)}
-      //   yesterdayValue={calcAvg(orders.yesterday)}
-      //   lastWeekValue={calcAvg(orders.lastWeek)}
-      //   lastMonthValue={calcAvg(orders.lastMonth)}
-      //   showTrend={true}
-      // />
+    console.log(orders)
+    return this.props.data.loading ? <Text>Loading...</Text> : (
+      <DashboardMetricCard
+        title="AOV"
+        iconName="chart"
+        todayValue={calcAvg(orders.today)}
+        weekValue={calcAvg(orders.week)}
+        monthValue={calcAvg(orders.month)}
+        yesterdayValue={calcAvg(orders.yesterday)}
+        lastWeekValue={calcAvg(orders.lastWeek)}
+        lastMonthValue={calcAvg(orders.lastMonth)}
+        showTrend={false}
+      />
     )
   }
 }
