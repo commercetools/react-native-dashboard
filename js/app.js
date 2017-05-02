@@ -5,11 +5,12 @@ import {
   Animated,
   AppRegistry,
   AsyncStorage,
+  Dimensions,
   StatusBar,
   StyleSheet,
   View,
 } from 'react-native'
-import TabNavigator from 'react-native-tab-navigator'
+import { TabViewAnimated, TabBar } from 'react-native-tab-view'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import { IntlProvider } from 'react-intl'
 import { defaultMemoize } from 'reselect'
@@ -65,7 +66,13 @@ const initialState = {
   inactiveProjectIds: [],
   // The error message shown in the login screen.
   loginErrorMessage: null,
-  selectedTab: 'dashboard',
+  // The current active navigation tab
+  navigationIndex: 0,
+  // Tab definitions
+  navigationRoutes: [
+    { key: 'dashboard' },
+    { key: 'account' },
+  ]
 }
 
 // Given a list of projects, return a tuple with a list of // active / inactive
@@ -300,6 +307,58 @@ class Application extends Component {
     this.setState({ ...initialState, canStart: true })
   }
 
+  renderScene = ({ route }) => {
+    const { state } = this
+    switch (route.key) {
+      case 'dashboard':
+        return (
+          <Dashboard
+            token={state.token}
+            projects={state.projects}
+            selectedProjectId={state.selectedProjectId}
+          />
+        )
+      case 'account':
+        return (
+          <Account user={state.user} />
+        )
+      default:
+        return null
+    }
+  }
+
+  renderFooter = props => {
+    return (
+      <TabBar
+        {...props}
+        style={{ backgroundColor: colors.darkBlue }}
+        indicatorStyle={{ backgroundColor: colors.green }}
+        // color for material ripple (Android >= 5.0 only)
+        pressColor={'rgba(255,255,255,0.6)'}
+        // iOS and Android < 5.0 only
+        pressOpacity={0.6}
+        scrollEnabled={false}
+        renderIcon={({ route, focused }) => {
+          let iconName
+          if (route.key === 'dashboard')
+            iconName = 'dashboard'
+          else if (route.key === 'account')
+            iconName = 'user'
+          if (!iconName)
+            return null
+
+          return (
+            <FontAwesomeIcon
+              name={iconName}
+              color={focused ? colors.green : colors.lightWhite}
+              size={20}
+            />
+          )
+        }}
+      />
+    )
+  }
+
   render () {
     const { state } = this
 
@@ -332,54 +391,26 @@ class Application extends Component {
           // that the user has access to no projects).
           state.token && state.selectedProjectId
           ? (
-            <TabNavigator
-              tabBarStyle={{ backgroundColor: colors.darkBlue }}
-            >
-              <TabNavigator.Item
-                renderIcon={() => (
-                  <FontAwesomeIcon
-                    name="dashboard"
-                    color={colors.lightWhite}
-                    size={20}
-                  />
-                )}
-                renderSelectedIcon={() => (
-                  <FontAwesomeIcon
-                    name="dashboard"
-                    color={colors.green}
-                    size={20}
-                  />
-                )}
-                selected={state.selectedTab === 'dashboard'}
-                onPress={() => this.setState({ selectedTab: 'dashboard' })}
-              >
-                <Dashboard
-                  token={state.token}
-                  projects={state.projects}
-                  selectedProjectId={state.selectedProjectId}
-                />
-              </TabNavigator.Item>
-              <TabNavigator.Item
-                renderIcon={() => (
-                  <FontAwesomeIcon
-                    name="user"
-                    color={colors.lightWhite}
-                    size={20}
-                  />
-                )}
-                renderSelectedIcon={() => (
-                  <FontAwesomeIcon
-                    name="user"
-                    color={colors.green}
-                    size={20}
-                  />
-                )}
-                selected={state.selectedTab === 'account'}
-                onPress={() => this.setState({ selectedTab: 'account' })}
-              >
-                <Account user={state.user} />
-              </TabNavigator.Item>
-            </TabNavigator>
+            <TabViewAnimated
+              initialLayout={{
+                height: 0,
+                width: Dimensions.get('window').width,
+              }}
+              navigationState={{
+                index: state.navigationIndex,
+                routes: state.navigationRoutes,
+                // <TabViewAnimated /> is a PureComponent. To ensure the
+                // tabs will re-render if something changes in the parent
+                // component state, we pass a prop value that always changes.
+                // TODO: find a better solution?
+                hash: Math.random(),
+              }}
+              renderScene={this.renderScene}
+              renderFooter={this.renderFooter}
+              onRequestChangeTab={
+                index => this.setState({ navigationIndex: index })
+              }
+            />
           )
           : (
             <Login

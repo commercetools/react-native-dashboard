@@ -1113,6 +1113,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.commercetools.CTPDashboard;
 				PRODUCT_NAME = CTPDashboard;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1135,6 +1136,7 @@
 					"-ObjC",
 					"-lc++",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.commercetools.CTPDashboard;
 				PRODUCT_NAME = CTPDashboard;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
