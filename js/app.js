@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native'
 import TabNavigator from 'react-native-tab-navigator'
-import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import { IntlProvider } from 'react-intl'
 import { defaultMemoize } from 'reselect'
 import ApolloClient, { createNetworkInterface } from 'apollo-client'
@@ -31,7 +31,6 @@ const networkInterface = createNetworkInterface({
 networkInterface.use([{
   /* eslint-disable no-param-reassign */
   applyMiddleware (req, next) {
-    console.log(req)
     if (!req.options.headers)
       req.options.headers = {}
     req.options.headers['Accept'] = 'application/json'
@@ -39,7 +38,6 @@ networkInterface.use([{
       req.options.headers['Authorization'] = JSON.parse(state[0][1])
       req.options.headers['X-Project-Key'] = req.request.variables['projectKey']
       req.options.headers['X-Graphql-Target'] = req.request.variables['target']
-      console.log(req.options)
       next()
     })
   },
@@ -339,15 +337,15 @@ class Application extends Component {
             >
               <TabNavigator.Item
                 renderIcon={() => (
-                  <Icon
-                    name="chart"
+                  <FontAwesomeIcon
+                    name="dashboard"
                     color={colors.lightWhite}
                     size={20}
                   />
                 )}
                 renderSelectedIcon={() => (
-                  <Icon
-                    name="chart"
+                  <FontAwesomeIcon
+                    name="dashboard"
                     color={colors.green}
                     size={20}
                   />
@@ -363,14 +361,14 @@ class Application extends Component {
               </TabNavigator.Item>
               <TabNavigator.Item
                 renderIcon={() => (
-                  <Icon
+                  <FontAwesomeIcon
                     name="user"
                     color={colors.lightWhite}
                     size={20}
                   />
                 )}
                 renderSelectedIcon={() => (
-                  <Icon
+                  <FontAwesomeIcon
                     name="user"
                     color={colors.green}
                     size={20}

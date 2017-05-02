@@ -1,14 +1,18 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   StyleSheet,
   Text,
   View,
 } from 'react-native'
-import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import { intlShape, injectIntl } from 'react-intl'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import moment from 'moment'
+import DashboardItemPlaceholder from './dashboard-item-placeholder'
 import * as colors from './utils/colors'
+import { formatMoney } from './utils/formats'
 
 const styles = StyleSheet.create({
   container: {
@@ -43,6 +47,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderBottomColor: colors.grey,
+    borderBottomWidth: 1,
   },
   name: {
     flex: 1,
@@ -57,30 +63,50 @@ const styles = StyleSheet.create({
   },
   totalAmount: {
     flex: 0,
+    alignItems: 'flex-end',
   },
-  totalAmountText: {
-    color: colors.semiDarkGrey,
-  }
 })
 
 class TopFiveProducts extends Component {
+  static propTypes = {
+    data: PropTypes.shape({
+      loading: PropTypes.bool.isRequired,
+      orders: PropTypes.shape({
+        topProducts: PropTypes.arrayOf(
+          PropTypes.shape({
+            name: PropTypes.string,
+            sku: PropTypes.string.isRequired,
+            totalAmount: PropTypes.number.isRequired,
+            count: PropTypes.number.isRequired,
+          }),
+        ),
+      }),
+      refetch: PropTypes.func.isRequired,
+    }),
+    registerRefreshListener: PropTypes.func.isRequired,
+    // connected
+    intl: intlShape.isRequired,
+  }
+  componentDidMount () {
+    this.props.registerRefreshListener(() => this.props.data.refetch())
+  }
   render () {
-    const { orders } = this.props.data
-    console.log(orders)
-    return this.props.data.loading ? <Text>Loading...</Text> : (
+    if (this.props.data.loading)
+      return (<DashboardItemPlaceholder />)
+    return (
       <View style={styles.container}>
         <View style={styles.header}>
           <View>
-            <Icon
-              name="chart"
+            <FontAwesomeIcon
+              name="line-chart"
               color={colors.darkGrey}
               size={20}
             />
           </View>
-          <Text style={styles.title}>Top Products</Text>
+          <Text style={styles.title}>{'Top Products'}</Text>
         </View>
         <View style={styles.content}>
-          {orders.topProducts.map((product, index) => (
+          {this.props.data.orders.topProducts.map((product, index) => (
             <View key={product.sku} style={styles.row}>
               <View style={styles.index}>
                 <Text style={styles.indexText}>{index + 1}</Text>
@@ -89,10 +115,18 @@ class TopFiveProducts extends Component {
                 <Text numberOfLines={1} ellipsizeMode="tail">
                   {product.name}
                 </Text>
+                <Text numberOfLines={1} ellipsizeMode="tail"
+                  style={{ color: colors.darkGrey, fontSize: 12 }}
+                >
+                  {`SKU: ${product.sku}`}
+                </Text>
               </View>
               <View style={styles.totalAmount}>
-                <Text style={styles.totalAmountText}>
-                  {product.totalAmount}
+                <Text>
+                  {formatMoney(this.props.intl, product.totalAmount, 'EUR')}
+                </Text>
+                <Text style={{ color: colors.darkGrey, fontSize: 12 }}>
+                  {`(${product.count})`}
                 </Text>
               </View>
             </View>
@@ -102,6 +136,8 @@ class TopFiveProducts extends Component {
     )
   }
 }
+
+const WithIntl = injectIntl(TopFiveProducts)
 
 const TopFiveProductsFetch = gql`
   query TopFiveProducts (
@@ -117,6 +153,7 @@ const TopFiveProductsFetch = gql`
         name(locale: "en")
         totalAmount
         sku
+        count
       }
     }
   }
@@ -130,4 +167,4 @@ export default graphql(TopFiveProductsFetch, {
       projectKey: ownProps.projectKey,
     }
   })
-})(TopFiveProducts)
+})(WithIntl)

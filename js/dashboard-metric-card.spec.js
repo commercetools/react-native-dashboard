@@ -7,7 +7,7 @@ import { DashboardMetricCard } from './dashboard-metric-card'
 
 const createTestProps = props => ({
   title: 'The title',
-  iconName: 'chart',
+  iconName: 'bar-chart',
   todayValue: 10,
   weekValue: 20,
   monthValue: 30,

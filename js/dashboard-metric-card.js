@@ -8,8 +8,10 @@ import {
   View,
 } from 'react-native'
 import { intlShape, injectIntl } from 'react-intl'
-import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import * as colors from './utils/colors'
+import { formatMoney } from './utils/formats'
 
 const styles = StyleSheet.create({
   container: {
@@ -70,7 +72,7 @@ export const DashboardMetricCard = props => (
   <View style={styles.container}>
     <View style={styles.header}>
       <View>
-        <Icon
+        <FontAwesomeIcon
           name={props.iconName}
           color={colors.darkGrey}
           size={20}
@@ -83,7 +85,7 @@ export const DashboardMetricCard = props => (
         <View style={styles.grow}><Text>{'Today'}</Text></View>
         <View style={styles.values}>
           <View style={styles.money}>
-            <Text>{renderMoney(props.intl, props.todayValue, 'EUR')}</Text>
+            <Text>{formatMoney(props.intl, props.todayValue, 'EUR')}</Text>
           </View>
           {props.showTrend
             ? renderTrend(props.intl, props.yesterdayValue, props.todayValue)
@@ -95,7 +97,7 @@ export const DashboardMetricCard = props => (
         <View style={styles.grow}><Text>{'This week'}</Text></View>
         <View style={styles.values}>
           <View style={styles.money}>
-            <Text>{renderMoney(props.intl, props.weekValue, 'EUR')}</Text>
+            <Text>{formatMoney(props.intl, props.weekValue, 'EUR')}</Text>
           </View>
           {props.showTrend
             ? renderTrend(props.intl, props.lastWeekValue, props.weekValue)
@@ -107,7 +109,7 @@ export const DashboardMetricCard = props => (
         <View style={styles.grow}><Text>{'This month'}</Text></View>
         <View style={styles.values}>
           <View style={styles.money}>
-            <Text>{renderMoney(props.intl, props.monthValue, 'EUR')}</Text>
+            <Text>{formatMoney(props.intl, props.monthValue, 'EUR')}</Text>
           </View>
           {props.showTrend
             ? renderTrend(props.intl, props.lastMonthValue, props.monthValue)
@@ -138,21 +140,12 @@ DashboardMetricCard.propTypes = {
 export default injectIntl(DashboardMetricCard)
 
 
-function renderMoney (intl, value, currencyCode) {
-  return intl.formatNumber(
-    value / 100,
-    {
-      style: 'currency',
-      currency: currencyCode,
-      currencyDisplay: 'symbol',
-    }
-  )
-}
-
 function renderTrend (intl, prevValue, nextValue) {
   if (prevValue === 0)
     return (
-      <View style={styles.trend}><Text>{'N/A'}</Text></View>
+      <View style={styles.trend}>
+        <Text style={{ color: colors.darkGrey }}>{'N/A'}</Text>
+      </View>
     )
 
   const indicatorNumber = calculateIndicatorNumber(prevValue, nextValue)
@@ -170,12 +163,14 @@ function renderTrend (intl, prevValue, nextValue) {
 
   if (!valueIcon)
     return (
-      <Text>{'N/A'}</Text>
+      <View style={styles.trend}>
+        <Text style={{ color: colors.darkGrey }}>{'N/A'}</Text>
+      </View>
     )
 
   return (
     <View style={styles.trend}>
-      <Icon
+      <SimpleLineIcon
         name={valueIcon}
         color={colors[valueColor]}
         size={10}

@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { View, Text } from 'react-native'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import moment from 'moment'
+import DashboardItemPlaceholder from './dashboard-item-placeholder'
 import DashboardMetricCard from './dashboard-metric-card'
 
 const calcAvg = (statistic) =>
@@ -11,19 +13,55 @@ const calcAvg = (statistic) =>
     : statistic.ordersValue / statistic.numberOfOrders
 
 class AovCard extends Component {
+  static propTypes = {
+    data: PropTypes.shape({
+      loading: PropTypes.bool.isRequired,
+      orders: PropTypes.shape({
+        today: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+          numberOfOrders: PropTypes.number.isRequired,
+        }).isRequired,
+        week: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+          numberOfOrders: PropTypes.number.isRequired,
+        }).isRequired,
+        month: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+          numberOfOrders: PropTypes.number.isRequired,
+        }).isRequired,
+        yesterday: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+          numberOfOrders: PropTypes.number.isRequired,
+        }).isRequired,
+        lastWeek: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+          numberOfOrders: PropTypes.number.isRequired,
+        }).isRequired,
+        lastMonth: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+          numberOfOrders: PropTypes.number.isRequired,
+        }).isRequired,
+      }),
+      refetch: PropTypes.func.isRequired,
+    }),
+    registerRefreshListener: PropTypes.func.isRequired,
+  }
+  componentDidMount () {
+    this.props.registerRefreshListener(() => this.props.data.refetch())
+  }
   render () {
-    const { orders } = this.props.data
-    console.log(orders)
-    return this.props.data.loading ? <Text>Loading...</Text> : (
+    if (this.props.data.loading)
+      return (<DashboardItemPlaceholder />)
+    return (
       <DashboardMetricCard
         title="AOV"
-        iconName="chart"
-        todayValue={calcAvg(orders.today)}
-        weekValue={calcAvg(orders.week)}
-        monthValue={calcAvg(orders.month)}
-        yesterdayValue={calcAvg(orders.yesterday)}
-        lastWeekValue={calcAvg(orders.lastWeek)}
-        lastMonthValue={calcAvg(orders.lastMonth)}
+        iconName="bar-chart"
+        todayValue={calcAvg(this.props.data.orders.today)}
+        weekValue={calcAvg(this.props.data.orders.week)}
+        monthValue={calcAvg(this.props.data.orders.month)}
+        yesterdayValue={calcAvg(this.props.data.orders.yesterday)}
+        lastWeekValue={calcAvg(this.props.data.orders.lastWeek)}
+        lastMonthValue={calcAvg(this.props.data.orders.lastMonth)}
         showTrend={false}
       />
     )

@@ -108,77 +108,60 @@ export default class Dashboard extends Component {
     selectedProjectId: PropTypes.string.isRequired,
   }
 
-  constructor (props) {
-    super(props)
+  refreshListener = [];
+  pendingRefreshCount = 0;
 
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-    })
-    this.state = {
-      projectSwitcherModalVisible: false,
-      isLoading: true,
-      isRefreshing: false,
-      dataSource: ds.cloneWithRows([
+  state = {
+    projectSwitcherModalVisible: false,
+    isRefreshing: false,
+    dataSource: new ListView
+      .DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2,
+      })
+      .cloneWithRows([
         { component: TotalSalesCard },
         { component: AovCard },
         { component: TopFiveProducts },
       ]),
-    }
-
-    // Bind functions
-    this.handleManualRefresh = this.handleManualRefresh.bind(this)
-    this.renderItemRow = this.renderItemRow.bind(this)
-  }
-
-  componentDidMount () {
-    this.fetchProjectStatistics(this.props)
-  }
+  };
 
   componentWillReceiveProps (nextProps) {
     if (this.props.selectedProjectId !== nextProps.selectedProjectId) {
-      this.setState({ isLoading: true })
-      this.fetchProjectStatistics(nextProps)
+      this.handleManualRefresh()
     }
   }
 
-  fetchProjectStatistics (props) {
-    const project = props.projects[props.selectedProjectId]
-
-    // Get the data
-    // getStatisticsForThisWeek({
-    //   projectKey: project.key,
-    //   token: props.token,
-    // })
-    // .then(
-    //   (response) => {
-    //     this.setState({
-    //       dataSource: this.state.dataSource.cloneWithRows([
-    //         { type: 'orders', data: response.data.statistics.lastWeekOrders },
-    //         { type: 'carts', data: response.data.statistics.lastWeekCarts },
-    //       ]),
-    //       isLoading: false,
-    //       isRefreshing: false,
-    //     })
-    //   },
-    //   (error) => {
-    //     // TODO: error handling
-    //     console.error(error.body || error)
-    //   },
-    // )
-  }
-
-  handleManualRefresh () {
+  handleManualRefresh = () => {
     this.setState({ isRefreshing: true })
-    this.fetchProjectStatistics(this.props)
+    this.pendingRefreshCount = this.refreshListener.length
+    this.refreshListener.forEach(listener =>
+      listener().then(this.handleRefreshFinished, this.handleRefreshFinished)
+    )
   }
 
-  renderItemRow (rowData) {
-    const Component = rowData.component
+  handleRefreshFinished = () => {
+    this.pendingRefreshCount -= 1
+    if (this.pendingRefreshCount === 0) {
+      this.setState({ isRefreshing: false })
+    }
+  }
 
-    // Show a placeholder item while data is being loaded.
+  handleRegisterRefreshListener = (listener) => {
+    const length = this.refreshListener.push(listener)
+    return () => {
+      this.refreshListener = [
+        ...this.refreshListener.slice(0, length - 1),
+        ...this.refreshListener.slice(length),
+      ]
+    }
+  }
+
+  renderItemRow = (rowData) => {
+    const Component = rowData.component
     return (
       <Component
         projectKey={this.props.projects[this.props.selectedProjectId].key}
+        registerRefreshListener={this.handleRegisterRefreshListener}
       />
     )
   }

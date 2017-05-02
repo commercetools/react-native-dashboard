@@ -1,23 +1,56 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { View, Text } from 'react-native'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import moment from 'moment'
+import DashboardItemPlaceholder from './dashboard-item-placeholder'
 import DashboardMetricCard from './dashboard-metric-card'
 
 class TotalSalesCard extends Component {
+  static propTypes = {
+    data: PropTypes.shape({
+      loading: PropTypes.bool.isRequired,
+      orders: PropTypes.shape({
+        today: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+        }).isRequired,
+        week: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+        }).isRequired,
+        month: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+        }).isRequired,
+        yesterday: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+        }).isRequired,
+        lastWeek: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+        }).isRequired,
+        lastMonth: PropTypes.shape({
+          ordersValue: PropTypes.number.isRequired,
+        }).isRequired,
+      }),
+      refetch: PropTypes.func.isRequired,
+    }),
+    registerRefreshListener: PropTypes.func.isRequired,
+  }
+  componentDidMount () {
+    this.props.registerRefreshListener(() => this.props.data.refetch())
+  }
   render () {
-    const { orders } = this.props.data
-    return this.props.data.loading ? <Text>Loading...</Text> : (
+    if (this.props.data.loading)
+      return (<DashboardItemPlaceholder />)
+    return (
       <DashboardMetricCard
         title="Total Sales"
-        iconName="chart"
-        todayValue={orders.today.ordersValue}
-        weekValue={orders.week.ordersValue}
-        monthValue={orders.month.ordersValue}
-        yesterdayValue={orders.yesterday.ordersValue}
-        lastWeekValue={orders.lastWeek.ordersValue}
-        lastMonthValue={orders.lastMonth.ordersValue}
+        iconName="bar-chart"
+        todayValue={this.props.data.orders.today.ordersValue}
+        weekValue={this.props.data.orders.week.ordersValue}
+        monthValue={this.props.data.orders.month.ordersValue}
+        yesterdayValue={this.props.data.orders.yesterday.ordersValue}
+        lastWeekValue={this.props.data.orders.lastWeek.ordersValue}
+        lastMonthValue={this.props.data.orders.lastMonth.ordersValue}
         showTrend={true}
       />
     )
@@ -100,6 +133,6 @@ export default graphql(TotalSalesFetch, {
       toDateLastWeek: moment().subtract(1, 'week').endOf('week').toISOString(),
       fromDateLastMonth: moment().subtract(1, 'month').startOf('month').toISOString(),
       toDateLastMonth: moment().subtract(1, 'month').endOf('month').toISOString(),
-    }
+    },
   })
 })(TotalSalesCard)
