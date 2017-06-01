@@ -1,11 +1,10 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { View, Text } from 'react-native'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
-import moment from 'moment'
-import DashboardItemPlaceholder from './dashboard-item-placeholder'
-import DashboardMetricCard from './dashboard-metric-card'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+import moment from 'moment';
+import DashboardItemPlaceholder from './dashboard-item-placeholder';
+import DashboardMetricCard from './dashboard-metric-card';
 
 class TotalSalesCard extends Component {
   static propTypes = {
@@ -34,13 +33,12 @@ class TotalSalesCard extends Component {
       refetch: PropTypes.func.isRequired,
     }),
     registerRefreshListener: PropTypes.func.isRequired,
+  };
+  componentDidMount() {
+    this.props.registerRefreshListener(() => this.props.data.refetch());
   }
-  componentDidMount () {
-    this.props.registerRefreshListener(() => this.props.data.refetch())
-  }
-  render () {
-    if (this.props.data.loading)
-      return (<DashboardItemPlaceholder />)
+  render() {
+    if (this.props.data.loading) return <DashboardItemPlaceholder />;
     return (
       <DashboardMetricCard
         title="Total Sales"
@@ -53,7 +51,7 @@ class TotalSalesCard extends Component {
         lastMonthValue={this.props.data.orders.lastMonth.ordersValue}
         showTrend={true}
       />
-    )
+    );
   }
 }
 
@@ -116,10 +114,10 @@ const TotalSalesFetch = gql`
       }
     }
   }
-`
+`;
 
 export default graphql(TotalSalesFetch, {
-  options: (ownProps) => ({
+  options: ownProps => ({
     variables: {
       target: 'dashboard',
       currency: 'EUR',
@@ -127,12 +125,24 @@ export default graphql(TotalSalesFetch, {
       fromDateDay: moment().startOf('day').toISOString(),
       fromDateWeek: moment().startOf('week').toISOString(),
       fromDateMonth: moment().startOf('month').toISOString(),
-      fromDateYesterday: moment().subtract(1, 'day').startOf('day').toISOString(),
+      fromDateYesterday: moment()
+        .subtract(1, 'day')
+        .startOf('day')
+        .toISOString(),
       toDateYesterday: moment().subtract(1, 'day').endOf('day').toISOString(),
-      fromDateLastWeek: moment().subtract(1, 'week').startOf('week').toISOString(),
+      fromDateLastWeek: moment()
+        .subtract(1, 'week')
+        .startOf('week')
+        .toISOString(),
       toDateLastWeek: moment().subtract(1, 'week').endOf('week').toISOString(),
-      fromDateLastMonth: moment().subtract(1, 'month').startOf('month').toISOString(),
-      toDateLastMonth: moment().subtract(1, 'month').endOf('month').toISOString(),
+      fromDateLastMonth: moment()
+        .subtract(1, 'month')
+        .startOf('month')
+        .toISOString(),
+      toDateLastMonth: moment()
+        .subtract(1, 'month')
+        .endOf('month')
+        .toISOString(),
     },
-  })
-})(TotalSalesCard)
+  }),
+})(TotalSalesCard);

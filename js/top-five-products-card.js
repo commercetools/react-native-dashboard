@@ -1,18 +1,13 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
-import { intlShape, injectIntl } from 'react-intl'
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
-import moment from 'moment'
-import DashboardItemPlaceholder from './dashboard-item-placeholder'
-import * as colors from './utils/colors'
-import { formatMoney } from './utils/formats'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { StyleSheet, Text, View } from 'react-native';
+import { intlShape, injectIntl } from 'react-intl';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import { graphql } from 'react-apollo';
+import gql from 'graphql-tag';
+import DashboardItemPlaceholder from './dashboard-item-placeholder';
+import * as colors from './utils/colors';
+import { formatMoney } from './utils/formats';
 
 const styles = StyleSheet.create({
   container: {
@@ -65,7 +60,7 @@ const styles = StyleSheet.create({
     flex: 0,
     alignItems: 'flex-end',
   },
-})
+});
 
 class TopFiveProducts extends Component {
   static propTypes = {
@@ -78,7 +73,7 @@ class TopFiveProducts extends Component {
             sku: PropTypes.string.isRequired,
             totalAmount: PropTypes.number.isRequired,
             count: PropTypes.number.isRequired,
-          }),
+          })
         ),
       }),
       refetch: PropTypes.func.isRequired,
@@ -86,13 +81,12 @@ class TopFiveProducts extends Component {
     registerRefreshListener: PropTypes.func.isRequired,
     // connected
     intl: intlShape.isRequired,
+  };
+  componentDidMount() {
+    this.props.registerRefreshListener(() => this.props.data.refetch());
   }
-  componentDidMount () {
-    this.props.registerRefreshListener(() => this.props.data.refetch())
-  }
-  render () {
-    if (this.props.data.loading)
-      return (<DashboardItemPlaceholder />)
+  render() {
+    if (this.props.data.loading) return <DashboardItemPlaceholder />;
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -115,7 +109,9 @@ class TopFiveProducts extends Component {
                 <Text numberOfLines={1} ellipsizeMode="tail">
                   {product.name}
                 </Text>
-                <Text numberOfLines={1} ellipsizeMode="tail"
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
                   style={{ color: colors.darkGrey, fontSize: 12 }}
                 >
                   {`SKU: ${product.sku}`}
@@ -133,11 +129,11 @@ class TopFiveProducts extends Component {
           ))}
         </View>
       </View>
-    )
+    );
   }
 }
 
-const WithIntl = injectIntl(TopFiveProducts)
+const WithIntl = injectIntl(TopFiveProducts);
 
 const TopFiveProductsFetch = gql`
   query TopFiveProducts (
@@ -157,14 +153,14 @@ const TopFiveProductsFetch = gql`
       }
     }
   }
-`
+`;
 
 export default graphql(TopFiveProductsFetch, {
-  options: (ownProps) => ({
+  options: ownProps => ({
     variables: {
       target: 'dashboard',
       currency: 'EUR',
       projectKey: ownProps.projectKey,
-    }
-  })
-})(WithIntl)
+    },
+  }),
+})(WithIntl);

@@ -12,14 +12,10 @@ import {
   Text,
   TextInput,
   View,
-} from 'react-native'
-import {
-  login,
-  getUser,
-  getProjectsForUser,
-} from './utils/api'
-import logo from '../assets/logo_2x.png'
-import * as colors from './utils/colors'
+} from 'react-native';
+import { login, getUser, getProjectsForUser } from './utils/api';
+import logo from '../assets/logo_2x.png';
+import * as colors from './utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -78,18 +74,17 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
   },
-})
+});
 
 export default class Login extends Component {
-
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
     onLoginError: PropTypes.func.isRequired,
     errorMessage: PropTypes.string,
-  }
+  };
 
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
 
     this.state = {
       email: '',
@@ -100,92 +95,84 @@ export default class Login extends Component {
       isEmailFocused: false,
       // Used by the `TextInput` to know if the field is focused.
       isPasswordFocused: false,
-    }
+    };
 
     // Describe how the animations should look like
-    this.animatedValue = new Animated.Value(0)
-    this.animatedButtonScale = new Animated.Value(1)
+    this.animatedValue = new Animated.Value(0);
+    this.animatedButtonScale = new Animated.Value(1);
     this.animatedStyle = {
       opacity: this.animatedValue,
-    }
+    };
     this.animatedButtonStyles = {
       transform: [{ scale: this.animatedButtonScale }],
-    }
+    };
 
     // Bind functions
-    this.handleEmailChange = this.handleEmailChange.bind(this)
-    this.handlePasswordChange = this.handlePasswordChange.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleEmailChange = this.handleEmailChange.bind(this);
+    this.handlePasswordChange = this.handlePasswordChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount () {
-    Animated.timing(
-      this.animatedValue,
-      {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      },
-    ).start()
+  componentDidMount() {
+    Animated.timing(this.animatedValue, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
   }
 
-  handleEmailChange (email) {
-    this.setState({ email })
+  handleEmailChange(email) {
+    this.setState({ email });
   }
 
-  handlePasswordChange (password) {
-    this.setState({ password })
+  handlePasswordChange(password) {
+    this.setState({ password });
   }
 
-  handleSubmit () {
-    const { props, state } = this
+  handleSubmit() {
+    const { props, state } = this;
 
-    this.setState({ isLoading: true })
+    this.setState({ isLoading: true });
 
     login({
       email: state.email,
       password: state.password,
-    })
-    .then(
-      (loginResponse) => {
+    }).then(
+      loginResponse => {
         const requestOptions = {
           token: loginResponse.token,
           userId: loginResponse.user,
-        }
+        };
         Promise.all([
           getUser(requestOptions),
           getProjectsForUser(requestOptions),
-        ])
-        .then(([userResponse, projectsResponse]) => {
+        ]).then(([userResponse, projectsResponse]) => {
           // Show an animation on the login button after the user has been
           // successfully authenticated and before showing the next screen.
-          Animated.timing(
-            this.animatedButtonScale,
-            {
-              toValue: 400,
-              timing: 100,
-              useNativeDriver: true,
-            },
-          ).start(() => {
+          Animated.timing(this.animatedButtonScale, {
+            toValue: 400,
+            timing: 100,
+            useNativeDriver: true,
+          }).start(() => {
             // Notify the Application that the user can be logged in.
             props.onLogin({
               token: loginResponse.token,
               userId: loginResponse.user,
               user: userResponse,
               projects: projectsResponse,
-            })
-          })
-        })
+            });
+          });
+        });
       },
-      (error) => {
-        this.setState({ isLoading: false })
-        props.onLoginError(error)
-      },
-    )
+      error => {
+        this.setState({ isLoading: false });
+        props.onLoginError(error);
+      }
+    );
   }
 
-  render () {
-    const { props, state } = this
+  render() {
+    const { props, state } = this;
 
     return (
       <View style={styles.container}>
@@ -194,30 +181,22 @@ export default class Login extends Component {
           style={styles.keyboardAvoidingViewContainer}
         >
           <View style={styles['logo-container']}>
-            <Image
-              source={logo}
-              style={styles.logo}
-              resizeMode="contain"
-            />
+            <Image source={logo} style={styles.logo} resizeMode="contain" />
           </View>
-          <ActivityIndicator
-            animating={state.isLoading}
-            color={colors.white}
-          />
+          <ActivityIndicator animating={state.isLoading} color={colors.white} />
 
-          {props.errorMessage ? (
-            <View style={styles.errorView}>
-              <Text style={styles.error}>
-                {props.errorMessage}
-              </Text>
-            </View>
-          ) : null}
+          {props.errorMessage
+            ? <View style={styles.errorView}>
+                <Text style={styles.error}>
+                  {props.errorMessage}
+                </Text>
+              </View>
+            : null}
 
-          <Animated.View style={[ styles.form, this.animatedStyle ]}>
+          <Animated.View style={[styles.form, this.animatedStyle]}>
             <View
-              style={state.isEmailFocused
-                ? styles.inputViewFocus
-                : styles.inputView
+              style={
+                state.isEmailFocused ? styles.inputViewFocus : styles.inputView
               }
             >
               <TextInput
@@ -240,14 +219,15 @@ export default class Login extends Component {
               />
             </View>
             <View
-              style={state.isPasswordFocused
-                ? styles.inputViewFocus
-                : styles.inputView
+              style={
+                state.isPasswordFocused
+                  ? styles.inputViewFocus
+                  : styles.inputView
               }
             >
               <TextInput
                 // Field properties
-                ref='password'
+                ref="password"
                 autoCapitalize="none"
                 autoCorrect={false}
                 clearButtonMode="unless-editing"
@@ -274,12 +254,12 @@ export default class Login extends Component {
                 disabled={state.isLoading}
               />
               <Animated.View
-                style={[ styles.button, this.animatedButtonStyles ]}
+                style={[styles.button, this.animatedButtonStyles]}
               />
             </View>
           </Animated.View>
         </KeyboardAvoidingView>
       </View>
-    )
+    );
   }
 }

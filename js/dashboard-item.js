@@ -2,12 +2,8 @@ import PropTypes from 'prop-types';
 /* @flow */
 
 import React from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
-import * as colors from './utils/colors'
+import { StyleSheet, Text, View } from 'react-native';
+import * as colors from './utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -57,7 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.grey,
     color: 'transparent',
   },
-})
+});
 
 const DashboardItem = ({
   title,
@@ -102,7 +98,7 @@ const DashboardItem = ({
       </View>
     </View>
   </View>
-)
+);
 
 DashboardItem.propTypes = {
   title: PropTypes.string.isRequired,
@@ -117,6 +113,6 @@ DashboardItem.propTypes = {
     PropTypes.number,
     PropTypes.string,
   ]).isRequired,
-}
+};
 
-export default DashboardItem
+export default DashboardItem;
