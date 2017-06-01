@@ -2,7 +2,7 @@
 
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { ListView, RefreshControl, StyleSheet, View } from 'react-native';
+import { SectionList, StyleSheet, View } from 'react-native';
 import TotalSalesCard from './total-sales-card';
 import AovCard from './aov-card';
 import TopFiveProducts from './top-five-products-card';
@@ -31,15 +31,7 @@ export default class Dashboard extends Component {
   pendingRefreshCount = 0;
 
   state = {
-    projectSwitcherModalVisible: false,
     isRefreshing: false,
-    dataSource: new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-    }).cloneWithRows([
-      { component: TotalSalesCard },
-      { component: AovCard },
-      { component: TopFiveProducts },
-    ]),
   };
 
   componentWillReceiveProps(nextProps) {
@@ -73,11 +65,12 @@ export default class Dashboard extends Component {
     };
   };
 
-  renderItemRow = rowData => {
-    const ItemComponent = rowData.component;
+  renderItemRow = ({ item }) => {
+    const ItemComponent = item.component;
+    const projectKey = this.props.projects[this.props.selectedProjectId].key
     return (
       <ItemComponent
-        projectKey={this.props.projects[this.props.selectedProjectId].key}
+        projectKey={projectKey}
         registerRefreshListener={this.handleRegisterRefreshListener}
       />
     );
@@ -87,22 +80,17 @@ export default class Dashboard extends Component {
     const { state } = this;
     return (
       <View style={styles.container}>
-        <ListView
-          dataSource={state.dataSource}
-          renderRow={this.renderItemRow}
-          refreshControl={
-            <RefreshControl
-              refreshing={state.isRefreshing}
-              onRefresh={this.handleManualRefresh}
-              // iOS
-              title="Loading..."
-              tintColor={colors.white}
-              titleColor={colors.white}
-              // Android
-              colors={[colors.white]}
-              progressBackgroundColor={colors.white}
-            />
-          }
+        <SectionList
+          sections={[
+            { key: 'total-sales', data: [{ component: TotalSalesCard }] },
+            { key: 'aov', data: [{ component: AovCard }] },
+            { key: 'top-five-products', data: [{ component: TopFiveProducts }] },
+          ]}
+          renderItem={this.renderItemRow}
+          refreshing={state.isRefreshing}
+          onRefresh={this.handleManualRefresh}
+          keyExtractor={item => item.key}
+          enableVirtualization={false}
         />
       </View>
     );
