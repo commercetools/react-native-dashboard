@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontWeight: 'bold',
-    paddingLeft: 8,
+    fontSize: 24,
+    color: colors.bodyColor,
   },
   content: {
     paddingTop: 16,
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomColor: colors.grey,
+    borderBottomColor: colors.mainGrey,
     borderBottomWidth: 1,
   },
   name: {
@@ -90,13 +90,6 @@ class TopFiveProducts extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <View>
-            <FontAwesomeIcon
-              name="line-chart"
-              color={colors.darkGrey}
-              size={20}
-            />
-          </View>
           <Text style={styles.title}>{'Top Products'}</Text>
         </View>
         <View style={styles.content}>

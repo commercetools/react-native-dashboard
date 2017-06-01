@@ -60,6 +60,7 @@ class AovCard extends Component {
         yesterdayValue={calcAvg(this.props.data.orders.yesterday)}
         lastWeekValue={calcAvg(this.props.data.orders.lastWeek)}
         lastMonthValue={calcAvg(this.props.data.orders.lastMonth)}
+        showNumberOfOrders={false}
         showTrend={false}
       />
     );
