@@ -11,9 +11,11 @@ import {
   View,
 } from 'react-native'
 import { TabViewAnimated, TabBar } from 'react-native-tab-view'
-import Icon from 'react-native-vector-icons/SimpleLineIcons'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 import { IntlProvider } from 'react-intl'
 import { defaultMemoize } from 'reselect'
+import ApolloClient, { createNetworkInterface } from 'apollo-client'
+import { ApolloProvider } from 'react-apollo'
 import { getUser, getProjectsForUser } from './utils/api'
 import * as colors from './utils/colors'
 import Landing from './landing'
@@ -21,6 +23,28 @@ import TopBar from './top-bar'
 import Login from './login'
 import Dashboard from './dashboard'
 import Account from './account'
+
+// Apollo client setup
+const networkInterface = createNetworkInterface({
+  uri: 'https://mc.commercetools.com/graphql',
+})
+// Use a middleware to update the request headers with the correct params.
+networkInterface.use([{
+  /* eslint-disable no-param-reassign */
+  applyMiddleware (req, next) {
+    if (!req.options.headers)
+      req.options.headers = {}
+    req.options.headers['Accept'] = 'application/json'
+    AsyncStorage.multiGet(['token'], (err, state) => {
+      req.options.headers['Authorization'] = JSON.parse(state[0][1])
+      req.options.headers['X-Project-Key'] = req.request.variables['projectKey']
+      req.options.headers['X-Graphql-Target'] = req.request.variables['target']
+      next()
+    })
+  },
+  /* eslint-enable no-param-reassign */
+}])
+const client = new ApolloClient({ networkInterface })
 
 const initialState = {
   // Used to wait for the application to render before loading the
@@ -81,7 +105,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default class Application extends Component {
+class Application extends Component {
   constructor (props) {
     super(props)
 
@@ -317,14 +341,14 @@ export default class Application extends Component {
         renderIcon={({ route, focused }) => {
           let iconName
           if (route.key === 'dashboard')
-            iconName = 'chart'
+            iconName = 'dashboard'
           else if (route.key === 'account')
             iconName = 'user'
           if (!iconName)
             return null
 
           return (
-            <Icon
+            <FontAwesomeIcon
               name={iconName}
               color={focused ? colors.green : colors.lightWhite}
               size={20}
@@ -401,10 +425,14 @@ export default class Application extends Component {
   }
 }
 
-const ApplicationProvider = (props) => (
+const AppWithApollo = (props) => (
   <IntlProvider key="intl" locale={'en'} messages={{ /* TODO */ }}>
-    <Application {...props} />
+    <ApolloProvider client={client}>
+      <Application {...props} />
+    </ApolloProvider>
   </IntlProvider>
 )
 
-AppRegistry.registerComponent('CTPDashboard', () => ApplicationProvider)
+export default AppWithApollo
+
+AppRegistry.registerComponent('CTPDashboard', () => AppWithApollo)

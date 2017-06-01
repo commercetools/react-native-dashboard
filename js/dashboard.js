@@ -10,6 +10,9 @@ import {
 } from 'react-native'
 import { defaultMemoize } from 'reselect'
 import DashboardItem from './dashboard-item'
+import TotalSalesCard from './total-sales-card'
+import AovCard from './aov-card'
+import TopFiveProducts from './top-five-products-card'
 import DashboardItemPlaceholder from './dashboard-item-placeholder'
 import { getStatisticsForThisWeek } from './utils/api'
 import * as colors from './utils/colors'
@@ -105,96 +108,62 @@ export default class Dashboard extends Component {
     selectedProjectId: PropTypes.string.isRequired,
   }
 
-  constructor (props) {
-    super(props)
+  refreshListener = [];
+  pendingRefreshCount = 0;
 
-    const ds = new ListView.DataSource({
-      rowHasChanged: (r1, r2) => r1 !== r2,
-    })
-    this.state = {
-      projectSwitcherModalVisible: false,
-      isLoading: true,
-      isRefreshing: false,
-      dataSource: ds.cloneWithRows([
-        {
-          type: 'orders',
-          data: [],
-        },
-        {
-          type: 'carts',
-          data: [],
-        },
+  state = {
+    projectSwitcherModalVisible: false,
+    isRefreshing: false,
+    dataSource: new ListView
+      .DataSource({
+        rowHasChanged: (r1, r2) => r1 !== r2,
+      })
+      .cloneWithRows([
+        { component: TotalSalesCard },
+        { component: AovCard },
+        { component: TopFiveProducts },
       ]),
-    }
-
-    // Bind functions
-    this.handleManualRefresh = this.handleManualRefresh.bind(this)
-    this.renderItemRow = this.renderItemRow.bind(this)
-  }
-
-  componentDidMount () {
-    this.fetchProjectStatistics(this.props)
-  }
+  };
 
   componentWillReceiveProps (nextProps) {
     if (this.props.selectedProjectId !== nextProps.selectedProjectId) {
-      this.setState({ isLoading: true })
-      this.fetchProjectStatistics(nextProps)
+      this.handleManualRefresh()
     }
   }
 
-  fetchProjectStatistics (props) {
-    const project = props.projects[props.selectedProjectId]
-
-    // Get the data
-    getStatisticsForThisWeek({
-      projectKey: project.key,
-      token: props.token,
-    })
-    .then(
-      (response) => {
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRows([
-            { type: 'orders', data: response.data.statistics.lastWeekOrders },
-            { type: 'carts', data: response.data.statistics.lastWeekCarts },
-          ]),
-          isLoading: false,
-          isRefreshing: false,
-        })
-      },
-      (error) => {
-        // TODO: error handling
-        console.error(error.body || error)
-      },
+  handleManualRefresh = () => {
+    this.setState({ isRefreshing: true })
+    this.pendingRefreshCount = this.refreshListener.length
+    this.refreshListener.forEach(listener =>
+      listener().then(this.handleRefreshFinished, this.handleRefreshFinished)
     )
   }
 
-  handleManualRefresh () {
-    this.setState({ isRefreshing: true })
-    this.fetchProjectStatistics(this.props)
+  handleRefreshFinished = () => {
+    this.pendingRefreshCount -= 1
+    if (this.pendingRefreshCount === 0) {
+      this.setState({ isRefreshing: false })
+    }
   }
 
-  renderItemRow (rowData) {
-    const config = dashboardItemMapping[rowData.type]
-    const data = rowData.data
+  handleRegisterRefreshListener = (listener) => {
+    const length = this.refreshListener.push(listener)
+    return () => {
+      this.refreshListener = [
+        ...this.refreshListener.slice(0, length - 1),
+        ...this.refreshListener.slice(length),
+      ]
+    }
+  }
 
-    // Show a placeholder item while data is being loaded.
-    return this.state.isLoading
-      ? (<DashboardItemPlaceholder />)
-      : (
-        // TODO: enhance the item to include more statistic information
-        // - average of week
-        // - today
-        // - trend of today based on week average
-        <DashboardItem
-          title={config.label}
-          total={config.total(data)}
-          firstSideMetricValue={config.firstMetric(data)}
-          firstSideMetricLabel={config.firstMetricLabel}
-          secondSideMetricValue={config.secondMetric(data)}
-          secondSideMetricLabel={config.secondMetricLabel}
-        />
-      )
+  renderItemRow = (rowData) => {
+    const Component = rowData.component
+    return (
+      <Component
+        projectKey={this.props.projects[this.props.selectedProjectId].key}
+        registerRefreshListener={this.handleRegisterRefreshListener}
+      />
+    )
   }
 
   render () {

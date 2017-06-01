@@ -43,14 +43,14 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
             },
             undefined,
             Object {
-              "fontFamily": "simple-line-icons",
+              "fontFamily": "FontAwesome",
               "fontStyle": "normal",
               "fontWeight": "normal",
             },
           ]
         }
       >
-        
+        
       </Text>
     </View>
     <Text
@@ -83,7 +83,13 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
         }
       }
     >
-      <View>
+      <View
+        style={
+          Object {
+            "flex": 1,
+          }
+        }
+      >
         <Text
           accessible={true}
           allowFontScaling={true}
@@ -101,7 +107,15 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
           }
         }
       >
-        <View>
+        <View
+          style={
+            Object {
+              "flex": 1,
+              "flexDirection": "row",
+              "justifyContent": "flex-end",
+            }
+          }
+        >
           <Text
             accessible={true}
             allowFontScaling={true}
@@ -113,6 +127,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
         <View
           style={
             Object {
+              "alignItems": "center",
               "flex": 1,
               "flexDirection": "row",
               "justifyContent": "flex-end",
@@ -127,7 +142,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
               Array [
                 Object {
                   "color": "#20AD92",
-                  "fontSize": 20,
+                  "fontSize": 10,
                 },
                 undefined,
                 Object {
@@ -144,6 +159,11 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
             accessible={true}
             allowFontScaling={true}
             ellipsizeMode="tail"
+            style={
+              Object {
+                "color": "#20AD92",
+              }
+            }
           >
             100%
           </Text>
@@ -159,7 +179,13 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
         }
       }
     >
-      <View>
+      <View
+        style={
+          Object {
+            "flex": 1,
+          }
+        }
+      >
         <Text
           accessible={true}
           allowFontScaling={true}
@@ -177,7 +203,15 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
           }
         }
       >
-        <View>
+        <View
+          style={
+            Object {
+              "flex": 1,
+              "flexDirection": "row",
+              "justifyContent": "flex-end",
+            }
+          }
+        >
           <Text
             accessible={true}
             allowFontScaling={true}
@@ -189,6 +223,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
         <View
           style={
             Object {
+              "alignItems": "center",
               "flex": 1,
               "flexDirection": "row",
               "justifyContent": "flex-end",
@@ -203,7 +238,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
               Array [
                 Object {
                   "color": "#20AD92",
-                  "fontSize": 20,
+                  "fontSize": 10,
                 },
                 undefined,
                 Object {
@@ -220,6 +255,11 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
             accessible={true}
             allowFontScaling={true}
             ellipsizeMode="tail"
+            style={
+              Object {
+                "color": "#20AD92",
+              }
+            }
           >
             100%
           </Text>
@@ -235,7 +275,13 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
         }
       }
     >
-      <View>
+      <View
+        style={
+          Object {
+            "flex": 1,
+          }
+        }
+      >
         <Text
           accessible={true}
           allowFontScaling={true}
@@ -253,7 +299,15 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
           }
         }
       >
-        <View>
+        <View
+          style={
+            Object {
+              "flex": 1,
+              "flexDirection": "row",
+              "justifyContent": "flex-end",
+            }
+          }
+        >
           <Text
             accessible={true}
             allowFontScaling={true}
@@ -265,6 +319,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
         <View
           style={
             Object {
+              "alignItems": "center",
               "flex": 1,
               "flexDirection": "row",
               "justifyContent": "flex-end",
@@ -279,7 +334,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
               Array [
                 Object {
                   "color": "#20AD92",
-                  "fontSize": 20,
+                  "fontSize": 10,
                 },
                 undefined,
                 Object {
@@ -296,6 +351,11 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
             accessible={true}
             allowFontScaling={true}
             ellipsizeMode="tail"
+            style={
+              Object {
+                "color": "#20AD92",
+              }
+            }
           >
             100%
           </Text>
@@ -349,14 +409,14 @@ exports[`rendering without trend should render only values 1`] = `
             },
             undefined,
             Object {
-              "fontFamily": "simple-line-icons",
+              "fontFamily": "FontAwesome",
               "fontStyle": "normal",
               "fontWeight": "normal",
             },
           ]
         }
       >
-        
+        
       </Text>
     </View>
     <Text
@@ -389,7 +449,13 @@ exports[`rendering without trend should render only values 1`] = `
         }
       }
     >
-      <View>
+      <View
+        style={
+          Object {
+            "flex": 1,
+          }
+        }
+      >
         <Text
           accessible={true}
           allowFontScaling={true}
@@ -407,7 +473,15 @@ exports[`rendering without trend should render only values 1`] = `
           }
         }
       >
-        <View>
+        <View
+          style={
+            Object {
+              "flex": 1,
+              "flexDirection": "row",
+              "justifyContent": "flex-end",
+            }
+          }
+        >
           <Text
             accessible={true}
             allowFontScaling={true}
@@ -427,7 +501,13 @@ exports[`rendering without trend should render only values 1`] = `
         }
       }
     >
-      <View>
+      <View
+        style={
+          Object {
+            "flex": 1,
+          }
+        }
+      >
         <Text
           accessible={true}
           allowFontScaling={true}
@@ -445,7 +525,15 @@ exports[`rendering without trend should render only values 1`] = `
           }
         }
       >
-        <View>
+        <View
+          style={
+            Object {
+              "flex": 1,
+              "flexDirection": "row",
+              "justifyContent": "flex-end",
+            }
+          }
+        >
           <Text
             accessible={true}
             allowFontScaling={true}
@@ -465,7 +553,13 @@ exports[`rendering without trend should render only values 1`] = `
         }
       }
     >
-      <View>
+      <View
+        style={
+          Object {
+            "flex": 1,
+          }
+        }
+      >
         <Text
           accessible={true}
           allowFontScaling={true}
@@ -483,7 +577,15 @@ exports[`rendering without trend should render only values 1`] = `
           }
         }
       >
-        <View>
+        <View
+          style={
+            Object {
+              "flex": 1,
+              "flexDirection": "row",
+              "justifyContent": "flex-end",
+            }
+          }
+        >
           <Text
             accessible={true}
             allowFontScaling={true}

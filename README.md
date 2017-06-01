@@ -27,7 +27,10 @@ $ react-native upgrade # useful in case of breaking changes
 ```
 
 #### TODOs
-- loading placeholder cards
+- change cards UI
+  - numbers should be bigger, more visible
+  - better use of the space
+  - top products data should be shown differently
 - better project switcher (show inactive projects)
 - currency selector
 - unit tests
