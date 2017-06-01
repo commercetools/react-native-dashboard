@@ -1,11 +1,8 @@
 /* @flow */
 
-import React from 'react'
-import {
-  StyleSheet,
-  View,
-} from 'react-native'
-import * as colors from './utils/colors'
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import * as colors from './utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -57,7 +54,7 @@ const styles = StyleSheet.create({
     height: 12,
     backgroundColor: colors.grey,
   },
-})
+});
 
 const DashboardItemPlaceholder = () => (
   <View style={styles.container}>
@@ -82,6 +79,6 @@ const DashboardItemPlaceholder = () => (
       </View>
     </View>
   </View>
-)
+);
 
-export default DashboardItemPlaceholder
+export default DashboardItemPlaceholder;

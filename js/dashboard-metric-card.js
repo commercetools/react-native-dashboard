@@ -1,17 +1,13 @@
 /* @flow */
 
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import {
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
-import { intlShape, injectIntl } from 'react-intl'
-import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons'
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
-import * as colors from './utils/colors'
-import { formatMoney } from './utils/formats'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { StyleSheet, Text, View } from 'react-native';
+import { intlShape, injectIntl } from 'react-intl';
+import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import * as colors from './utils/colors';
+import { formatMoney } from './utils/formats';
 
 const styles = StyleSheet.create({
   container: {
@@ -66,7 +62,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-})
+});
 
 export const DashboardMetricCard = props => (
   <View style={styles.container}>
@@ -89,8 +85,7 @@ export const DashboardMetricCard = props => (
           </View>
           {props.showTrend
             ? renderTrend(props.intl, props.yesterdayValue, props.todayValue)
-            : null
-          }
+            : null}
         </View>
       </View>
       <View style={styles.row}>
@@ -101,8 +96,7 @@ export const DashboardMetricCard = props => (
           </View>
           {props.showTrend
             ? renderTrend(props.intl, props.lastWeekValue, props.weekValue)
-            : null
-          }
+            : null}
         </View>
       </View>
       <View style={styles.row}>
@@ -113,15 +107,14 @@ export const DashboardMetricCard = props => (
           </View>
           {props.showTrend
             ? renderTrend(props.intl, props.lastMonthValue, props.monthValue)
-            : null
-          }
+            : null}
         </View>
       </View>
     </View>
   </View>
-)
+);
 
-DashboardMetricCard.displayName = 'DashboardMetricCard'
+DashboardMetricCard.displayName = 'DashboardMetricCard';
 DashboardMetricCard.propTypes = {
   title: PropTypes.string.isRequired,
   iconName: PropTypes.string.isRequired,
@@ -135,30 +128,28 @@ DashboardMetricCard.propTypes = {
 
   // connected
   intl: intlShape.isRequired,
-}
+};
 
-export default injectIntl(DashboardMetricCard)
+export default injectIntl(DashboardMetricCard);
 
-
-function renderTrend (intl, prevValue, nextValue) {
+function renderTrend(intl, prevValue, nextValue) {
   if (prevValue === 0)
     return (
       <View style={styles.trend}>
         <Text style={{ color: colors.darkGrey }}>{'N/A'}</Text>
       </View>
-    )
+    );
 
-  const indicatorNumber = calculateIndicatorNumber(prevValue, nextValue)
+  const indicatorNumber = calculateIndicatorNumber(prevValue, nextValue);
 
-  let valueColor
-  let valueIcon
+  let valueColor;
+  let valueIcon;
   if (indicatorNumber < 0) {
-    valueColor = 'red'
-    valueIcon = 'arrow-down'
-  }
-  else if (indicatorNumber >= 0) {
-    valueColor = 'green'
-    valueIcon = 'arrow-up'
+    valueColor = 'red';
+    valueIcon = 'arrow-down';
+  } else if (indicatorNumber >= 0) {
+    valueColor = 'green';
+    valueIcon = 'arrow-up';
   }
 
   if (!valueIcon)
@@ -166,27 +157,22 @@ function renderTrend (intl, prevValue, nextValue) {
       <View style={styles.trend}>
         <Text style={{ color: colors.darkGrey }}>{'N/A'}</Text>
       </View>
-    )
+    );
 
   return (
     <View style={styles.trend}>
-      <SimpleLineIcon
-        name={valueIcon}
-        color={colors[valueColor]}
-        size={10}
-      />
+      <SimpleLineIcon name={valueIcon} color={colors[valueColor]} size={10} />
       <Text style={{ color: colors[valueColor] }}>{`${indicatorNumber}%`}</Text>
     </View>
-  )
+  );
 }
 
-function calculateIndicatorNumber (oldVal, newVal) {
-  const diffPercentage = ((newVal - oldVal) / oldVal) * 100
+function calculateIndicatorNumber(oldVal, newVal) {
+  const diffPercentage = (newVal - oldVal) / oldVal * 100;
 
   // Check if the calculated value has decimal places.
   // If so returns the value fixed to 2 decimals.
-  if (Math.round(diffPercentage) === diffPercentage)
-    return diffPercentage
+  if (Math.round(diffPercentage) === diffPercentage) return diffPercentage;
 
-  return diffPercentage.toFixed(2)
+  return diffPercentage.toFixed(2);
 }

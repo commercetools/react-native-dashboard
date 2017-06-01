@@ -2,14 +2,9 @@ import PropTypes from 'prop-types';
 /* @flow */
 
 import React from 'react';
-import {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
-import md5 from 'blueimp-md5'
-import * as colors from './utils/colors'
+import { Image, StyleSheet, Text, View } from 'react-native';
+import md5 from 'blueimp-md5';
+import * as colors from './utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -54,43 +49,42 @@ const styles = StyleSheet.create({
   propertyValue: {
     color: colors.darkBlue,
   },
-})
+});
 
-const Account = ({ user }) => (
-  user ? (
-    <View style={styles.container}>
-      <View style={styles.infoContainer}>
-        <View style={styles.imageContainer}>
-          <Image
-            source={{ uri: getGravatarUrl(user.email, 200) }}
-            style={styles.avatar}
-          />
+const Account = ({ user }) =>
+  user
+    ? <View style={styles.container}>
+        <View style={styles.infoContainer}>
+          <View style={styles.imageContainer}>
+            <Image
+              source={{ uri: getGravatarUrl(user.email, 200) }}
+              style={styles.avatar}
+            />
+          </View>
+          <Text style={styles.nameContainer}>
+            {`${user.firstName} ${user.lastName}`}
+          </Text>
         </View>
-        <Text style={styles.nameContainer}>
-          {`${user.firstName} ${user.lastName}`}
-        </Text>
+        <View style={styles.propertiesContainer}>
+          <View style={styles.property}>
+            <Text style={styles.propertyLabel}>{'Email'}</Text>
+            <Text style={styles.propertyValue}>{user.email}</Text>
+          </View>
+          <View style={styles.property}>
+            <Text style={styles.propertyLabel}>{'Language'}</Text>
+            <Text style={styles.propertyValue}>{user.language}</Text>
+          </View>
+          <View style={styles.property}>
+            <Text style={styles.propertyLabel}>{'Number format'}</Text>
+            <Text style={styles.propertyValue}>{user.numberFormat}</Text>
+          </View>
+          <View style={styles.property}>
+            <Text style={styles.propertyLabel}>{'Time zone'}</Text>
+            <Text style={styles.propertyValue}>{user.timeZone || '-'}</Text>
+          </View>
+        </View>
       </View>
-      <View style={styles.propertiesContainer}>
-        <View style={styles.property}>
-          <Text style={styles.propertyLabel}>{'Email'}</Text>
-          <Text style={styles.propertyValue}>{user.email}</Text>
-        </View>
-        <View style={styles.property}>
-          <Text style={styles.propertyLabel}>{'Language'}</Text>
-          <Text style={styles.propertyValue}>{user.language}</Text>
-        </View>
-        <View style={styles.property}>
-          <Text style={styles.propertyLabel}>{'Number format'}</Text>
-          <Text style={styles.propertyValue}>{user.numberFormat}</Text>
-        </View>
-        <View style={styles.property}>
-          <Text style={styles.propertyLabel}>{'Time zone'}</Text>
-          <Text style={styles.propertyValue}>{user.timeZone || '-'}</Text>
-        </View>
-      </View>
-    </View>
-  ) : (<Text />)
-)
+    : <Text />;
 Account.propTypes = {
   user: PropTypes.shape({
     email: PropTypes.string.isRequired,
@@ -99,10 +93,10 @@ Account.propTypes = {
     language: PropTypes.string.isRequired,
     numberFormat: PropTypes.string.isRequired,
   }),
-}
+};
 
-export default Account
+export default Account;
 
-function getGravatarUrl (email, size) {
-  return `https://www.gravatar.com/avatar/${md5(email)}?s=${size}&d=mm`
+function getGravatarUrl(email, size) {
+  return `https://www.gravatar.com/avatar/${md5(email)}?s=${size}&d=mm`;
 }

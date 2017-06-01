@@ -8,8 +8,8 @@ import {
   Text,
   TouchableHighlight,
   View,
-} from 'react-native'
-import * as colors from './utils/colors'
+} from 'react-native';
+import * as colors from './utils/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -36,43 +36,44 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: colors.darkBlue,
   },
-})
+});
 
 export default class ProjectSwitcher extends Component {
-
   static propTypes = {
-    projects: PropTypes.objectOf(PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-    })).isRequired,
+    projects: PropTypes.objectOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+      })
+    ).isRequired,
     selectedProjectId: PropTypes.string,
     activeProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     inactiveProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     onSelect: PropTypes.func.isRequired,
-  }
+  };
 
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
 
     this.state = {
       currentProjectSelectedId: props.selectedProjectId,
-    }
+    };
 
     // Bind functions
-    this.handleSubmit = this.handleSubmit.bind(this)
-    this.handleDraftSelection = this.handleDraftSelection.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDraftSelection = this.handleDraftSelection.bind(this);
   }
 
-  handleSubmit () {
-    this.props.onSelect(this.state.currentProjectSelectedId)
+  handleSubmit() {
+    this.props.onSelect(this.state.currentProjectSelectedId);
   }
 
-  handleDraftSelection (id) {
-    this.setState({ currentProjectSelectedId: id })
+  handleDraftSelection(id) {
+    this.setState({ currentProjectSelectedId: id });
   }
 
-  render () {
-    const { props, state } = this
+  render() {
+    const { props, state } = this;
     return (
       <View style={styles.container}>
         <View style={styles.innerContainer}>
@@ -89,8 +90,8 @@ export default class ProjectSwitcher extends Component {
             selectedValue={state.currentProjectSelectedId}
             onValueChange={this.handleDraftSelection}
           >
-            {props.activeProjectIds.map((projectId) => {
-              const project = props.projects[projectId]
+            {props.activeProjectIds.map(projectId => {
+              const project = props.projects[projectId];
               // TODO: show inactive projects
               return (
                 <Picker.Item
@@ -98,11 +99,11 @@ export default class ProjectSwitcher extends Component {
                   label={project.name}
                   value={project.id}
                 />
-              )
+              );
             })}
           </Picker>
         </View>
       </View>
-    )
+    );
   }
 }

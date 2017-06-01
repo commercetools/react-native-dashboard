@@ -12,31 +12,30 @@ import {
   Platform,
   NativeModules,
   Dimensions,
-} from 'react-native'
-import Icon from 'react-native-vector-icons/SimpleLineIcons'
-import logo from '../assets/logo.png'
-import ProjectSwitcher from './project-switcher'
-import * as colors from './utils/colors'
+} from 'react-native';
+import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import logo from '../assets/logo.png';
+import ProjectSwitcher from './project-switcher';
+import * as colors from './utils/colors';
 
 const statusBarHeight = Platform.OS === 'ios'
   ? 20
-  : NativeModules.StatusBarManager.HEIGHT
+  : NativeModules.StatusBarManager.HEIGHT;
 
 // TODO: find a better solution
 // Get the viewport size to calculate the max width of the switcher container
 // in case the text is too long.
-const viewWidth = Dimensions.get('window').width
-const iconLogoWidth = 20
-const iconLogoutWidth = 24
-const containerPadding = 8
-const maxProjectSwitcherContainerWidth = (
+const viewWidth = Dimensions.get('window').width;
+const iconLogoWidth = 20;
+const iconLogoutWidth = 24;
+const containerPadding = 8;
+const maxProjectSwitcherContainerWidth =
   viewWidth -
   iconLogoWidth -
   iconLogoutWidth -
   containerPadding -
   containerPadding -
-  40 // l/r space of switcher button
-)
+  40; // l/r space of switcher button
 
 const styles = StyleSheet.create({
   container: {
@@ -80,56 +79,55 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-})
+});
 
 export default class TopBar extends Component {
   static propTypes = {
-    projects: PropTypes.objectOf(PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-    })).isRequired,
+    projects: PropTypes.objectOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+      })
+    ).isRequired,
     selectedProjectId: PropTypes.string,
     onSelectProject: PropTypes.func.isRequired,
     onLogout: PropTypes.func.isRequired,
-  }
+  };
 
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
 
     this.state = {
       isModalOpen: false,
-    }
+    };
 
     // Bind functions
-    this.openModal = this.openModal.bind(this)
-    this.closeModal = this.closeModal.bind(this)
-    this.handleProjectSelection = this.handleProjectSelection.bind(this)
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.handleProjectSelection = this.handleProjectSelection.bind(this);
   }
 
-  openModal () {
-    this.setState({ isModalOpen: true })
+  openModal() {
+    this.setState({ isModalOpen: true });
   }
 
-  closeModal () {
-    this.setState({ isModalOpen: false })
+  closeModal() {
+    this.setState({ isModalOpen: false });
   }
 
-  handleProjectSelection (projectId) {
-    this.props.onSelectProject(projectId)
-    this.closeModal()
+  handleProjectSelection(projectId) {
+    this.props.onSelectProject(projectId);
+    this.closeModal();
   }
 
-  render () {
-    const { props, state } = this
-    const project = props.projects[props.selectedProjectId]
+  render() {
+    const { props, state } = this;
+    const project = props.projects[props.selectedProjectId];
 
     return (
       <View>
         <View style={styles.container}>
-          <Image
-            source={logo}
-            style={[ styles.icon, styles.logo ]}
-          />
+          <Image source={logo} style={[styles.icon, styles.logo]} />
 
           <TouchableOpacity onPress={this.openModal}>
             <View style={styles.projectSwitcherButtonContainer}>
@@ -140,10 +138,7 @@ export default class TopBar extends Component {
               >
                 {project ? project.name : '- - - -'}
               </Text>
-              <Icon
-                name="arrow-down"
-                color={colors.white}
-              />
+              <Icon name="arrow-down" color={colors.white} />
             </View>
           </TouchableOpacity>
 
@@ -170,6 +165,6 @@ export default class TopBar extends Component {
           />
         </Modal>
       </View>
-    )
+    );
   }
 }
