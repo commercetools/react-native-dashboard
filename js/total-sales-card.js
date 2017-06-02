@@ -13,12 +13,15 @@ class TotalSalesCard extends Component {
       orders: PropTypes.shape({
         today: PropTypes.shape({
           ordersValue: PropTypes.number.isRequired,
+          numberOfOrders: PropTypes.number.isRequired,
         }).isRequired,
         week: PropTypes.shape({
           ordersValue: PropTypes.number.isRequired,
+          numberOfOrders: PropTypes.number.isRequired,
         }).isRequired,
         month: PropTypes.shape({
           ordersValue: PropTypes.number.isRequired,
+          numberOfOrders: PropTypes.number.isRequired,
         }).isRequired,
         yesterday: PropTypes.shape({
           ordersValue: PropTypes.number.isRequired,
@@ -49,6 +52,10 @@ class TotalSalesCard extends Component {
         yesterdayValue={this.props.data.orders.yesterday.ordersValue}
         lastWeekValue={this.props.data.orders.lastWeek.ordersValue}
         lastMonthValue={this.props.data.orders.lastMonth.ordersValue}
+        numberOfOrdersToday={this.props.data.orders.today.numberOfOrders}
+        numberOfOrdersThisWeek={this.props.data.orders.week.numberOfOrders}
+        numberOfOrdersThisMonth={this.props.data.orders.month.numberOfOrders}
+        showNumberOfOrders={true}
         showTrend={true}
       />
     );
@@ -76,6 +83,7 @@ const TotalSalesFetch = gql`
         range: { from: $fromDateDay }
       ) {
         ordersValue
+        numberOfOrders
       }
       yesterday: statistics (
         currency: $currency
@@ -90,6 +98,7 @@ const TotalSalesFetch = gql`
         range: { from: $fromDateWeek }
       ) {
         ordersValue
+        numberOfOrders
       }
       lastWeek: statistics (
         currency: $currency
@@ -104,6 +113,7 @@ const TotalSalesFetch = gql`
         range: { from: $fromDateMonth }
       ) {
         ordersValue
+        numberOfOrders
       }
       lastMonth: statistics (
         currency: $currency

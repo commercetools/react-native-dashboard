@@ -15,9 +15,10 @@
     "moment": "^2.18.1",
     "prop-types": "15.5.10",
     "react": "16.0.0-alpha.6",
-    "react-intl": "2.3.0",
     "react-apollo": "^1.2.0",
+    "react-intl": "2.3.0",
     "react-native": "0.44.2",
+    "react-native-elements": "0.12.2",
     "react-native-tab-view": "0.0.66",
     "react-native-vector-icons": "4.2.0",
     "reselect": "3.0.1"
