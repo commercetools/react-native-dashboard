@@ -315,31 +315,31 @@ class Application extends Component {
   };
 
   renderFooter = props => (
-      <TabBar
-        {...props}
-        style={{ backgroundColor: colors.darkBlue }}
-        indicatorStyle={{ backgroundColor: colors.green }}
-        // color for material ripple (Android >= 5.0 only)
-        pressColor={'rgba(255,255,255,0.6)'}
-        // iOS and Android < 5.0 only
-        pressOpacity={0.6}
-        scrollEnabled={false}
-        renderIcon={({ route, focused }) => {
-          let iconName;
-          if (route.key === 'dashboard') iconName = 'dashboard';
-          else if (route.key === 'account') iconName = 'user';
-          if (!iconName) return null;
+    <TabBar
+      {...props}
+      style={{ backgroundColor: colors.darkBlue }}
+      indicatorStyle={{ backgroundColor: colors.green }}
+      // color for material ripple (Android >= 5.0 only)
+      pressColor={'rgba(255,255,255,0.6)'}
+      // iOS and Android < 5.0 only
+      pressOpacity={0.6}
+      scrollEnabled={false}
+      renderIcon={({ route, focused }) => {
+        let iconName;
+        if (route.key === 'dashboard') iconName = 'dashboard';
+        else if (route.key === 'account') iconName = 'user';
+        if (!iconName) return null;
 
-          return (
-            <FontAwesomeIcon
-              name={iconName}
-              color={focused ? colors.green : colors.lightWhite}
-              size={20}
-            />
-          );
-        }}
-      />
-    );
+        return (
+          <FontAwesomeIcon
+            name={iconName}
+            color={focused ? colors.green : colors.lightWhite}
+            size={20}
+          />
+        );
+      }}
+    />
+  );
 
   render() {
     const { state } = this;

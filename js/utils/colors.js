@@ -14,4 +14,4 @@ export const whiteGrey = '#F9F9F9';
 export const hoverGrey = '#E9E9E9';
 export const mainGrey = '#CCCCCC';
 export const bodyColor = '#333333';
-export const greyBlack = '#657479'
+export const greyBlack = '#657479';

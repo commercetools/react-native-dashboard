@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
 });
 
 export class DashboardMetricCard extends React.Component {
-  static displayName = 'DashboardMetricCard'
+  static displayName = 'DashboardMetricCard';
   static propTypes = {
     title: PropTypes.string.isRequired,
     iconName: PropTypes.string.isRequired,
@@ -133,12 +133,12 @@ export class DashboardMetricCard extends React.Component {
   };
 
   // TODO: move it to its own component
-  handleTabClick = (index) => {
-    this.setState({ selectedIndex: index })
+  handleTabClick = index => {
+    this.setState({ selectedIndex: index });
   };
 
   render = () => {
-    const { props, state } = this
+    const { props, state } = this;
     return (
       <View style={styles.container}>
         <View style={styles.main}>
@@ -148,13 +148,9 @@ export class DashboardMetricCard extends React.Component {
           <View style={styles.content}>
             <View style={styles.tabs}>
               <TouchableHighlight
-                style={
-                  [styles.tab, styles['tab-first']].concat(
-                    state.selectedIndex === 0
-                      ? [styles['tab-active']]
-                      : []
-                  )
-                }
+                style={[styles.tab, styles['tab-first']].concat(
+                  state.selectedIndex === 0 ? [styles['tab-active']] : []
+                )}
                 onPress={() => this.handleTabClick(0)}
               >
                 <View>
@@ -162,13 +158,9 @@ export class DashboardMetricCard extends React.Component {
                 </View>
               </TouchableHighlight>
               <TouchableHighlight
-                style={
-                  [styles.tab].concat(
-                    state.selectedIndex === 1
-                      ? [styles['tab-active']]
-                      : []
-                  )
-                }
+                style={[styles.tab].concat(
+                  state.selectedIndex === 1 ? [styles['tab-active']] : []
+                )}
                 onPress={() => this.handleTabClick(1)}
               >
                 <View>
@@ -176,13 +168,9 @@ export class DashboardMetricCard extends React.Component {
                 </View>
               </TouchableHighlight>
               <TouchableHighlight
-                style={
-                  [styles.tab, styles['tab-last']].concat(
-                    state.selectedIndex === 2
-                      ? [styles['tab-active']]
-                      : []
-                  )
-                }
+                style={[styles.tab, styles['tab-last']].concat(
+                  state.selectedIndex === 2 ? [styles['tab-active']] : []
+                )}
                 onPress={() => this.handleTabClick(2)}
               >
                 <View>
@@ -202,28 +190,25 @@ export class DashboardMetricCard extends React.Component {
               </View>
               {props.showTrend
                 ? renderTrend(
-                  props.intl,
-                  getPreviousValueForTab(state.selectedIndex, props),
-                  getValueForTab(state.selectedIndex, props),
-                )
+                    props.intl,
+                    getPreviousValueForTab(state.selectedIndex, props),
+                    getValueForTab(state.selectedIndex, props)
+                  )
                 : null}
             </View>
           </View>
         </View>
         {props.showNumberOfOrders
-          ? (
-            <View style={styles.footer}>
+          ? <View style={styles.footer}>
               <Text style={{ color: colors.greyBlack }}>{'Orders'}</Text>
               <Text style={{ color: colors.greyBlack }}>
                 {getNumberOfOrdersForTab(state.selectedIndex, props)}
               </Text>
             </View>
-          )
-          : null
-        }
+          : null}
       </View>
-    )
-  }
+    );
+  };
 }
 
 export default injectIntl(DashboardMetricCard);
@@ -231,39 +216,39 @@ export default injectIntl(DashboardMetricCard);
 function getValueForTab(tab, props) {
   switch (tab) {
     case 0:
-      return props.todayValue
+      return props.todayValue;
     case 1:
-      return props.weekValue
+      return props.weekValue;
     case 2:
-      return props.monthValue
+      return props.monthValue;
     default:
-      throw new Error(`Unexpected tab number ${tab}`)
+      throw new Error(`Unexpected tab number ${tab}`);
   }
 }
 
 function getPreviousValueForTab(tab, props) {
   switch (tab) {
     case 0:
-      return props.yesterdayValue
+      return props.yesterdayValue;
     case 1:
-      return props.lastWeekValue
+      return props.lastWeekValue;
     case 2:
-      return props.lastMonthValue
+      return props.lastMonthValue;
     default:
-      throw new Error(`Unexpected tab number ${tab}`)
+      throw new Error(`Unexpected tab number ${tab}`);
   }
 }
 
 function getNumberOfOrdersForTab(tab, props) {
   switch (tab) {
     case 0:
-      return props.numberOfOrdersToday
+      return props.numberOfOrdersToday;
     case 1:
-      return props.numberOfOrdersThisWeek
+      return props.numberOfOrdersThisWeek;
     case 2:
-      return props.numberOfOrdersThisMonth
+      return props.numberOfOrdersThisMonth;
     default:
-      throw new Error(`Unexpected tab number ${tab}`)
+      throw new Error(`Unexpected tab number ${tab}`);
   }
 }
 

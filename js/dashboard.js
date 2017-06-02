@@ -67,7 +67,7 @@ export default class Dashboard extends Component {
 
   renderItemRow = ({ item }) => {
     const ItemComponent = item.component;
-    const projectKey = this.props.projects[this.props.selectedProjectId].key
+    const projectKey = this.props.projects[this.props.selectedProjectId].key;
     return (
       <ItemComponent
         projectKey={projectKey}
@@ -84,7 +84,10 @@ export default class Dashboard extends Component {
           sections={[
             { key: 'total-sales', data: [{ component: TotalSalesCard }] },
             { key: 'aov', data: [{ component: AovCard }] },
-            { key: 'top-five-products', data: [{ component: TopFiveProducts }] },
+            {
+              key: 'top-five-products',
+              data: [{ component: TopFiveProducts }],
+            },
           ]}
           renderItem={this.renderItemRow}
           refreshing={state.isRefreshing}
