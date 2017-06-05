@@ -167,12 +167,13 @@ class Application extends Component {
 
   render = () => {
     const { props, state } = this;
-    if (state.isAnimating || (props.data && props.data.loading))
+    if (state.isAnimating)
       return <Landing animatedStyle={this.animatedStyle} />;
 
     return (
       <View style={styles.container}>
         <StatusBar
+          networkActivityIndicatorVisible={props.data && props.data.loading}
           // iOS
           barStyle="light-content"
           // Android
