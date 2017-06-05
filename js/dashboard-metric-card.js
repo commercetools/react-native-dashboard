@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import { intlShape, injectIntl } from 'react-intl';
 import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-import { ButtonGroup } from 'react-native-elements';
+// import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+// import { ButtonGroup } from 'react-native-elements';
 import * as colors from './utils/colors';
 import { formatMoney } from './utils/formats';
 

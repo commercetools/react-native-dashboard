@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 /* @flow */
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   View,
   StyleSheet,
@@ -83,46 +83,37 @@ const styles = StyleSheet.create({
 
 export default class TopBar extends Component {
   static propTypes = {
-    projects: PropTypes.objectOf(
+    projects: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.string.isRequired,
+        key: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
       })
     ).isRequired,
-    selectedProjectId: PropTypes.string,
+    selectedProject: PropTypes.string.isRequired,
     onSelectProject: PropTypes.func.isRequired,
     onLogout: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    isModalOpen: false,
+  };
 
-    this.state = {
-      isModalOpen: false,
-    };
-
-    // Bind functions
-    this.openModal = this.openModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
-    this.handleProjectSelection = this.handleProjectSelection.bind(this);
-  }
-
-  openModal() {
+  openModal = () => {
     this.setState({ isModalOpen: true });
-  }
+  };
 
-  closeModal() {
+  closeModal = () => {
     this.setState({ isModalOpen: false });
-  }
+  };
 
-  handleProjectSelection(projectId) {
+  handleProjectSelection = projectId => {
     this.props.onSelectProject(projectId);
     this.closeModal();
-  }
+  };
 
-  render() {
+  render = () => {
     const { props, state } = this;
-    const project = props.projects[props.selectedProjectId];
+    const project = props.projects.find(p => p.key === props.selectedProject);
 
     return (
       <View>
@@ -158,13 +149,13 @@ export default class TopBar extends Component {
         >
           <ProjectSwitcher
             projects={props.projects}
-            selectedProjectId={props.selectedProjectId}
-            activeProjectIds={props.activeProjectIds}
-            inactiveProjectIds={props.inactiveProjectIds}
+            selectedProject={props.selectedProject}
+            // activeProjectIds={props.activeProjectIds}
+            // inactiveProjectIds={props.inactiveProjectIds}
             onSelect={this.handleProjectSelection}
           />
         </Modal>
       </View>
     );
-  }
+  };
 }

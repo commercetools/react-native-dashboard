@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 /* @flow */
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Picker,
   StyleSheet,
@@ -40,39 +40,31 @@ const styles = StyleSheet.create({
 
 export default class ProjectSwitcher extends Component {
   static propTypes = {
-    projects: PropTypes.objectOf(
+    projects: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.string.isRequired,
+        key: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
       })
     ).isRequired,
-    selectedProjectId: PropTypes.string,
-    activeProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
-    inactiveProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    selectedProject: PropTypes.string.isRequired,
+    // activeProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
+    // inactiveProjectIds: PropTypes.arrayOf(PropTypes.string).isRequired,
     onSelect: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    pendingSelectedProject: this.props.selectedProject,
+  };
 
-    this.state = {
-      currentProjectSelectedId: props.selectedProjectId,
-    };
+  handleSubmit = () => {
+    this.props.onSelect(this.state.pendingSelectedProject);
+  };
 
-    // Bind functions
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleDraftSelection = this.handleDraftSelection.bind(this);
-  }
+  handleDraftSelection = key => {
+    this.setState({ pendingSelectedProject: key });
+  };
 
-  handleSubmit() {
-    this.props.onSelect(this.state.currentProjectSelectedId);
-  }
-
-  handleDraftSelection(id) {
-    this.setState({ currentProjectSelectedId: id });
-  }
-
-  render() {
+  render = () => {
     const { props, state } = this;
     return (
       <View style={styles.container}>
@@ -87,23 +79,19 @@ export default class ProjectSwitcher extends Component {
             </TouchableHighlight>
           </View>
           <Picker
-            selectedValue={state.currentProjectSelectedId}
+            selectedValue={state.pendingSelectedProject}
             onValueChange={this.handleDraftSelection}
           >
-            {props.activeProjectIds.map(projectId => {
-              const project = props.projects[projectId];
-              // TODO: show inactive projects
-              return (
-                <Picker.Item
-                  key={project.id}
-                  label={project.name}
-                  value={project.id}
-                />
-              );
-            })}
+            {props.projects.map(project => (
+              <Picker.Item
+                key={project.key}
+                label={project.name}
+                value={project.key}
+              />
+            ))}
           </Picker>
         </View>
       </View>
     );
-  }
+  };
 }
