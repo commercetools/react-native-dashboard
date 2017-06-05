@@ -118,9 +118,14 @@ export default class TopBar extends Component {
     return (
       <View>
         <View style={styles.container}>
-          <Image source={logo} style={[styles.icon, styles.logo]} />
+          {/* <Image source={logo} style={[styles.icon, styles.logo]} /> */}
 
-          <TouchableOpacity onPress={this.openModal}>
+          <Icon.Button
+            name="menu"
+            onPress={props.toggleMenu}
+            backgroundColor="transparent"
+          />
+          {/* <TouchableOpacity onPress={this.openModal}>
             <View style={styles.projectSwitcherButtonContainer}>
               <Text
                 style={styles.projectSwitcherButton}
@@ -131,15 +136,15 @@ export default class TopBar extends Component {
               </Text>
               <Icon name="arrow-down" color={colors.white} />
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
-          <Icon.Button
+          {/* <Icon.Button
             name="logout"
             onPress={props.onLogout}
             backgroundColor="transparent"
             iconStyle={{ marginRight: 0 }}
             style={styles.icon}
-          />
+          /> */}
         </View>
         <Modal
           animationType="slide"

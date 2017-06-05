@@ -17,6 +17,7 @@
     "react-apollo": "1.4.2",
     "react-intl": "2.3.0",
     "react-native": "0.44.2",
+    "react-native-drawer": "2.3.0",
     "react-native-elements": "0.12.2",
     "react-native-tab-view": "0.0.66",
     "react-native-vector-icons": "4.2.0",

@@ -4,20 +4,22 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
   Animated,
-  Dimensions,
+  // Dimensions,
   StatusBar,
   StyleSheet,
   View,
 } from 'react-native';
-import { TabViewAnimated, TabBar } from 'react-native-tab-view';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import Drawer from 'react-native-drawer';
+// import { TabViewAnimated, TabBar } from 'react-native-tab-view';
+// import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { gql, graphql } from 'react-apollo';
 import * as colors from './utils/colors';
 import Landing from './landing';
 import TopBar from './top-bar';
 import Login from './login';
 import Dashboard from './dashboard';
-import Account from './account';
+import ControlPanel from './control-panel';
+// import Account from './account';
 import withApplicationState from './with-application-state';
 
 const styles = StyleSheet.create({
@@ -121,49 +123,56 @@ class Application extends Component {
       nextProps.setProjectKey(nextProps.data.me.project.key);
   };
 
-  renderScene = ({ route }) => {
-    const { props } = this;
-    switch (route.key) {
-      case 'dashboard':
-        return (
-          <Dashboard
-            token={props.token}
-            projectKey={props.selectedProjectKey}
-          />
-        );
-      case 'account':
-        return <Account user={props.data.me} />;
-      default:
-        return null;
-    }
+  toggleMenu = () => {
+    if (this._drawer._open)
+      this._drawer.close()
+    else
+      this._drawer.open()
   };
 
-  renderFooter = props => (
-    <TabBar
-      {...props}
-      style={{ backgroundColor: colors.darkBlue }}
-      indicatorStyle={{ backgroundColor: colors.green }}
-      // color for material ripple (Android >= 5.0 only)
-      pressColor={'rgba(255,255,255,0.6)'}
-      // iOS and Android < 5.0 only
-      pressOpacity={0.6}
-      scrollEnabled={false}
-      renderIcon={({ route, focused }) => {
-        let iconName;
-        if (route.key === 'dashboard') iconName = 'dashboard';
-        else if (route.key === 'account') iconName = 'user';
-        if (!iconName) return null;
-
-        return (
-          <FontAwesomeIcon
-            name={iconName}
-            color={focused ? colors.green : colors.lightWhite}
-            size={20}
-          />
-        );
-      }}
-    />
-  );
+  // renderScene = ({ route }) => {
+  //   const { props } = this;
+  //   switch (route.key) {
+  //     case 'dashboard':
+  //       return (
+  //         <Dashboard
+  //           token={props.token}
+  //           projectKey={props.selectedProjectKey}
+  //         />
+  //       );
+  //     case 'account':
+  //       return <Account user={props.data.me} />;
+  //     default:
+  //       return null;
+  //   }
+  // };
+  //
+  // renderFooter = props => (
+  //   <TabBar
+  //     {...props}
+  //     style={{ backgroundColor: colors.darkBlue }}
+  //     indicatorStyle={{ backgroundColor: colors.green }}
+  //     // color for material ripple (Android >= 5.0 only)
+  //     pressColor={'rgba(255,255,255,0.6)'}
+  //     // iOS and Android < 5.0 only
+  //     pressOpacity={0.6}
+  //     scrollEnabled={false}
+  //     renderIcon={({ route, focused }) => {
+  //       let iconName;
+  //       if (route.key === 'dashboard') iconName = 'dashboard';
+  //       else if (route.key === 'account') iconName = 'user';
+  //       if (!iconName) return null;
+  //
+  //       return (
+  //         <FontAwesomeIcon
+  //           name={iconName}
+  //           color={focused ? colors.green : colors.lightWhite}
+  //           size={20}
+  //         />
+  //       );
+  //     }}
+  //   />
+  // );
 
   render = () => {
     const { props, state } = this;
@@ -182,6 +191,7 @@ class Application extends Component {
         />
         {props.token && props.selectedProjectKey
           ? <TopBar // <-- not visible on login page
+              toggleMenu={this.toggleMenu}
               projects={props.data.me.availableProjects}
               selectedProject={props.selectedProjectKey}
               // activeProjectIds={state.activeProjectIds}
@@ -194,26 +204,58 @@ class Application extends Component {
         // (there is a token) and there is a selected project (it might be
         // that the user has access to no projects).
         props.token && props.selectedProjectKey
-          ? <TabViewAnimated
-              initialLayout={{
-                height: 0,
-                width: Dimensions.get('window').width,
+          ? <Drawer
+              type="overlay"
+              ref={ref => (this._drawer = ref)}
+              content={
+                <ControlPanel
+                  projects={props.data.me.availableProjects}
+                  email={props.data.me.email}
+                />
+              }
+              tapToClose={true}
+              openDrawerOffset={0.2} // 20% gap on the right side of drawer
+              closedDrawerOffset={0}
+              // tweenHandler={Drawer.tweenPresets.parallax}
+              // tweenHandler={(ratio) => ({
+              //   main: { opacity:(2-ratio)/2 }
+              // })}
+              styles={{
+                drawer: {
+                  flex: 1,
+                  backgroundColor: colors.mainGrey,
+                  borderRightColor: colors.darkGrey,
+                  borderRightWidth: 1,
+                  padding: 8,
+                },
+                // main: { padding: 16 },
               }}
-              navigationState={{
-                index: state.navigationIndex,
-                routes: state.navigationRoutes,
-                // <TabViewAnimated /> is a PureComponent. To ensure the
-                // tabs will re-render if something changes in the parent
-                // component state, we pass a prop value that always changes.
-                // TODO: find a better solution?
-                hash: Math.random(),
-              }}
-              renderScene={this.renderScene}
-              renderFooter={this.renderFooter}
-              onRequestChangeTab={index =>
-                this.setState({ navigationIndex: index })}
-            />
-          : <Login
+            >
+              <Dashboard
+                token={props.token}
+                projectKey={props.selectedProjectKey}
+              />
+            </Drawer>
+          : // ? <TabViewAnimated
+            //     initialLayout={{
+            //       height: 0,
+            //       width: Dimensions.get('window').width,
+            //     }}
+            //     navigationState={{
+            //       index: state.navigationIndex,
+            //       routes: state.navigationRoutes,
+            //       // <TabViewAnimated /> is a PureComponent. To ensure the
+            //       // tabs will re-render if something changes in the parent
+            //       // component state, we pass a prop value that always changes.
+            //       // TODO: find a better solution?
+            //       hash: Math.random(),
+            //     }}
+            //     renderScene={this.renderScene}
+            //     renderFooter={this.renderFooter}
+            //     onRequestChangeTab={index =>
+            //       this.setState({ navigationIndex: index })}
+            //   />
+            <Login
               onLogin={props.setToken}
               errorMessage={
                 props.data &&
