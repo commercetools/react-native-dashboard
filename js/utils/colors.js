@@ -10,6 +10,7 @@ export const semiDarkGrey = '#A0A0A0';
 export const darkGrey = '#999999';
 export const white = 'white';
 export const lightWhite = 'rgba(255,255,255,0.5)';
+export const lightBlack = 'rgba(0,0,0,0.5)';
 export const whiteGrey = '#F9F9F9';
 export const hoverGrey = '#E9E9E9';
 export const mainGrey = '#CCCCCC';
