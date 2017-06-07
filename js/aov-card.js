@@ -48,7 +48,8 @@ class AovCard extends Component {
     this.props.registerRefreshListener(() => this.props.data.refetch());
   }
   render() {
-    if (this.props.data.loading) return <DashboardItemPlaceholder />;
+    if (this.props.data.loading)
+      return <DashboardItemPlaceholder showNumberOfOrders={false} />;
     return (
       <DashboardMetricCard
         title="AOV"

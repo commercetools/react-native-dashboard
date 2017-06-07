@@ -85,6 +85,7 @@ class TopFiveProducts extends Component {
     this.props.registerRefreshListener(() => this.props.data.refetch());
   }
   render() {
+    // TODO: define "placeholder" item for table list
     if (this.props.data.loading) return <DashboardItemPlaceholder />;
     return (
       <View style={styles.container}>

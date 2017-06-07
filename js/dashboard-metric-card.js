@@ -9,23 +9,9 @@ import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
 // import { ButtonGroup } from 'react-native-elements';
 import * as colors from './utils/colors';
 import { formatMoney } from './utils/formats';
+import Card from './card';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    shadowColor: colors.black,
-    shadowOffset: {
-      height: 1,
-      width: 0,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    backgroundColor: colors.white,
-    borderRadius: 6,
-    margin: 8,
-    display: 'flex',
-    flexDirection: 'column',
-  },
   main: {
     padding: 16,
   },
@@ -140,7 +126,7 @@ export class DashboardMetricCard extends React.Component {
   render = () => {
     const { props, state } = this;
     return (
-      <View style={styles.container}>
+      <Card>
         <View style={styles.main}>
           <View style={styles.header}>
             <Text style={styles.title}>{props.title}</Text>
@@ -206,7 +192,7 @@ export class DashboardMetricCard extends React.Component {
               </Text>
             </View>
           : null}
-      </View>
+      </Card>
     );
   };
 }
