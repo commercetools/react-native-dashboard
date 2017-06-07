@@ -1,10 +1,6 @@
 ### Tech Day project
 Build an iOS / Android Dashboard App in React Native.
 
-| Login | Home | Account |
-| --- | --- | --- |
-| <img src="screenshot_login.png" alt="Home screen" width="250"> | <img src="screenshot_dashboard.png" alt="Home screen" width="250"> |<img src="screenshot_account.png" alt="Home screen" width="250"> |
-
 ### Installation
 Ensure you have the [necessary tools and dependencies](https://facebook.github.io/react-native/docs/getting-started.html) to develop an application.
 
@@ -30,10 +26,13 @@ $ react-native upgrade # useful in case of breaking changes
 - change cards UI
   - ~~numbers should be bigger, more visible~~
   - ~~better use of the space~~
-  - top products data should be shown differently
+- top products
+  - change list layout
+  - view details
 - ~~use new graphql endpoint to fetch user data~~
-- slider menu
-- better project switcher (show inactive projects)
+- ~~slider menu~~
+- ~~better project switcher~~
+  - show inactive projects
 - currency selector
 - unit tests
 - persist dashboard data as well

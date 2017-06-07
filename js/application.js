@@ -2,12 +2,7 @@
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Animated,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { Animated, StatusBar, StyleSheet, View } from 'react-native';
 import Drawer from 'react-native-drawer';
 import { gql, graphql } from 'react-apollo';
 import * as colors from './utils/colors';
@@ -124,9 +119,9 @@ class Application extends Component {
     this.setState({ isMenuOpen: true });
   };
 
-  handleSetProjectKey = (key) => {
-    this.setState({ isMenuOpen: false })
-    this.props.setProjectKey(key)
+  handleSetProjectKey = key => {
+    this.setState({ isMenuOpen: false });
+    this.props.setProjectKey(key);
   };
 
   render = () => {
@@ -164,9 +159,13 @@ class Application extends Component {
               backgroundColor: colors.whiteGrey,
               borderRightColor: colors.darkGrey,
               borderRightWidth: 1,
-              shadowColor: colors.bodyColor,
-              shadowOpacity: 0.8,
-              shadowRadius: 3,
+              ...(state.isMenuOpen
+                ? {
+                    shadowColor: colors.bodyColor,
+                    shadowOpacity: 0.8,
+                    shadowRadius: 3,
+                  }
+                : {}),
             },
             ...(state.isMenuOpen
               ? { mainOverlay: { backgroundColor: colors.lightBlack } }
