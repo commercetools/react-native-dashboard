@@ -8,6 +8,7 @@ import {
 import { IntlProvider } from 'react-intl';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
+import ApplicationState from './application-state';
 import Application from './application';
 
 // Apollo client setup
@@ -44,7 +45,9 @@ const Root = () => (
     }}
   >
     <ApolloProvider client={client}>
-      <Application />
+      <ApplicationState>
+        {props => <Application {...props} />}
+      </ApplicationState>
     </ApolloProvider>
   </IntlProvider>
 );

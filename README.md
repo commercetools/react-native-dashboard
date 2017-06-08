@@ -33,6 +33,7 @@ $ react-native upgrade # useful in case of breaking changes
 - ~~slider menu~~
 - ~~better project switcher~~
   - show inactive projects
+- clear apollo cache when logging out
 - currency selector
 - unit tests
 - persist dashboard data as well
