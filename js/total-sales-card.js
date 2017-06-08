@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { graphql } from 'react-apollo';
-import gql from 'graphql-tag';
+import { gql, graphql } from 'react-apollo';
 import moment from 'moment';
 import DashboardItemPlaceholder from './dashboard-item-placeholder';
 import DashboardMetricCard from './dashboard-metric-card';

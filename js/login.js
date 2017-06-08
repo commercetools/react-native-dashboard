@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 /* @flow */
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   ActivityIndicator,
   Animated,
@@ -13,7 +13,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { login, getUser, getProjectsForUser } from './utils/api';
+import { login } from './utils/api';
 import logo from '../assets/logo_2x.png';
 import * as colors from './utils/colors';
 
@@ -79,57 +79,53 @@ const styles = StyleSheet.create({
 export default class Login extends Component {
   static propTypes = {
     onLogin: PropTypes.func.isRequired,
-    onLoginError: PropTypes.func.isRequired,
     errorMessage: PropTypes.string,
   };
 
-  constructor(props) {
-    super(props);
+  state = {
+    email: '',
+    password: '',
+    errorMessage: '',
+    // Used to show a loading spinner while the user is being authenticated.
+    isLoading: false,
+    // Used by the `TextInput` to know if the field is focused.
+    isEmailFocused: false,
+    // Used by the `TextInput` to know if the field is focused.
+    isPasswordFocused: false,
+  };
 
-    this.state = {
-      email: '',
-      password: '',
-      // Used to show a loading spinner while the user is being authenticated.
-      isLoading: false,
-      // Used by the `TextInput` to know if the field is focused.
-      isEmailFocused: false,
-      // Used by the `TextInput` to know if the field is focused.
-      isPasswordFocused: false,
-    };
+  // Describe how the animations should look like
+  animatedValue = new Animated.Value(0);
+  animatedButtonScale = new Animated.Value(1);
+  animatedStyle = {
+    opacity: this.animatedValue,
+  };
+  animatedButtonStyles = {
+    transform: [{ scale: this.animatedButtonScale }],
+  };
 
-    // Describe how the animations should look like
-    this.animatedValue = new Animated.Value(0);
-    this.animatedButtonScale = new Animated.Value(1);
-    this.animatedStyle = {
-      opacity: this.animatedValue,
-    };
-    this.animatedButtonStyles = {
-      transform: [{ scale: this.animatedButtonScale }],
-    };
-
-    // Bind functions
-    this.handleEmailChange = this.handleEmailChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentDidMount() {
+  componentDidMount = () => {
     Animated.timing(this.animatedValue, {
       toValue: 1,
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }
+  };
 
-  handleEmailChange(email) {
+  componentWillReceiveProps = nextProps => {
+    if (nextProps.errorMessage)
+      this.setState({ errorMessage: nextProps.errorMessage });
+  };
+
+  handleEmailChange = email => {
     this.setState({ email });
-  }
+  };
 
-  handlePasswordChange(password) {
+  handlePasswordChange = password => {
     this.setState({ password });
-  }
+  };
 
-  handleSubmit() {
+  handleSubmit = () => {
     const { props, state } = this;
 
     this.setState({ isLoading: true });
@@ -138,41 +134,26 @@ export default class Login extends Component {
       email: state.email,
       password: state.password,
     }).then(
-      loginResponse => {
-        const requestOptions = {
-          token: loginResponse.token,
-          userId: loginResponse.user,
-        };
-        Promise.all([
-          getUser(requestOptions),
-          getProjectsForUser(requestOptions),
-        ]).then(([userResponse, projectsResponse]) => {
-          // Show an animation on the login button after the user has been
-          // successfully authenticated and before showing the next screen.
-          Animated.timing(this.animatedButtonScale, {
-            toValue: 400,
-            timing: 100,
-            useNativeDriver: true,
-          }).start(() => {
-            // Notify the Application that the user can be logged in.
-            props.onLogin({
-              token: loginResponse.token,
-              userId: loginResponse.user,
-              user: userResponse,
-              projects: projectsResponse,
-            });
-          });
+      response => {
+        // Show an animation on the login button after the user has been
+        // successfully authenticated and before showing the next screen.
+        Animated.timing(this.animatedButtonScale, {
+          toValue: 400,
+          timing: 100,
+          useNativeDriver: true,
+        }).start(() => {
+          // Notify the Application that the user can be logged in.
+          props.onLogin(response.token);
         });
       },
       error => {
-        this.setState({ isLoading: false });
-        props.onLoginError(error);
+        this.setState({ isLoading: false, errorMessage: error.message });
       }
     );
-  }
+  };
 
-  render() {
-    const { props, state } = this;
+  render = () => {
+    const { state } = this;
 
     return (
       <View style={styles.container}>
@@ -185,10 +166,10 @@ export default class Login extends Component {
           </View>
           <ActivityIndicator animating={state.isLoading} color={colors.white} />
 
-          {props.errorMessage
+          {state.errorMessage
             ? <View style={styles.errorView}>
                 <Text style={styles.error}>
-                  {props.errorMessage}
+                  {state.errorMessage}
                 </Text>
               </View>
             : null}
@@ -261,5 +242,5 @@ export default class Login extends Component {
         </KeyboardAvoidingView>
       </View>
     );
-  }
+  };
 }

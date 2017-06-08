@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 /* @flow */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
 import * as colors from './utils/colors';
 

@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 /* @flow */
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import md5 from 'blueimp-md5';
 import * as colors from './utils/colors';

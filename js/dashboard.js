@@ -18,13 +18,7 @@ const styles = StyleSheet.create({
 export default class Dashboard extends Component {
   static propTypes = {
     token: PropTypes.string.isRequired,
-    projects: PropTypes.objectOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-      })
-    ).isRequired,
-    selectedProjectId: PropTypes.string.isRequired,
+    projectKey: PropTypes.string.isRequired,
   };
 
   refreshListener = [];
@@ -35,7 +29,7 @@ export default class Dashboard extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.selectedProjectId !== nextProps.selectedProjectId) {
+    if (this.props.projectKey !== nextProps.projectKey) {
       this.handleManualRefresh();
     }
   }
@@ -67,10 +61,9 @@ export default class Dashboard extends Component {
 
   renderItemRow = ({ item }) => {
     const ItemComponent = item.component;
-    const projectKey = this.props.projects[this.props.selectedProjectId].key;
     return (
       <ItemComponent
-        projectKey={projectKey}
+        projectKey={this.props.projectKey}
         registerRefreshListener={this.handleRegisterRefreshListener}
       />
     );
