@@ -163,7 +163,7 @@ const FetchLoggedInUser = gql`
       lastName
       language
       numberFormat
-      availableProjects { key, name }
+      availableProjects { key, name, suspended, expired }
       project (key: $projectKey) {
         key
         name
@@ -196,6 +196,19 @@ const FetchLoggedInUser = gql`
 export default graphql(FetchLoggedInUser, {
   skip: ownProps => !ownProps.token,
   options: ownProps => ({
+    // FIXME: this is necessary in order to consistently fetch user data when
+    // the user logs out -> in again. If we don't do that, the user logs out,
+    // then tries to log in again with a different account. At this point
+    // Apollo will "see" that there is already data in the cache matching the
+    // query, thus it will return the "outdated" user data.
+    // Unfortunately I haven't found a proper solution to fix this problem.
+    // Using `apolloClient.resetStore` doesn't work as expected, as the queries
+    // will be refetched, but since the user is logged out, the requests will
+    // fail.
+    // Another approach would be to log in using graphql, where you pass the
+    // email/password to the query. This way the cached data would be reflecting
+    // the logged in user.
+    fetchPolicy: 'network-only',
     variables: {
       target: 'mc',
       projectKey: ownProps.selectedProjectKey,

@@ -1,10 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import {
-  AppRegistry,
-  AsyncStorage,
-} from 'react-native';
+import { AppRegistry, AsyncStorage } from 'react-native';
 import { IntlProvider } from 'react-intl';
 import ApolloClient, { createNetworkInterface } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
@@ -34,7 +31,20 @@ networkInterface.use([
     /* eslint-enable no-param-reassign */
   },
 ]);
-const client = new ApolloClient({ networkInterface });
+const client = new ApolloClient({
+  networkInterface,
+  dataIdFromObject: result => {
+    switch (result.__typename) {
+      case 'User':
+        return result.email;
+      case 'ProjectInfo':
+      case 'Project':
+        return result.key;
+      default:
+        return result.id || result._id;
+    }
+  },
+});
 
 const Root = () => (
   <IntlProvider
@@ -51,7 +61,7 @@ const Root = () => (
     </ApolloProvider>
   </IntlProvider>
 );
-Root.displayName = 'Root'
+Root.displayName = 'Root';
 
 export default Root;
 

@@ -3,7 +3,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { AsyncStorage } from 'react-native';
-import { withApollo } from 'react-apollo';
 
 const initialState = {
   token: null,
@@ -13,9 +12,6 @@ const initialState = {
 class ApplicationState extends React.Component {
   static propTypes = {
     children: PropTypes.func.isRequired,
-    client: PropTypes.shape({
-      resetStore: PropTypes.func.isRequired,
-    }),
   };
   state = { ...initialState };
   cacheIsLoaded = false;
@@ -59,7 +55,6 @@ class ApplicationState extends React.Component {
   };
 
   handleLogout = () => {
-    // this.props.client.resetStore()
     this.setState(initialState);
   };
 
@@ -74,4 +69,4 @@ class ApplicationState extends React.Component {
   };
 }
 
-export default withApollo(ApplicationState)
+export default ApplicationState
