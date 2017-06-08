@@ -27,13 +27,13 @@ $ react-native upgrade # useful in case of breaking changes
   - ~~numbers should be bigger, more visible~~
   - ~~better use of the space~~
 - top products
-  - change list layout
+  - ~~change list layout~~
   - view details
 - ~~use new graphql endpoint to fetch user data~~
 - ~~slider menu~~
 - ~~better project switcher~~
-  - show inactive projects
-- clear apollo cache when logging out
+  - ~~show inactive projects~~
+- ~~clear apollo cache when logging out~~
 - currency selector
 - unit tests
 - persist dashboard data as well
