@@ -2,30 +2,15 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { intlShape, injectIntl } from 'react-intl';
 import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
-// import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
-// import { ButtonGroup } from 'react-native-elements';
+import { ButtonGroup } from 'react-native-elements';
 import * as colors from './utils/colors';
 import { formatMoney } from './utils/formats';
+import Card from './card';
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    shadowColor: colors.black,
-    shadowOffset: {
-      height: 1,
-      width: 0,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    backgroundColor: colors.white,
-    borderRadius: 6,
-    margin: 8,
-    display: 'flex',
-    flexDirection: 'column',
-  },
   main: {
     padding: 16,
   },
@@ -50,53 +35,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 16,
   },
-  row: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  values: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
   trend: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-  },
-  grow: {
-    flex: 1,
-  },
-  money: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  tabs: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  tab: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: colors.mainGrey,
-    backgroundColor: colors.white,
-    padding: 8,
-    alignItems: 'center',
-  },
-  'tab-active': {
-    backgroundColor: colors.hoverGrey,
-  },
-  'tab-first': {
-    borderBottomLeftRadius: 8,
-    borderTopLeftRadius: 8,
-  },
-  'tab-last': {
-    borderBottomRightRadius: 8,
-    borderTopRightRadius: 8,
   },
   'tabs-content': {
     marginTop: 16,
@@ -132,7 +75,6 @@ export class DashboardMetricCard extends React.Component {
     selectedIndex: 0,
   };
 
-  // TODO: move it to its own component
   handleTabClick = index => {
     this.setState({ selectedIndex: index });
   };
@@ -140,44 +82,18 @@ export class DashboardMetricCard extends React.Component {
   render = () => {
     const { props, state } = this;
     return (
-      <View style={styles.container}>
+      <Card>
         <View style={styles.main}>
           <View style={styles.header}>
             <Text style={styles.title}>{props.title}</Text>
           </View>
           <View style={styles.content}>
-            <View style={styles.tabs}>
-              <TouchableHighlight
-                style={[styles.tab, styles['tab-first']].concat(
-                  state.selectedIndex === 0 ? [styles['tab-active']] : []
-                )}
-                onPress={() => this.handleTabClick(0)}
-              >
-                <View>
-                  <Text>{'Today'}</Text>
-                </View>
-              </TouchableHighlight>
-              <TouchableHighlight
-                style={[styles.tab].concat(
-                  state.selectedIndex === 1 ? [styles['tab-active']] : []
-                )}
-                onPress={() => this.handleTabClick(1)}
-              >
-                <View>
-                  <Text>{'This Week'}</Text>
-                </View>
-              </TouchableHighlight>
-              <TouchableHighlight
-                style={[styles.tab, styles['tab-last']].concat(
-                  state.selectedIndex === 2 ? [styles['tab-active']] : []
-                )}
-                onPress={() => this.handleTabClick(2)}
-              >
-                <View>
-                  <Text>{'This Month'}</Text>
-                </View>
-              </TouchableHighlight>
-            </View>
+            <ButtonGroup
+              onPress={this.handleTabClick}
+              selectedIndex={state.selectedIndex}
+              buttons={['Today', 'This week', 'This month']}
+              containerStyle={{ height: 40, marginLeft: 0, marginRight: 0 }}
+            />
             <View style={styles['tabs-content']}>
               <View>
                 <Text style={styles.value}>
@@ -206,7 +122,7 @@ export class DashboardMetricCard extends React.Component {
               </Text>
             </View>
           : null}
-      </View>
+      </Card>
     );
   };
 }

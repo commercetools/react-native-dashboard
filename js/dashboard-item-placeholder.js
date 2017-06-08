@@ -1,84 +1,72 @@
 /* @flow */
 
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import PropTypes from 'prop-types';
+import { View } from 'react-native';
 import * as colors from './utils/colors';
+import Card from './card';
 
-const styles = StyleSheet.create({
-  container: {
-    margin: 8,
-    padding: 8,
-    backgroundColor: colors.white,
-    flexDirection: 'column',
-    alignItems: 'stretch',
-    borderRadius: 2,
-  },
-  titleContainer: {
-    flex: 1,
-    flexDirection: 'row',
-  },
-  title: {
-    height: 12,
-    flex: 0.4,
-    backgroundColor: colors.grey,
-  },
-  empty: {
-    flex: 0.6,
-  },
-  content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  contentMain: {
-    flex: 1.5,
-  },
-  contentSide: {
-    flex: 1,
-    borderLeftWidth: 1,
-    borderLeftColor: 'rgba(0, 0, 0, 0.1)',
-    paddingLeft: 16,
-    marginLeft: 8,
-  },
-  contentMainMetric: {
-    height: 75,
-    backgroundColor: colors.grey,
-  },
-  sideMetric: {
-    height: 36,
-    backgroundColor: colors.grey,
-  },
-  contentSideMetric: {
-    paddingBottom: 8,
-  },
-  subtitle: {
-    height: 12,
-    backgroundColor: colors.grey,
-  },
-});
-
-const DashboardItemPlaceholder = () => (
-  <View style={styles.container}>
-    <View style={styles.titleContainer}>
-      <View style={styles.title} />
-      <View style={styles.empty} />
-    </View>
-    <View style={styles.content}>
-      <View style={styles.contentMain}>
-        <View style={styles.contentMainMetric} />
-        <View style={styles.subtitle} />
+const DashboardItemPlaceholder = props => (
+  <Card>
+    <View style={{ padding: 16 }}>
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <View style={{ height: 24, flex: 0.4, backgroundColor: colors.grey }} />
+        <View style={{ flex: 0.6 }} />
       </View>
-      <View style={styles.contentSide}>
-        <View style={styles.contentSideMetric}>
-          <View style={styles.sideMetric} />
-          <View style={styles.subtitle} />
-        </View>
-        <View>
-          <View style={styles.sideMetric} />
-          <View style={styles.subtitle} />
-        </View>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          paddingTop: 16,
+          paddingBottom: 16,
+        }}
+      >
+        <View style={{ height: 36, flex: 1, backgroundColor: colors.grey }} />
+      </View>
+      <View style={{ flex: 1, flexDirection: 'row' }}>
+        <View style={{ height: 40, flex: 0.6, backgroundColor: colors.grey }} />
+        <View style={{ flex: 0.4 }} />
+      </View>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          paddingTop: 8,
+          paddingBottom: 8,
+        }}
+      >
+        <View style={{ height: 16, flex: 0.2, backgroundColor: colors.grey }} />
+        <View style={{ flex: 0.8 }} />
       </View>
     </View>
-  </View>
+    {props.showNumberOfOrders
+      ? <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            borderTopWidth: 1,
+            borderTopColor: colors.mainGrey,
+            padding: 16,
+          }}
+        >
+          <View
+            style={{ height: 16, flex: 0.3, backgroundColor: colors.grey }}
+          />
+          <View style={{ flex: 0.6 }} />
+          <View
+            style={{ height: 16, flex: 0.1, backgroundColor: colors.grey }}
+          />
+        </View>
+      : null}
+  </Card>
 );
+DashboardItemPlaceholder.displayName = 'DashboardItemPlaceholder';
+DashboardItemPlaceholder.propTypes = {
+  showNumberOfOrders: PropTypes.bool,
+};
+DashboardItemPlaceholder.defaultProps = {
+  showNumberOfOrders: true,
+};
 
 export default DashboardItemPlaceholder;

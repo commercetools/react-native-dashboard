@@ -1,161 +1,59 @@
 /* @flow */
 
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  StyleSheet,
-  Image,
-  Text,
-  TouchableOpacity,
-  Modal,
-  Platform,
-  NativeModules,
-  Dimensions,
-} from 'react-native';
+import { View, StyleSheet, Text, Platform, NativeModules } from 'react-native';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import logo from '../assets/logo.png';
-import ProjectSwitcher from './project-switcher';
 import * as colors from './utils/colors';
 
 const statusBarHeight = Platform.OS === 'ios'
   ? 20
   : NativeModules.StatusBarManager.HEIGHT;
 
-// TODO: find a better solution
-// Get the viewport size to calculate the max width of the switcher container
-// in case the text is too long.
-const viewWidth = Dimensions.get('window').width;
-const iconLogoWidth = 20;
-const iconLogoutWidth = 24;
-const containerPadding = 8;
-const maxProjectSwitcherContainerWidth =
-  viewWidth -
-  iconLogoWidth -
-  iconLogoutWidth -
-  containerPadding -
-  containerPadding -
-  40; // l/r space of switcher button
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.darkBlue,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingLeft: containerPadding,
-    paddingRight: containerPadding,
+    justifyContent: 'flex-start',
+    paddingLeft: 8,
+    paddingRight: 8,
     paddingTop: statusBarHeight,
     height: 60,
   },
-  projectSwitcherButtonContainer: {
-    maxWidth: maxProjectSwitcherContainerWidth,
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    paddingRight: 8,
-  },
-  projectSwitcherButton: {
+  title: {
+    fontSize: 20,
     color: colors.white,
-    marginRight: 8,
-    flexWrap: 'wrap',
-  },
-  icon: {
-    margin: 0,
-    padding: 0,
-    flexGrow: 0,
-    flexShrink: 0,
-  },
-  logo: {
-    width: iconLogoWidth,
-    height: 24,
-  },
-  logout: {
-    flexBasis: iconLogoutWidth,
-  },
-  modal: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 
-export default class TopBar extends Component {
-  static propTypes = {
-    projects: PropTypes.arrayOf(
-      PropTypes.shape({
-        key: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-      })
-    ).isRequired,
-    selectedProject: PropTypes.string.isRequired,
-    onSelectProject: PropTypes.func.isRequired,
-    onLogout: PropTypes.func.isRequired,
-  };
+const TopBar = props => (
+  <View>
+    <View style={styles.container}>
+      <Icon.Button
+        name="menu"
+        onPress={props.onMenuClick}
+        backgroundColor="transparent"
+      />
+      {props.projectName
+        ? <Text style={styles.title}>{props.projectName}</Text>
+        : <View style={{ flex: 1, flexDirection: 'row' }}>
+            <View
+              style={{
+                height: 20,
+                flex: 0.4,
+                backgroundColor: colors.lightWhite,
+              }}
+            />
+            <View style={{ flex: 0.6 }} />
+          </View>}
+    </View>
+  </View>
+);
+TopBar.displayName = 'TopBar';
+TopBar.propTypes = {
+  projectName: PropTypes.string,
+  onMenuClick: PropTypes.func.isRequired,
+};
 
-  state = {
-    isModalOpen: false,
-  };
-
-  openModal = () => {
-    this.setState({ isModalOpen: true });
-  };
-
-  closeModal = () => {
-    this.setState({ isModalOpen: false });
-  };
-
-  handleProjectSelection = projectId => {
-    this.props.onSelectProject(projectId);
-    this.closeModal();
-  };
-
-  render = () => {
-    const { props, state } = this;
-    const project = props.projects.find(p => p.key === props.selectedProject);
-
-    return (
-      <View>
-        <View style={styles.container}>
-          <Image source={logo} style={[styles.icon, styles.logo]} />
-
-          <TouchableOpacity onPress={this.openModal}>
-            <View style={styles.projectSwitcherButtonContainer}>
-              <Text
-                style={styles.projectSwitcherButton}
-                // Prevent text to wrap if it does not fit.
-                numberOfLines={1}
-              >
-                {project ? project.name : '- - - -'}
-              </Text>
-              <Icon name="arrow-down" color={colors.white} />
-            </View>
-          </TouchableOpacity>
-
-          <Icon.Button
-            name="logout"
-            onPress={props.onLogout}
-            backgroundColor="transparent"
-            iconStyle={{ marginRight: 0 }}
-            style={styles.icon}
-          />
-        </View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={state.isModalOpen}
-          onRequestClose={this.closeModal}
-        >
-          <ProjectSwitcher
-            projects={props.projects}
-            selectedProject={props.selectedProject}
-            // activeProjectIds={props.activeProjectIds}
-            // inactiveProjectIds={props.inactiveProjectIds}
-            onSelect={this.handleProjectSelection}
-          />
-        </Modal>
-      </View>
-    );
-  };
-}
+export default TopBar;
