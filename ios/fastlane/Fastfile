@@ -45,6 +45,19 @@ platform :ios do
     # frameit
   end
 
+  desc "Bump build number, commit & push to remote"
+  lane :bump do
+    # Bump build number
+    increment_build_number
+    # Commit and push to remote
+    commit_version_bump(
+      message: 'build(ios): bump version number',
+      xcodeproj: './CTPDashboard.xcodeproj',
+      force: true
+    )
+    push_to_git_remote
+  end
+
   # You can define as many lanes as you want
 
   after_all do |lane|
