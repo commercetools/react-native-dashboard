@@ -95,7 +95,7 @@ class TopFiveProducts extends Component {
   render() {
     // TODO: define "placeholder" item for table list
     if (this.props.data.loading) return <DashboardItemPlaceholder />;
-    console.log(this.props.data.orders);
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
@@ -133,7 +133,7 @@ class TopFiveProducts extends Component {
                         />}
                   </View>
                 }
-                title={item.name}
+                title={item.name || '- - - -'}
                 subtitle={`Revenue: ${formatMoney(this.props.intl, item.totalAmount, 'EUR')}`}
                 rightIcon={
                   <View
