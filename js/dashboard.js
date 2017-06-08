@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
 export default class Dashboard extends Component {
   static propTypes = {
     token: PropTypes.string.isRequired,
-    projectKey: PropTypes.string.isRequired,
+    projectKey: PropTypes.string,
   };
 
   refreshListener = [];
@@ -29,7 +29,11 @@ export default class Dashboard extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.projectKey !== nextProps.projectKey) {
+    if (
+      this.props.projectKey &&
+      nextProps.projectKey &&
+      this.props.projectKey !== nextProps.projectKey
+    ) {
       this.handleManualRefresh();
     }
   }

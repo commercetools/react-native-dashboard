@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View } from 'react-native';
 import { intlShape, injectIntl } from 'react-intl';
-// import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { gql, graphql } from 'react-apollo';
 import DashboardItemPlaceholder from './dashboard-item-placeholder';
 import * as colors from './utils/colors';
@@ -81,6 +80,12 @@ class TopFiveProducts extends Component {
     // connected
     intl: intlShape.isRequired,
   };
+  static defaultProps = {
+    data: {
+      loading: true,
+      refetch: Promise.resolve,
+    },
+  };
   componentDidMount() {
     this.props.registerRefreshListener(() => this.props.data.refetch());
   }
@@ -149,6 +154,7 @@ const TopFiveProductsFetch = gql`
 `;
 
 export default graphql(TopFiveProductsFetch, {
+  skip: ownProps => !ownProps.projectKey,
   options: ownProps => ({
     variables: {
       target: 'dashboard',

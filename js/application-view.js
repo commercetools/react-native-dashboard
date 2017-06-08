@@ -37,22 +37,6 @@ class ApplicationView extends Component {
     isMenuOpen: false,
   };
 
-  // componentWillReceiveProps = nextProps => {
-  //   const prevProjectKey = this.props.data &&
-  //     this.props.data.me &&
-  //     this.props.data.me.project
-  //     ? this.props.data.me.project.key
-  //     : null;
-  //   const nextProjectKey = nextProps.data &&
-  //     nextProps.data.me &&
-  //     nextProps.data.me.project
-  //     ? nextProps.data.me.project.key
-  //     : null;
-  //
-  //   if (nextProps.data && prevProjectKey !== nextProjectKey)
-  //     nextProps.setProjectKey(nextProps.data.me.project.key);
-  // };
-
   handleMenuClick = () => {
     this.setState({ isMenuOpen: true });
   };
@@ -64,7 +48,9 @@ class ApplicationView extends Component {
 
   renderMainView = () => {
     const { props } = this;
+
     if (
+      !props.data.loading &&
       props.data &&
       props.data.me &&
       props.data.me.availableProjects.length === 0
@@ -72,23 +58,15 @@ class ApplicationView extends Component {
       return <View><Text>{'User has no projects'}</Text></View>;
 
     return (
-      <Dashboard token={props.token} projectKey={props.data.me.project.key} />
+      <Dashboard
+        token={props.token}
+        projectKey={props.data.loading ? null : props.data.me.project.key}
+      />
     );
   };
 
   render = () => {
     const { props, state } = this;
-
-    if (props.data.loading)
-      // TODO: render a placeholder view
-      return (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: colors.green,
-          }}
-        />
-      );
 
     const project =
       !props.data.loading &&
@@ -146,7 +124,7 @@ class ApplicationView extends Component {
           />
           <TopBar
             onMenuClick={this.handleMenuClick}
-            projectName={project && project.name}
+            projectName={project ? project.name : null}
           />
           {this.renderMainView()}
         </View>

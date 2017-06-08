@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import {
   View,
   StyleSheet,
-  Image,
   Text,
   TouchableOpacity,
   Platform,

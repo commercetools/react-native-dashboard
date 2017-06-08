@@ -44,6 +44,12 @@ class AovCard extends Component {
     }),
     registerRefreshListener: PropTypes.func.isRequired,
   };
+  static defaultProps = {
+    data: {
+      loading: true,
+      refetch: Promise.resolve,
+    },
+  };
   componentDidMount() {
     this.props.registerRefreshListener(() => this.props.data.refetch());
   }
@@ -135,6 +141,7 @@ const AovFetch = gql`
 `;
 
 export default graphql(AovFetch, {
+  skip: ownProps => !ownProps.projectKey,
   options: ownProps => ({
     variables: {
       target: 'dashboard',

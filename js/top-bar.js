@@ -2,13 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  View,
-  StyleSheet,
-  Text,
-  Platform,
-  NativeModules,
-} from 'react-native';
+import { View, StyleSheet, Text, Platform, NativeModules } from 'react-native';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import * as colors from './utils/colors';
 
@@ -41,13 +35,24 @@ const TopBar = props => (
         onPress={props.onMenuClick}
         backgroundColor="transparent"
       />
-      <Text style={styles.title}>{props.projectName}</Text>
+      {props.projectName
+        ? <Text style={styles.title}>{props.projectName}</Text>
+        : <View style={{ flex: 1, flexDirection: 'row' }}>
+            <View
+              style={{
+                height: 20,
+                flex: 0.4,
+                backgroundColor: colors.lightWhite,
+              }}
+            />
+            <View style={{ flex: 0.6 }} />
+          </View>}
     </View>
   </View>
 );
 TopBar.displayName = 'TopBar';
 TopBar.propTypes = {
-  projectName: PropTypes.string.isRequired,
+  projectName: PropTypes.string,
   onMenuClick: PropTypes.func.isRequired,
 };
 
