@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { intlShape, injectIntl } from 'react-intl';
 import { gql, graphql } from 'react-apollo';
+import { ListItem } from 'react-native-elements';
+import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import DashboardItemPlaceholder from './dashboard-item-placeholder';
 import * as colors from './utils/colors';
 import { formatMoney } from './utils/formats';
@@ -92,39 +95,80 @@ class TopFiveProducts extends Component {
   render() {
     // TODO: define "placeholder" item for table list
     if (this.props.data.loading) return <DashboardItemPlaceholder />;
+    console.log(this.props.data.orders);
     return (
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>{'Top Products'}</Text>
+          <Text style={styles.title}>{'Top 5 Products'}</Text>
         </View>
         <View style={styles.content}>
-          {this.props.data.orders.topProducts.map((product, index) => (
-            <View key={product.sku} style={styles.row}>
-              <View style={styles.index}>
-                <Text style={styles.indexText}>{index + 1}</Text>
-              </View>
-              <View style={styles.name}>
-                <Text numberOfLines={1} ellipsizeMode="tail">
-                  {product.name}
-                </Text>
-                <Text
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  style={{ color: colors.darkGrey, fontSize: 12 }}
-                >
-                  {`SKU: ${product.sku}`}
-                </Text>
-              </View>
-              <View style={styles.totalAmount}>
-                <Text>
-                  {formatMoney(this.props.intl, product.totalAmount, 'EUR')}
-                </Text>
-                <Text style={{ color: colors.darkGrey, fontSize: 12 }}>
-                  {`(${product.count})`}
-                </Text>
-              </View>
-            </View>
-          ))}
+          <FlatList
+            style={{ flex: 1 }}
+            data={this.props.data.orders.topProducts}
+            keyExtractor={item => item.sku}
+            renderItem={({ item }) => (
+              <ListItem
+                key={item.slug}
+                leftIcon={
+                  <View
+                    style={{
+                      flex: 0.15,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {item.images.length > 0
+                      ? <Image
+                          style={{
+                            width: 34,
+                            height: 34,
+                            borderRadius: 17,
+                          }}
+                          source={{ uri: item.images[0] }}
+                        />
+                      : <Ionicons
+                          name="ios-image-outline"
+                          size={34}
+                          style={{ borderRadius: 17 }}
+                        />}
+                  </View>
+                }
+                title={item.name}
+                subtitle={`Revenue: ${formatMoney(this.props.intl, item.totalAmount, 'EUR')}`}
+                rightIcon={
+                  <View
+                    style={{
+                      flex: 0.15,
+                      alignItems: 'flex-end',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <SimpleLineIcon
+                      name="arrow-right"
+                      size={18}
+                      // TODO: change to `colors.greyBlack` once the navigation
+                      // works
+                      color={colors.hoverGrey}
+                    />
+                  </View>
+                }
+                onPress={() => null /* TODO: navigate to product details */}
+                containerStyle={{
+                  backgroundColor: colors.white,
+                  paddingTop: 8,
+                  paddingRight: 8,
+                  paddingBottom: 8,
+                }}
+                titleStyle={{ color: colors.bodyColor }}
+                subtitleStyle={{
+                  fontSize: 12,
+                  fontWeight: 'normal',
+                  color: colors.mainGrey,
+                }}
+                wrapperStyle={{ marginLeft: 0 }}
+              />
+            )}
+          />
         </View>
       </View>
     );
@@ -148,6 +192,7 @@ const TopFiveProductsFetch = gql`
         totalAmount
         sku
         count
+        images
       }
     }
   }

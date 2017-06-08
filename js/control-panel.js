@@ -49,9 +49,6 @@ const styles = StyleSheet.create({
     padding: 8,
     textAlign: 'center',
   },
-  list: {
-    flex: 1,
-  },
   item: {
     padding: 8,
     backgroundColor: colors.white,
@@ -177,7 +174,7 @@ const ControlPanel = props => {
           style={styles.title}
         >{`Select project (${props.projects.length})`}</Text>
         <FlatList
-          style={styles.list}
+          style={{ flex: 1 }}
           data={props.projects}
           renderItem={({ item }) =>
             item.key !== props.selectedProjectKey &&
