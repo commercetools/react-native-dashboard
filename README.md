@@ -1,4 +1,6 @@
 ### Tech Day project
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/commercetools/react-native-dashboard.svg)](https://greenkeeper.io/)
 Build an iOS / Android Dashboard App in React Native.
 
 ### Installation
