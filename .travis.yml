@@ -1,0 +1,18 @@
+sudo: false
+
+language: node_js
+
+node_js:
+  - 6
+
+cache: 'yarn'
+
+notifications:
+  email: false
+
+script:
+  - npm run lint
+  - npm test
+
+git:
+  depth: 1
