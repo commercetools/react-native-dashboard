@@ -38,6 +38,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
       <Text
         accessible={true}
         allowFontScaling={true}
+        disabled={false}
         ellipsizeMode="tail"
         style={
           Object {
@@ -89,6 +90,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
           hasTVPreferredFocus={undefined}
           hitSlop={undefined}
           isTVSelectable={true}
+          nativeID={undefined}
           onLayout={undefined}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -138,6 +140,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
             <Text
               accessible={true}
               allowFontScaling={true}
+              disabled={false}
               ellipsizeMode="tail"
               style={
                 Array [
@@ -178,6 +181,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
           hasTVPreferredFocus={undefined}
           hitSlop={undefined}
           isTVSelectable={true}
+          nativeID={undefined}
           onLayout={undefined}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -222,6 +226,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
             <Text
               accessible={true}
               allowFontScaling={true}
+              disabled={false}
               ellipsizeMode="tail"
               style={
                 Array [
@@ -260,6 +265,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
           hasTVPreferredFocus={undefined}
           hitSlop={undefined}
           isTVSelectable={true}
+          nativeID={undefined}
           onLayout={undefined}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -304,6 +310,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
             <Text
               accessible={true}
               allowFontScaling={true}
+              disabled={false}
               ellipsizeMode="tail"
               style={
                 Array [
@@ -346,6 +353,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
           <Text
             accessible={true}
             allowFontScaling={true}
+            disabled={false}
             ellipsizeMode="tail"
             style={
               Object {
@@ -370,6 +378,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
           <Text
             accessible={true}
             allowFontScaling={false}
+            disabled={false}
             ellipsizeMode="tail"
             style={
               Array [
@@ -391,6 +400,7 @@ exports[`rendering with trend should render values with calculated trend 1`] = `
           <Text
             accessible={true}
             allowFontScaling={true}
+            disabled={false}
             ellipsizeMode="tail"
             style={
               Object {
@@ -446,6 +456,7 @@ exports[`rendering without trend should render only values 1`] = `
       <Text
         accessible={true}
         allowFontScaling={true}
+        disabled={false}
         ellipsizeMode="tail"
         style={
           Object {
@@ -497,6 +508,7 @@ exports[`rendering without trend should render only values 1`] = `
           hasTVPreferredFocus={undefined}
           hitSlop={undefined}
           isTVSelectable={true}
+          nativeID={undefined}
           onLayout={undefined}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -546,6 +558,7 @@ exports[`rendering without trend should render only values 1`] = `
             <Text
               accessible={true}
               allowFontScaling={true}
+              disabled={false}
               ellipsizeMode="tail"
               style={
                 Array [
@@ -586,6 +599,7 @@ exports[`rendering without trend should render only values 1`] = `
           hasTVPreferredFocus={undefined}
           hitSlop={undefined}
           isTVSelectable={true}
+          nativeID={undefined}
           onLayout={undefined}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -630,6 +644,7 @@ exports[`rendering without trend should render only values 1`] = `
             <Text
               accessible={true}
               allowFontScaling={true}
+              disabled={false}
               ellipsizeMode="tail"
               style={
                 Array [
@@ -668,6 +683,7 @@ exports[`rendering without trend should render only values 1`] = `
           hasTVPreferredFocus={undefined}
           hitSlop={undefined}
           isTVSelectable={true}
+          nativeID={undefined}
           onLayout={undefined}
           onResponderGrant={[Function]}
           onResponderMove={[Function]}
@@ -712,6 +728,7 @@ exports[`rendering without trend should render only values 1`] = `
             <Text
               accessible={true}
               allowFontScaling={true}
+              disabled={false}
               ellipsizeMode="tail"
               style={
                 Array [
@@ -754,6 +771,7 @@ exports[`rendering without trend should render only values 1`] = `
           <Text
             accessible={true}
             allowFontScaling={true}
+            disabled={false}
             ellipsizeMode="tail"
             style={
               Object {
