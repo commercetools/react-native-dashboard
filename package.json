@@ -42,7 +42,7 @@
     "jest-react-native": "18.0.0",
     "prettier": "1.4.4",
     "react-test-renderer": "16.0.0-alpha.12",
-    "validate-commit-msg": "2.10.1"
+    "validate-commit-msg": "2.14.0"
   },
   "jest": {
     "preset": "react-native",
