@@ -1604,9 +1604,9 @@ eslint-config-commercetools@6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/eslint-config-commercetools/-/eslint-config-commercetools-6.0.0.tgz#671f23a5ed8b4413991b8e823ee9c2442cb4c451"
 
-eslint-config-prettier@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-2.1.1.tgz#ab3923fb704eebecab6960906b7d0d6e801cde58"
+eslint-config-prettier@2.10.0:
+  version "2.10.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-2.10.0.tgz#ec07bc1d01f87d09f61d3840d112dc8a9791e30b"
   dependencies:
     get-stdin "^5.0.1"
 
