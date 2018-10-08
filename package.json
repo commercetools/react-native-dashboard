@@ -15,7 +15,7 @@
     "moment": "^2.18.1",
     "prop-types": "15.5.10",
     "react": "16.0.0-alpha.12",
-    "react-apollo": "1.4.2",
+    "react-apollo": "1.4.16",
     "react-intl": "2.3.0",
     "react-native": "0.45.0",
     "react-native-drawer": "2.3.0",
