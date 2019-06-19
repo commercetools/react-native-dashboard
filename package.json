@@ -40,7 +40,7 @@
     "husky": "0.13.4",
     "jest": "20.0.4",
     "jest-react-native": "18.0.0",
-    "prettier": "1.4.4",
+    "prettier": "1.18.2",
     "react-test-renderer": "16.0.0-alpha.12",
     "validate-commit-msg": "2.10.1"
   },
