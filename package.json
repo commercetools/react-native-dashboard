@@ -17,7 +17,7 @@
     "react": "16.0.0-alpha.12",
     "react-apollo": "1.4.2",
     "react-intl": "2.3.0",
-    "react-native": "0.45.0",
+    "react-native": "0.60.3",
     "react-native-drawer": "2.3.0",
     "react-native-elements": "0.12.2",
     "react-native-vector-icons": "4.2.0",
